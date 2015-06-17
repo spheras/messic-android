@@ -78,6 +78,18 @@ public class MessicPlayerNotification
 
     }
 
+    public void cancel()
+    {
+        if ( this.notification != null )
+        {
+            this.mNotificationManager.cancelAll();
+            this.mNotificationManager.cancel( ONGOING_NOTIFICATION_ID );
+            this.service.stopForeground( true );
+            this.notification = null;
+            this.mNotificationManager = null;
+        }
+    }
+
     private void registerBroadcastActions()
     {
         IntentFilter filter = new IntentFilter();
@@ -151,8 +163,11 @@ public class MessicPlayerNotification
         mNotificationManager = (NotificationManager) this.service.getSystemService( Context.NOTIFICATION_SERVICE );
         RemoteViews contentView =
             new RemoteViews( this.service.getPackageName(), R.layout.bignotification_player_layout );
-        NotificationCompat.Builder mBuilder =
-            new NotificationCompat.Builder( this.service ).setSmallIcon( R.drawable.ic_launcher ).setContentTitle( "title" ).setPriority( Notification.PRIORITY_MAX ).setContent( contentView );
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder( this.service );
+        mBuilder.setSmallIcon( R.drawable.ic_launcher );
+        mBuilder.setContentTitle( "title" );
+        mBuilder.setPriority( Notification.PRIORITY_MAX );
+        mBuilder.setContent( contentView );
 
         Notification n = mBuilder.build();
         n.bigContentView = contentView;
@@ -230,33 +245,36 @@ public class MessicPlayerNotification
         createNotification();
         if ( currentNotificationCover == null )
         {
-            Bitmap cover = AlbumCoverCache.getCover( playSong.getAlbum(), new AlbumCoverCache.CoverListener()
-            {
-
-                public void setCover( Bitmap bitmap )
+            Bitmap cover =
+                AlbumCoverCache.getCover( this.service, playSong.getAlbum(), new AlbumCoverCache.CoverListener()
                 {
-                    // we need to recreate the remote view due to memory buffer problems with remote views and the image
-                    // we send
-                    RemoteViews contentView =
-                        new RemoteViews( service.getPackageName(), R.layout.bignotification_player_layout );
-                    notification.bigContentView = contentView;
-                    notification.bigContentView.setTextViewText( R.id.bignotification_tvcurrent_author,
-                                                                 playSong.getAlbum().getAuthor().getName() );
-                    notification.bigContentView.setTextViewText( R.id.bignotification_tvcurrent_song,
-                                                                 playSong.getName() );
 
-                    Bitmap cover = UtilImage.resizeToNotificationImageSize( service.getApplicationContext(), bitmap );
-                    notification.bigContentView.setImageViewBitmap( R.id.bignotification_ivcurrent_cover, cover );
-                    currentNotificationCover = cover;
-                    mNotificationManager.notify( ONGOING_NOTIFICATION_ID, notification );
-                }
+                    public void setCover( Bitmap bitmap )
+                    {
+                        // we need to recreate the remote view due to memory buffer problems
+                        // with remote views and the image
+                        // we send
+                        RemoteViews contentView =
+                            new RemoteViews( service.getPackageName(), R.layout.bignotification_player_layout );
+                        notification.bigContentView = contentView;
+                        notification.bigContentView.setTextViewText( R.id.bignotification_tvcurrent_author,
+                                                                     playSong.getAlbum().getAuthor().getName() );
+                        notification.bigContentView.setTextViewText( R.id.bignotification_tvcurrent_song,
+                                                                     playSong.getName() );
 
-                public void failed( Exception e )
-                {
-                    // TODO Auto-generated method stub
+                        Bitmap cover =
+                            UtilImage.resizeToNotificationImageSize( service.getApplicationContext(), bitmap );
+                        notification.bigContentView.setImageViewBitmap( R.id.bignotification_ivcurrent_cover, cover );
+                        currentNotificationCover = cover;
+                        mNotificationManager.notify( ONGOING_NOTIFICATION_ID, notification );
+                    }
 
-                }
-            } );
+                    public void failed( Exception e )
+                    {
+                        // TODO Auto-generated method stub
+
+                    }
+                } );
             if ( cover != null )
             {
                 // we need to recreate the remote view due to memory buffer problems with remote views and the image we
@@ -308,11 +326,14 @@ public class MessicPlayerNotification
 
     public void removed( MDMSong song )
     {
-        // TODO
+        if ( this.player.getQueue().size() == 0 )
+        {
+            cancel();
+        }
     }
 
     public void empty()
     {
-        // TODO
+        this.cancel();
     }
 }

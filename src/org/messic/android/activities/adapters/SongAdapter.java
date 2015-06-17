@@ -30,6 +30,9 @@ import org.messic.android.download.DownloadListener;
 import org.messic.android.util.AlbumCoverCache;
 import org.messic.android.util.UtilDownloadService;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -75,7 +78,15 @@ public class SongAdapter
 
         void textTouch( MDMSong song, int index );
 
-        void elementRemove( MDMSong song, int index );
+        /**
+         * The remove element has been asked.. This function must return true if want's to remove the visual element at
+         * the adapter also
+         * 
+         * @param song {@link MDMSong} song removed
+         * @param index int index of the song
+         * @return boolean true->if we want to remove the element at the adapter also
+         */
+        boolean elementRemove( MDMSong song, int index );
 
         void playlistTouch( MDMPlaylist playlist, int index );
     }
@@ -371,30 +382,31 @@ public class SongAdapter
             final int fposition = position;
             final View fCounterView = counterView;
 
-            Bitmap bm = AlbumCoverCache.getCover( song.getAlbum(), new AlbumCoverCache.CoverListener()
-            {
-                public void setCover( final Bitmap bitmap )
+            Bitmap bm =
+                AlbumCoverCache.getCover( parent.getContext(), song.getAlbum(), new AlbumCoverCache.CoverListener()
                 {
-                    // just checking if the view is yet the hoped view (and haven't been recycled)
-                    if ( ( (Integer) fCounterView.getTag() ) == fposition )
+                    public void setCover( final Bitmap bitmap )
                     {
-                        activity.runOnUiThread( new Runnable()
+                        // just checking if the view is yet the hoped view (and haven't been recycled)
+                        if ( ( (Integer) fCounterView.getTag() ) == fposition )
                         {
-
-                            public void run()
+                            activity.runOnUiThread( new Runnable()
                             {
-                                ficover.setImageBitmap( bitmap );
-                                ficover.invalidate();
-                            }
-                        } );
-                    }
-                }
 
-                public void failed( Exception e )
-                {
-                    Log.e( "SongAdapter!", e.getMessage(), e );
-                }
-            } );
+                                public void run()
+                                {
+                                    ficover.setImageBitmap( bitmap );
+                                    ficover.invalidate();
+                                }
+                            } );
+                        }
+                    }
+
+                    public void failed( Exception e )
+                    {
+                        Log.e( "SongAdapter!", e.getMessage(), e );
+                    }
+                } );
             if ( bm != null )
             {
                 icover.setImageBitmap( bm );
@@ -405,13 +417,43 @@ public class SongAdapter
 
         if ( type == SongAdapterType.detailed )
         {
+            final View vtemp = counterView;
+
             ImageView ivremove = (ImageView) counterView.findViewById( R.id.songdetailed_ivremove );
             ivremove.setOnClickListener( new View.OnClickListener()
             {
-
                 public void onClick( View v )
                 {
-                    listener.elementRemove( song, position );
+                    boolean remove = listener.elementRemove( song, position );
+                    if ( remove )
+                    {
+                        ObjectAnimator oa = ObjectAnimator.ofFloat( vtemp, View.ALPHA, 0 );
+                        oa.setDuration( 1000 );
+                        vtemp.setHasTransientState( true );
+                        oa.addListener( new AnimatorListener()
+                        {
+                            public void onAnimationStart( Animator animation )
+                            {
+                            }
+
+                            public void onAnimationRepeat( Animator animation )
+                            {
+                            }
+
+                            public void onAnimationEnd( Animator animation )
+                            {
+                                removeElement( position );
+                                notifyDataSetChanged();
+                                vtemp.setAlpha( 1 );
+                                vtemp.setHasTransientState( false );
+                            }
+
+                            public void onAnimationCancel( Animator animation )
+                            {
+                            }
+                        } );
+                        oa.start();
+                    }
                 }
             } );
         }

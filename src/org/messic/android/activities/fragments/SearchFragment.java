@@ -82,10 +82,32 @@ public class SearchFragment
         controller.getSearchMusic( sa, getActivity(), this, false, null, searchContent );
     }
 
+    private static final String STATE_TITLE = "fragment_title";
+
+    private static final String STATE_SEARCHCONTENT = "search_content";
+
+    @Override
+    public void onSaveInstanceState( Bundle savedInstanceState )
+    {
+        // Save the user's current frame state
+        savedInstanceState.putString( STATE_TITLE, this.title );
+        savedInstanceState.putString( STATE_SEARCHCONTENT, this.searchContent );
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState( savedInstanceState );
+    }
+
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
         View rootView = inflater.inflate( R.layout.fragment_search, container, false );
+
+        if ( savedInstanceState != null )
+        {
+            // Restore value of members from saved state
+            this.title = savedInstanceState.getString( STATE_TITLE );
+            this.searchContent = savedInstanceState.getString( STATE_SEARCHCONTENT );
+        }
 
         UtilMusicPlayer.getMessicPlayerService( getActivity() );
 
@@ -110,10 +132,9 @@ public class SearchFragment
                 UtilMusicPlayer.addSongAndPlay( getActivity(), song );
             }
 
-            public void elementRemove( MDMSong song, int index )
+            public boolean elementRemove( MDMSong song, int index )
             {
-                // TODO Auto-generated method stub
-
+                return false;
             }
 
             public void playlistTouch( MDMPlaylist playlist, int index )
@@ -187,6 +208,22 @@ public class SearchFragment
             } );
 
         }
+    }
+
+    /**
+     * @return the searchContent
+     */
+    public String getSearchContent()
+    {
+        return searchContent;
+    }
+
+    /**
+     * @param searchContent the searchContent to set
+     */
+    public void setSearchContent( String searchContent )
+    {
+        this.searchContent = searchContent;
     }
 
 }

@@ -36,47 +36,45 @@ public class QueueController
     private List<MDMSong> queueSongs = null;
 
     public void getQueueSongs( final SongAdapter adapter, final Activity activity, final PlayQueueFragment rf,
-                               boolean refresh, final SwipeRefreshLayout srl )
+                               final boolean refresh, final SwipeRefreshLayout srl )
     {
         if ( activity != null )
         {
-            if ( queueSongs == null || refresh )
+            activity.runOnUiThread( new Runnable()
             {
-                View vqueueprogress = activity.findViewById( R.id.queue_progress );
-                if ( vqueueprogress != null )
-                    vqueueprogress.setVisibility( View.VISIBLE );
-                List<MDMSong> queue = UtilMusicPlayer.getQueue( activity );
-                queueSongs = queue;
-                adapter.clear();
-                activity.runOnUiThread( new Runnable()
+                public void run()
                 {
-                    public void run()
+                    if ( activity != null )
                     {
-                        adapter.notifyDataSetChanged();
-                    }
-                } );
+                        if ( queueSongs == null || refresh )
+                        {
+                            View vqueueprogress = activity.findViewById( R.id.queue_progress );
+                            if ( vqueueprogress != null )
+                                vqueueprogress.setVisibility( View.VISIBLE );
+                            List<MDMSong> queue = UtilMusicPlayer.getQueue( activity );
+                            queueSongs = queue;
+                            adapter.clear();
+                            adapter.notifyDataSetChanged();
 
-                if ( queue != null )
-                {
-                    for ( int i = 0; i < queue.size(); i++ )
-                    {
-                        MDMSong song = queue.get( i );
-                        adapter.addSong( song );
+                            if ( queue != null )
+                            {
+                                for ( int i = 0; i < queue.size(); i++ )
+                                {
+                                    MDMSong song = queue.get( i );
+                                    adapter.addSong( song );
+                                }
+                            }
+                            rf.eventRandomInfoLoaded();
+
+                            adapter.notifyDataSetChanged();
+
+                            if ( srl != null )
+                                srl.setRefreshing( false );
+                        }
                     }
+
                 }
-                rf.eventRandomInfoLoaded();
-                activity.runOnUiThread( new Runnable()
-                {
-                    public void run()
-                    {
-                        adapter.notifyDataSetChanged();
-                    }
-                } );
-
-                if ( srl != null )
-                    srl.setRefreshing( false );
-            }
+            } );
         }
-
     }
 }

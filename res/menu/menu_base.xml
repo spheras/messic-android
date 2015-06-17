@@ -1,6 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/menu_base_item_playrandom"
+        android:title="@string/menu_base_playrandom"/>
+    <item
         android:id="@+id/menu_base_item_clearplaylist"
         android:title="@string/menu_base_clearplaylist"/>
     <item

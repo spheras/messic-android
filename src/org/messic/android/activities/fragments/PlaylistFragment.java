@@ -103,9 +103,9 @@ public class PlaylistFragment
                     UtilMusicPlayer.addSongAndPlay( getActivity(), song );
                 }
 
-                public void elementRemove( MDMSong song, int index )
+                public boolean elementRemove( MDMSong song, int index )
                 {
-                    // TODO Auto-generated method stub
+                    return false;
                 }
 
                 public void playlistTouch( MDMPlaylist playlist, int index )

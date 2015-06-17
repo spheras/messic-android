@@ -163,7 +163,7 @@ public class AlbumAdapter
             }
         } );
 
-        Bitmap bm = AlbumCoverCache.getCover( album, new AlbumCoverCache.CoverListener()
+        Bitmap bm = AlbumCoverCache.getCover( parent.getContext(), album, new AlbumCoverCache.CoverListener()
         {
             public void setCover( final Bitmap bitmap )
             {

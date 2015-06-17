@@ -21,6 +21,7 @@ package org.messic.android.controllers;
 import org.messic.android.R;
 import org.messic.android.activities.AlbumInfoActivity;
 import org.messic.android.datamodel.MDMAlbum;
+import org.messic.android.datamodel.dao.DAOAlbum;
 import org.messic.android.util.UtilRestJSONClient;
 
 import android.app.Activity;
@@ -34,6 +35,12 @@ public class AlbumController
 {
     public static void getAlbumInfoOffline( final Context originActivity, MDMAlbum album )
     {
+        if ( album.getSongs() == null || album.getSongs().size() == 0 )
+        {
+            DAOAlbum daoalbum = new DAOAlbum( originActivity );
+            album = daoalbum.getByAlbumLSid( album.getLsid(), true );
+        }
+
         if ( originActivity instanceof AlbumInfoActivity )
         {
             AlbumInfoActivity aia = (AlbumInfoActivity) originActivity;
@@ -55,43 +62,44 @@ public class AlbumController
         dialog.show();
 
         final String baseURL =
-            Configuration.getBaseUrl() + "/services/albums/" + sid + "?songsInfo=true&authorInfo=true&messic_token="
-                + Configuration.getLastToken();
-        UtilRestJSONClient.get( baseURL, MDMAlbum.class, new UtilRestJSONClient.RestListener<MDMAlbum>()
-        {
-            public void response( MDMAlbum response )
-            {
-                if ( originActivity instanceof AlbumInfoActivity )
-                {
-                    AlbumInfoActivity aia = (AlbumInfoActivity) originActivity;
-                    aia.eventAlbumInfoLoaded( response );
-                }
-                else
-                {
-                    Intent ssa = new Intent( originActivity, AlbumInfoActivity.class );
-                    ssa.putExtra( AlbumInfoActivity.EXTRA_ALBUM_SID, response );
-                    originActivity.startActivity( ssa );
-                }
-                dialog.dismiss();
-            }
+            Configuration.getBaseUrl( originActivity ) + "/services/albums/" + sid
+                + "?songsInfo=true&authorInfo=true&messic_token=" + Configuration.getLastToken();
+        UtilRestJSONClient.get( originActivity, baseURL, MDMAlbum.class,
+                                new UtilRestJSONClient.RestListener<MDMAlbum>()
+                                {
+                                    public void response( MDMAlbum response )
+                                    {
+                                        if ( originActivity instanceof AlbumInfoActivity )
+                                        {
+                                            AlbumInfoActivity aia = (AlbumInfoActivity) originActivity;
+                                            aia.eventAlbumInfoLoaded( response );
+                                        }
+                                        else
+                                        {
+                                            Intent ssa = new Intent( originActivity, AlbumInfoActivity.class );
+                                            ssa.putExtra( AlbumInfoActivity.EXTRA_ALBUM_SID, response );
+                                            originActivity.startActivity( ssa );
+                                        }
+                                        dialog.dismiss();
+                                    }
 
-            public void fail( final Exception e )
-            {
-                dialog.dismiss();
+                                    public void fail( final Exception e )
+                                    {
+                                        dialog.dismiss();
 
-                Log.e( "Random", e.getMessage(), e );
-                originActivity.runOnUiThread( new Runnable()
-                {
+                                        Log.e( "Random", e.getMessage(), e );
+                                        originActivity.runOnUiThread( new Runnable()
+                                        {
 
-                    public void run()
-                    {
-                        Toast.makeText( originActivity, "Error:" + e.getMessage(), Toast.LENGTH_LONG ).show();
+                                            public void run()
+                                            {
+                                                Toast.makeText( originActivity, "Server Error", Toast.LENGTH_SHORT ).show();
 
-                    }
-                } );
-            }
+                                            }
+                                        } );
+                                    }
 
-        } );
+                                } );
 
     }
 

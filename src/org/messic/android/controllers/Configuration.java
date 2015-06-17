@@ -19,6 +19,7 @@
 package org.messic.android.controllers;
 
 import org.messic.android.datamodel.MDMMessicServerInstance;
+import org.messic.android.datamodel.dao.DAOAlbum;
 import org.messic.android.util.MessicPreferences;
 
 import android.content.Context;
@@ -44,9 +45,17 @@ public class Configuration
         lastToken = token;
     }
 
-    public static String getBaseUrl()
+    public static String getBaseUrl( Context ctx )
     {
         MDMMessicServerInstance instance = getCurrentMessicService();
+        if ( instance == null && !Configuration.isOffline() )
+        {
+            // server is no online anymore
+            LoginController lc = new LoginController();
+            lc.logout( ctx );
+
+            return "http://localhost/messic";
+        }
         return getBaseUrl( instance );
     }
 
@@ -115,8 +124,12 @@ public class Configuration
     /**
      * @return the firstTime
      */
-    public static boolean isFirstTime()
+    public static boolean isFirstTime( Context ctx )
     {
+        // we need to open the database to really check if it is the first time (the database will be created)
+        DAOAlbum daoalbum = new DAOAlbum( ctx );
+        daoalbum.open();
+        daoalbum.close();
         return firstTime;
     }
 

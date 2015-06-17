@@ -32,6 +32,7 @@ import org.messic.android.activities.fragments.SearchFragment;
 import org.messic.android.activities.fragments.TitleFragment;
 import org.messic.android.controllers.Configuration;
 import org.messic.android.controllers.LoginController;
+import org.messic.android.controllers.RandomController;
 import org.messic.android.util.UtilDownloadService;
 import org.messic.android.util.UtilMusicPlayer;
 
@@ -41,6 +42,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ActionBar.Tab;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -78,6 +80,37 @@ public class BaseActivity
     private List<Fragment> fragments = new ArrayList<Fragment>();
 
     private SearchView mSearchView;
+
+    private static final String STATE_SEARCHFRAGMENTS = "search_fragments";
+
+    private static final String STATE_SELECTEDTAB = "selected_tab";
+
+    @Override
+    public void onSaveInstanceState( Bundle savedInstanceState )
+    {
+        int index = getActionBar().getSelectedNavigationIndex();
+        savedInstanceState.putInt( STATE_SELECTEDTAB, index );
+
+        ArrayList<String> searchFragments = new ArrayList<String>();
+        for ( int i = 0; i < fragments.size(); i++ )
+        {
+            Fragment f = fragments.get( i );
+            if ( f instanceof SearchFragment )
+            {
+                SearchFragment sf = (SearchFragment) f;
+                searchFragments.add( sf.getSearchContent() );
+            }
+        }
+
+        if ( searchFragments != null && searchFragments.size() > 0 )
+        {
+            // Save the user's current frame state
+            savedInstanceState.putStringArrayList( STATE_SEARCHFRAGMENTS, searchFragments );
+        }
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState( savedInstanceState );
+    }
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -117,6 +150,23 @@ public class BaseActivity
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
             actionBar.addTab( actionBar.newTab().setText( mSectionsPagerAdapter.getPageTitle( i ) ).setTabListener( this ) );
+        }
+
+        if ( savedInstanceState != null )
+        {
+            ArrayList<String> searchFragments = savedInstanceState.getStringArrayList( STATE_SEARCHFRAGMENTS );
+            if ( searchFragments != null && searchFragments.size() > 0 )
+            {
+                for ( String string : searchFragments )
+                {
+                    createSearchFragment( getActionBar(), fragments.size(), string );
+                }
+            }
+
+            int index = savedInstanceState.getInt( STATE_SELECTEDTAB );
+            Tab tabindex = getActionBar().getTabAt( index );
+            getActionBar().selectTab( tabindex );
+
         }
     }
 
@@ -180,6 +230,9 @@ public class BaseActivity
                     case R.id.menu_base_item_clearplaylist:
                         UtilMusicPlayer.clearQueue( BaseActivity.this );
                         break;
+                    case R.id.menu_base_item_playrandom:
+                        RandomController.addRandomSongsToPlaylist( BaseActivity.this );
+                        break;
                     case R.id.menu_base_item_showlicense:
                         Intent browserIntent =
                             new Intent( Intent.ACTION_VIEW,
@@ -197,6 +250,8 @@ public class BaseActivity
 
     private void emptyDatabase()
     {
+        final AlertDialog.Builder builder = new AlertDialog.Builder( this );
+
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
         {
             public void onClick( DialogInterface dialog, int which )
@@ -204,7 +259,27 @@ public class BaseActivity
                 switch ( which )
                 {
                     case DialogInterface.BUTTON_POSITIVE:
-                        UtilDownloadService.emptyLocal( BaseActivity.this );
+                        DialogInterface.OnClickListener reallySure = new DialogInterface.OnClickListener()
+                        {
+                            public void onClick( DialogInterface dialog, int which )
+                            {
+                                switch ( which )
+                                {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        UtilDownloadService.emptyLocal( BaseActivity.this );
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        // No button clicked
+                                        break;
+                                }
+                            }
+                        };
+
+                        builder.setMessage( getString( R.string.action_empty_localdatabase_reallysure ) );
+                        builder.setPositiveButton( getString( R.string.yes ), reallySure );
+                        builder.setNegativeButton( getString( R.string.no ), reallySure );
+                        builder.show();
+
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         // No button clicked
@@ -212,7 +287,6 @@ public class BaseActivity
                 }
             }
         };
-        AlertDialog.Builder builder = new AlertDialog.Builder( this );
         builder.setMessage( getString( R.string.action_empty_localdatabase ) );
         builder.setPositiveButton( getString( R.string.yes ), dialogClickListener );
         builder.setNegativeButton( getString( R.string.no ), dialogClickListener );
@@ -247,6 +321,7 @@ public class BaseActivity
             Locale l = Locale.getDefault();
             if ( Configuration.isOffline() )
             {
+                fragments.add( new RandomFragment( getString( R.string.title_section_random ).toUpperCase( l ) ) );
                 fragments.add( new DownloadedFragment( getString( R.string.title_section_downloaded ).toUpperCase( l ) ) );
                 fragments.add( new PlayQueueFragment( getString( R.string.title_section_queue ).toUpperCase( l ) ) );
             }
@@ -335,17 +410,23 @@ public class BaseActivity
     {
 
         Toast.makeText( this, getString( R.string.action_searchmusic_toast ) + " " + text, Toast.LENGTH_LONG ).show();
+
         ActionBar actionBar = getActionBar();
         int i = fragments.size();
+        createSearchFragment( actionBar, i, text );
+        actionBar.setSelectedNavigationItem( i );
+
+        mSearchView.clearFocus();
+        return true;
+    }
+
+    private void createSearchFragment( ActionBar actionBar, int i, String text )
+    {
         fragments.add( new SearchFragment( getString( R.string.title_section_search ), text, i ) );
         actionBar.addTab( actionBar.newTab().setText( mSectionsPagerAdapter.getPageTitle( i ) ).setTabListener( this ) );
 
         mSectionsPagerAdapter.notifyDataSetChanged();
 
-        actionBar.setSelectedNavigationItem( i );
-
-        mSearchView.clearFocus();
-        return true;
     }
 
     public void removeSearchTab( int index, SearchFragment fragment )
@@ -362,6 +443,11 @@ public class BaseActivity
         mSectionsPagerAdapter.notifyDataSetChanged();
         mViewPager.setAdapter( mSectionsPagerAdapter );
         mSectionsPagerAdapter.notifyDataSetChanged();
+
+        if ( index > 0 )
+        {
+            getActionBar().selectTab( getActionBar().getTabAt( index - 1 ) );
+        }
     }
 
     private void logout()

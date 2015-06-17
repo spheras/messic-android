@@ -30,6 +30,41 @@ public class DAOSong
         super( context, MDMSong.TABLE_NAME, MDMSong.getColumns() );
     }
 
+    public List<MDMSong> getRandomSongs( int limit, SongPublisher sp )
+    {
+
+        List<MDMSong> result = new ArrayList<MDMSong>();
+
+        open();
+
+        String query =
+            "SELECT * FROM " + MDMSong.TABLE_NAME + " WHERE " + MDMSong.COLUMN_LOCAL_FILENAME
+                + " IS NOT NULL ORDER BY RANDOM() LIMIT " + limit;
+
+        Cursor c = getDatabase().rawQuery( query, null );
+
+        if ( c != null && c.moveToFirst() )
+        {
+            do
+            {
+                MDMSong song = new MDMSong( c, getContext(), true );
+                if ( song.isDownloaded( getContext() ) )
+                {
+                    if ( sp != null )
+                    {
+                        sp.publish( song );
+                    }
+                    result.add( song );
+                }
+            }
+            while ( c.moveToNext() );
+        }
+        c.close();
+        close();
+
+        return result;
+    }
+
     public int countDownloaded()
     {
         open();

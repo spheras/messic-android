@@ -36,10 +36,11 @@
             android:text="Small Text with some appareances of the test"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#444444"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/albuminfo_talbum"
+            android:id="@+id/albuminfo_ttalbum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/albuminfo_tauthor"
@@ -50,7 +51,8 @@
             android:scrollHorizontally="true"
             android:text="Small Text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#4444FF" />
+            android:textColor="#4444FF"
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/imageView1"
@@ -61,6 +63,15 @@
             android:layout_marginLeft="35dp"
             android:layout_marginTop="34dp"
             android:src="@drawable/ic_play_circle_outline_white_48dp" />
+
+        <ImageView
+            android:id="@+id/albuminfo_wwikipedia"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/albuminfo_icover"
+            android:layout_alignLeft="@+id/albuminfo_ttalbum"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/wikipedia" />
     </RelativeLayout>
 
     <ListView

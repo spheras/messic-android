@@ -163,7 +163,7 @@ public class PlayerView
         if ( song != null )
         {
             final ImageView ivcover = (ImageView) findViewById( R.id.base_ivcurrent_cover );
-            Bitmap bm = AlbumCoverCache.getCover( song.getAlbum(), new AlbumCoverCache.CoverListener()
+            Bitmap bm = AlbumCoverCache.getCover( getContext(), song.getAlbum(), new AlbumCoverCache.CoverListener()
             {
 
                 public void setCover( final Bitmap bitmap )

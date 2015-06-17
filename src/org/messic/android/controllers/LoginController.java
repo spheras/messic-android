@@ -42,13 +42,16 @@ import android.widget.Toast;
 public class LoginController
 {
 
-    public void logout( Activity context )
+    public void logout( Context context )
     {
         Configuration.setToken( null );
         Intent intent = new Intent( context, LoginActivity.class );
         intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK );
         context.startActivity( intent );
-        context.finish(); // call this to finish the current activity
+        if ( context instanceof Activity )
+        {
+            ( (Activity) context ).finish(); // call this to finish the current activity
+        }
     }
 
     /**
@@ -71,7 +74,8 @@ public class LoginController
 
     public boolean check( final Context context )
     {
-        String surl = Configuration.getBaseUrl() + "/services/check??messic_token=" + Configuration.getLastToken();
+        String surl =
+            Configuration.getBaseUrl( context ) + "/services/check??messic_token=" + Configuration.getLastToken();
         try
         {
             URL url = new URL( surl );
@@ -90,40 +94,41 @@ public class LoginController
     {
         UtilNetwork.nukeNetwork();
 
-        final String baseURL = Configuration.getBaseUrl() + "/messiclogin";
+        final String baseURL = Configuration.getBaseUrl( context ) + "/messiclogin";
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();
         formData.add( "j_username", username );
         formData.add( "j_password", password );
         try
         {
-            UtilRestJSONClient.post( baseURL, formData, MDMLogin.class, new UtilRestJSONClient.RestListener<MDMLogin>()
-            {
-                public void response( MDMLogin response )
-                {
-                    MessicPreferences mp = new MessicPreferences( context );
-                    mp.setRemember( remember, username, password );
-                    Configuration.setToken( response.getMessic_token() );
+            UtilRestJSONClient.post( context, baseURL, formData, MDMLogin.class,
+                                     new UtilRestJSONClient.RestListener<MDMLogin>()
+                                     {
+                                         public void response( MDMLogin response )
+                                         {
+                                             MessicPreferences mp = new MessicPreferences( context );
+                                             mp.setRemember( remember, username, password );
+                                             Configuration.setToken( response.getMessic_token() );
 
-                    pd.dismiss();
-                    Configuration.setOffline( false );
-                    Intent ssa = new Intent( context, BaseActivity.class );
-                    context.startActivity( ssa );
-                }
+                                             pd.dismiss();
+                                             Configuration.setOffline( false );
+                                             Intent ssa = new Intent( context, BaseActivity.class );
+                                             context.startActivity( ssa );
+                                         }
 
-                public void fail( Exception e )
-                {
-                    Log.e( "Login", e.getMessage(), e );
-                    context.runOnUiThread( new Runnable()
-                    {
-                        public void run()
-                        {
-                            pd.dismiss();
-                            Toast.makeText( context, "Error", Toast.LENGTH_LONG ).show();
-                        }
-                    } );
+                                         public void fail( Exception e )
+                                         {
+                                             Log.e( "Login", e.getMessage(), e );
+                                             context.runOnUiThread( new Runnable()
+                                             {
+                                                 public void run()
+                                                 {
+                                                     pd.dismiss();
+                                                     Toast.makeText( context, "Error", Toast.LENGTH_LONG ).show();
+                                                 }
+                                             } );
 
-                }
-            } );
+                                         }
+                                     } );
         }
         catch ( Exception e )
         {

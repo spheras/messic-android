@@ -242,7 +242,7 @@ public class LoginActivity
     protected void onStart()
     {
         super.onStart();
-        if ( Configuration.isFirstTime() )
+        if ( Configuration.isFirstTime( this ) )
         {
             Configuration.setFirstTime( false );
             Intent ssa = new Intent( LoginActivity.this, WelcomeActivity.class );

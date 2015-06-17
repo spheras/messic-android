@@ -51,6 +51,11 @@ public class UtilNetwork
     public static void checkMessicServerUpAndRunning( final MDMMessicServerInstance instance,
                                                       final MessicServerStatusListener msl )
     {
+        if ( instance == null || msl == null )
+        {
+            return;
+        }
+
         AsyncTask<Void, Void, Void> at = new AsyncTask<Void, Void, Void>()
         {
             @Override

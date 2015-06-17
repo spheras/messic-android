@@ -20,6 +20,7 @@ package org.messic.android.activities;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 import org.messic.android.R;
 import org.messic.android.activities.adapters.SongAdapter;
@@ -38,7 +39,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -78,6 +81,19 @@ public class AlbumInfoActivity
 
         setContentView( R.layout.albuminfo );
 
+        findViewById( R.id.albuminfo_wwikipedia ).setOnClickListener( new View.OnClickListener()
+        {
+            public void onClick( View v )
+            {
+                String surl =
+                    "https://" + Locale.getDefault().getLanguage().toLowerCase() + ".wikipedia.org/wiki/"
+                        + album.getAuthor().getName();
+                Intent browserIntent = new Intent( Intent.ACTION_VIEW, Uri.parse( surl ) );
+                startActivity( browserIntent );
+
+            }
+        } );
+
         this.album = (MDMAlbum) getIntent().getExtras().get( EXTRA_ALBUM_SID );
 
         if ( this.album.getSongs() == null || this.album.getSongs().size() == 0 )
@@ -107,7 +123,7 @@ public class AlbumInfoActivity
                 {
                 }
 
-                public void elementRemove( final MDMSong song, int index )
+                public boolean elementRemove( final MDMSong song, int index )
                 {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
                     {
@@ -132,9 +148,12 @@ public class AlbumInfoActivity
                         }
                     };
                     AlertDialog.Builder builder = new AlertDialog.Builder( AlbumInfoActivity.this );
-                    builder.setMessage( getString( R.string.action_remove_local_song ) ).setPositiveButton( getString( R.string.yes ),
-                                                                                                            dialogClickListener ).setNegativeButton( getString( R.string.no ),
-                                                                                                                                                     dialogClickListener ).show();
+                    builder.setMessage( getString( R.string.action_remove_local_song ) );
+                    builder.setPositiveButton( getString( R.string.yes ), dialogClickListener );
+                    builder.setNegativeButton( getString( R.string.no ), dialogClickListener );
+                    builder.show();
+
+                    return false;
                 }
 
                 public void coverTouch( MDMSong song, int index )
@@ -174,39 +193,44 @@ public class AlbumInfoActivity
     public void eventAlbumInfoLoaded( final MDMAlbum album )
     {
         this.album = album;
-        adapter.clear();
+        if ( adapter == null )
+        {
+            return;
+        }
         runOnUiThread( new Runnable()
         {
             public void run()
             {
+                adapter.clear();
                 adapter.notifyDataSetChanged();
                 TextView tvauthor = (TextView) findViewById( R.id.albuminfo_tauthor );
-                TextView tvalbum = (TextView) findViewById( R.id.albuminfo_talbum );
+                TextView tvalbum = (TextView) AlbumInfoActivity.this.findViewById( R.id.albuminfo_ttalbum );
                 final ImageView ivcover = (ImageView) findViewById( R.id.albuminfo_icover );
 
                 tvauthor.setText( album.getAuthor().getName() );
                 tvalbum.setText( album.getName() );
                 ivcover.setImageResource( android.R.color.white );
-                Bitmap bm = AlbumCoverCache.getCover( album, new AlbumCoverCache.CoverListener()
-                {
-                    public void setCover( final Bitmap bitmap )
+                Bitmap bm =
+                    AlbumCoverCache.getCover( AlbumInfoActivity.this, album, new AlbumCoverCache.CoverListener()
                     {
-                        runOnUiThread( new Runnable()
+                        public void setCover( final Bitmap bitmap )
                         {
-
-                            public void run()
+                            runOnUiThread( new Runnable()
                             {
-                                ivcover.setImageBitmap( bitmap );
-                                ivcover.invalidate();
-                            }
-                        } );
-                    }
 
-                    public void failed( Exception e )
-                    {
-                        Log.e( "AlbumInfoActivity!", e.getMessage(), e );
-                    }
-                } );
+                                public void run()
+                                {
+                                    ivcover.setImageBitmap( bitmap );
+                                    ivcover.invalidate();
+                                }
+                            } );
+                        }
+
+                        public void failed( Exception e )
+                        {
+                            Log.e( "AlbumInfoActivity!", e.getMessage(), e );
+                        }
+                    } );
                 if ( bm != null )
                 {
                     ivcover.setImageBitmap( bm );

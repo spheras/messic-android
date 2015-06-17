@@ -152,43 +152,44 @@ public class SearchController
         }
 
         final String baseURL =
-            Configuration.getBaseUrl() + "/services/search?content=" + lastContent + "&messic_token="
+            Configuration.getBaseUrl( activity ) + "/services/search?content=" + lastContent + "&messic_token="
                 + Configuration.getLastToken();
         flagSearching = true;
-        UtilRestJSONClient.get( baseURL, MDMRandomList.class, new UtilRestJSONClient.RestListener<MDMRandomList>()
-        {
-            public void response( MDMRandomList response )
-            {
-                if ( searchResult == null )
-                {
-                    searchResult = new SparseArray<MDMSong>();
-                }
-                List<MDMSong> songs = response.getSongs();
-                for ( int i = 0; i < songs.size(); i++ )
-                {
-                    MDMSong song = songs.get( i );
-                    searchResult.put( i, song );
-                }
-                refreshData( adapter, activity, rf, srl );
-                flagSearching = false;
-            }
+        UtilRestJSONClient.get( activity, baseURL, MDMRandomList.class,
+                                new UtilRestJSONClient.RestListener<MDMRandomList>()
+                                {
+                                    public void response( MDMRandomList response )
+                                    {
+                                        if ( searchResult == null )
+                                        {
+                                            searchResult = new SparseArray<MDMSong>();
+                                        }
+                                        List<MDMSong> songs = response.getSongs();
+                                        for ( int i = 0; i < songs.size(); i++ )
+                                        {
+                                            MDMSong song = songs.get( i );
+                                            searchResult.put( i, song );
+                                        }
+                                        refreshData( adapter, activity, rf, srl );
+                                        flagSearching = false;
+                                    }
 
-            public void fail( final Exception e )
-            {
-                Log.e( "Random", e.getMessage(), e );
-                activity.runOnUiThread( new Runnable()
-                {
+                                    public void fail( final Exception e )
+                                    {
+                                        Log.e( "Random", e.getMessage(), e );
+                                        activity.runOnUiThread( new Runnable()
+                                        {
 
-                    public void run()
-                    {
-                        Toast.makeText( activity, "Error:" + e.getMessage(), Toast.LENGTH_LONG ).show();
+                                            public void run()
+                                            {
+                                                Toast.makeText( activity, "Server Error", Toast.LENGTH_SHORT ).show();
 
-                    }
-                } );
-                flagSearching = false;
-            }
+                                            }
+                                        } );
+                                        flagSearching = false;
+                                    }
 
-        } );
+                                } );
     }
 
     private void refreshData( final SongAdapter adapter, final Activity activity, final SearchFragment rf,
@@ -200,25 +201,20 @@ public class SearchController
             public void run()
             {
                 adapter.notifyDataSetChanged();
-            }
-        } );
 
-        for ( int i = 0; i < searchResult.size(); i++ )
-        {
-            MDMSong song = searchResult.get( i );
-            adapter.addSong( song );
-        }
-        rf.eventRandomInfoLoaded();
-        activity.runOnUiThread( new Runnable()
-        {
-            public void run()
-            {
+                for ( int i = 0; i < searchResult.size(); i++ )
+                {
+                    MDMSong song = searchResult.get( i );
+                    adapter.addSong( song );
+                }
+                rf.eventRandomInfoLoaded();
+
                 adapter.notifyDataSetChanged();
+
+                if ( srl != null )
+                    srl.setRefreshing( false );
             }
         } );
-
-        if ( srl != null )
-            srl.setRefreshing( false );
 
     }
 }

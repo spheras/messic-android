@@ -39,31 +39,32 @@ public class PlaylistController
         if ( rlist == null || refresh )
         {
             final String baseURL =
-                Configuration.getBaseUrl() + "/services/playlists?songsInfo=true&messic_token="
+                Configuration.getBaseUrl( activity ) + "/services/playlists?songsInfo=true&messic_token="
                     + Configuration.getLastToken();
-            UtilRestJSONClient.get( baseURL, MDMPlaylist[].class, new UtilRestJSONClient.RestListener<MDMPlaylist[]>()
-            {
-                public void response( MDMPlaylist[] response )
-                {
-                    rlist = response;
-                    refreshData( adapter, activity, pf, srl );
-                }
+            UtilRestJSONClient.get( activity, baseURL, MDMPlaylist[].class,
+                                    new UtilRestJSONClient.RestListener<MDMPlaylist[]>()
+                                    {
+                                        public void response( MDMPlaylist[] response )
+                                        {
+                                            rlist = response;
+                                            refreshData( adapter, activity, pf, srl );
+                                        }
 
-                public void fail( final Exception e )
-                {
-                    Log.e( "Playlist", e.getMessage(), e );
-                    activity.runOnUiThread( new Runnable()
-                    {
+                                        public void fail( final Exception e )
+                                        {
+                                            Log.e( "Playlist", e.getMessage(), e );
+                                            activity.runOnUiThread( new Runnable()
+                                            {
 
-                        public void run()
-                        {
-                            Toast.makeText( activity, "Error:" + e.getMessage(), Toast.LENGTH_LONG ).show();
+                                                public void run()
+                                                {
+                                                    Toast.makeText( activity, "Server Error", Toast.LENGTH_SHORT ).show();
 
-                        }
-                    } );
-                }
+                                                }
+                                            } );
+                                        }
 
-            } );
+                                    } );
         }
         else
         {
@@ -77,30 +78,24 @@ public class PlaylistController
     private void refreshData( final PlaylistAdapter adapter, final Activity activity, final PlaylistFragment pf,
                               final SwipeRefreshLayout srl )
     {
-        adapter.clear();
         activity.runOnUiThread( new Runnable()
         {
             public void run()
             {
+                adapter.clear();
                 adapter.notifyDataSetChanged();
+
+                for ( int i = 0; i < rlist.length; i++ )
+                {
+                    adapter.addPlaylist( rlist[i] );
+                }
+                pf.eventPlaylistInfoLoaded();
+                adapter.notifyDataSetChanged();
+
+                if ( srl != null )
+                    srl.setRefreshing( false );
+
             }
         } );
-
-        for ( int i = 0; i < rlist.length; i++ )
-        {
-            adapter.addPlaylist( rlist[i] );
-        }
-        pf.eventPlaylistInfoLoaded();
-        activity.runOnUiThread( new Runnable()
-        {
-            public void run()
-            {
-                adapter.notifyDataSetChanged();
-            }
-        } );
-
-        if ( srl != null )
-            srl.setRefreshing( false );
-
     }
 }

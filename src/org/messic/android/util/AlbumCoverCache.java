@@ -8,6 +8,7 @@ import java.net.URL;
 import org.messic.android.controllers.Configuration;
 import org.messic.android.datamodel.MDMAlbum;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -49,7 +50,7 @@ public class AlbumCoverCache
         void failed( Exception e );
     }
 
-    public static Bitmap getCover( final MDMAlbum album, final CoverListener listener )
+    public static Bitmap getCover( final Context ctx, final MDMAlbum album, final CoverListener listener )
     {
         Bitmap result = getBitmapFromMemCache( "" + album.getSid() );
         if ( result != null )
@@ -88,7 +89,7 @@ public class AlbumCoverCache
                         try
                         {
                             String baseURL =
-                                Configuration.getBaseUrl() + "/services/albums/" + album.getSid()
+                                Configuration.getBaseUrl( ctx ) + "/services/albums/" + album.getSid()
                                     + "/cover?preferredWidth=100&preferredHeight=100&messic_token="
                                     + Configuration.getLastToken();
                             System.gc();

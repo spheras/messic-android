@@ -21,9 +21,12 @@ package org.messic.android.activities.fragments;
 import org.messic.android.R;
 import org.messic.android.activities.adapters.SongAdapter;
 import org.messic.android.controllers.AlbumController;
+import org.messic.android.controllers.Configuration;
 import org.messic.android.controllers.RandomController;
+import org.messic.android.datamodel.MDMAlbum;
 import org.messic.android.datamodel.MDMPlaylist;
 import org.messic.android.datamodel.MDMSong;
+import org.messic.android.datamodel.dao.DAOAlbum;
 import org.messic.android.util.UtilMusicPlayer;
 
 import android.app.Fragment;
@@ -34,7 +37,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -70,7 +72,15 @@ public class RandomFragment
     {
         super.onStart();
         getActivity().findViewById( R.id.random_progress ).setVisibility( View.VISIBLE );
-        controller.getRandomMusic( sa, getActivity(), this, false, null );
+        if ( Configuration.isOffline() )
+        {
+            controller.getRandomMusicOffline( sa, getActivity(), this, false, null );
+
+        }
+        else
+        {
+            controller.getRandomMusicOnline( sa, getActivity(), this, false, null );
+        }
     }
 
     @Override
@@ -86,7 +96,16 @@ public class RandomFragment
 
             public void textTouch( MDMSong song, int index )
             {
-                AlbumController.getAlbumInfoOnline( RandomFragment.this.getActivity(), song.getAlbum().getSid() );
+                if ( Configuration.isOffline() )
+                {
+                    DAOAlbum dao = new DAOAlbum( RandomFragment.this.getActivity() );
+                    MDMAlbum album = dao.getByAlbumLSid( song.getAlbum().getLsid(), true );
+                    AlbumController.getAlbumInfoOffline( RandomFragment.this.getActivity(), album );
+                }
+                else
+                {
+                    AlbumController.getAlbumInfoOnline( RandomFragment.this.getActivity(), song.getAlbum().getSid() );
+                }
             }
 
             public void coverTouch( MDMSong song, int index )
@@ -101,9 +120,9 @@ public class RandomFragment
                 UtilMusicPlayer.addSongAndPlay( getActivity(), song );
             }
 
-            public void elementRemove( MDMSong song, int index )
+            public boolean elementRemove( MDMSong song, int index )
             {
-                // TODO Auto-generated method stub
+                return false;
 
             }
 
@@ -132,7 +151,14 @@ public class RandomFragment
                             if ( rp != null )
                             {
                                 rp.setVisibility( View.VISIBLE );
-                                controller.getRandomMusic( sa, getActivity(), RandomFragment.this, true, srl );
+                                if ( Configuration.isOffline() )
+                                {
+                                    controller.getRandomMusicOffline( sa, getActivity(), RandomFragment.this, true, srl );
+                                }
+                                else
+                                {
+                                    controller.getRandomMusicOnline( sa, getActivity(), RandomFragment.this, true, srl );
+                                }
                             }
                         }
                     }

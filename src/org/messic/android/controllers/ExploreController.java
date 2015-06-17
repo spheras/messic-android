@@ -35,7 +35,8 @@ import android.widget.Toast;
 public class ExploreController
 {
     private static List<MDMAlbum> albums = new ArrayList<MDMAlbum>();
-    public static boolean downloading=false;
+
+    public static boolean downloading = false;
 
     public void getExploreAlbums( final AlbumAdapter adapter, final Activity activity, final ExploreFragment rf,
                                   final boolean refresh, final SwipeRefreshLayout srl, int from, int max )
@@ -43,39 +44,41 @@ public class ExploreController
         if ( albums == null || refresh || ( from + max ) >= albums.size() )
         {
             final String baseURL =
-                Configuration.getBaseUrl() + "/services/albums?pageFromResult=" + from + "&pageMaxResults=" + max
-                    + "&songsInfo=true&authorInfo=true&orderDesc=false&orderByAuthor=true&messic_token=" + Configuration.getLastToken();
-            downloading=true;
-            UtilRestJSONClient.get( baseURL, MDMAlbum[].class, new UtilRestJSONClient.RestListener<MDMAlbum[]>()
-            {
-                public void response( MDMAlbum[] response )
-                {
-                    if ( refresh )
-                    {
-                        albums = new ArrayList<MDMAlbum>();
-                    }
-                    List<MDMAlbum> newList = Arrays.asList( response );
-                    albums.addAll( newList );
-                    refreshData( albums, adapter, activity, rf, srl );
-                    downloading=false;
-                }
+                Configuration.getBaseUrl( activity ) + "/services/albums?pageFromResult=" + from + "&pageMaxResults="
+                    + max + "&songsInfo=true&authorInfo=true&orderDesc=false&orderByAuthor=true&messic_token="
+                    + Configuration.getLastToken();
+            downloading = true;
+            UtilRestJSONClient.get( activity, baseURL, MDMAlbum[].class,
+                                    new UtilRestJSONClient.RestListener<MDMAlbum[]>()
+                                    {
+                                        public void response( MDMAlbum[] response )
+                                        {
+                                            if ( refresh )
+                                            {
+                                                albums = new ArrayList<MDMAlbum>();
+                                            }
+                                            List<MDMAlbum> newList = Arrays.asList( response );
+                                            albums.addAll( newList );
+                                            refreshData( albums, adapter, activity, rf, srl );
+                                            downloading = false;
+                                        }
 
-                public void fail( final Exception e )
-                {
-                    Log.e( "Random", e.getMessage(), e );
-                    activity.runOnUiThread( new Runnable()
-                    {
+                                        public void fail( final Exception e )
+                                        {
+                                            Log.e( "Random", e.getMessage(), e );
+                                            activity.runOnUiThread( new Runnable()
+                                            {
 
-                        public void run()
-                        {
-                            Toast.makeText( activity, "Error:" + e.getMessage(), Toast.LENGTH_LONG ).show();
+                                                public void run()
+                                                {
+                                                    Toast.makeText( activity, "Server Error", Toast.LENGTH_SHORT ).show();
 
-                        }
-                    } );
-                    downloading=false;
-                }
+                                                }
+                                            } );
+                                            downloading = false;
+                                        }
 
-            } );
+                                    } );
         }
         else
         {
@@ -86,31 +89,26 @@ public class ExploreController
         }
     }
 
-    private void refreshData( List<MDMAlbum> response, final AlbumAdapter adapter, final Activity activity,
+    private void refreshData( final List<MDMAlbum> response, final AlbumAdapter adapter, final Activity activity,
                               final ExploreFragment rf, final SwipeRefreshLayout srl )
     {
-        adapter.clear();
         activity.runOnUiThread( new Runnable()
         {
             public void run()
             {
+                adapter.clear();
                 adapter.notifyDataSetChanged();
+
+                adapter.setAlbums( response );
+
+                rf.eventExploreInfoLoaded();
+
+                adapter.notifyDataSetChanged();
+
+                if ( srl != null )
+                    srl.setRefreshing( false );
             }
         } );
-
-        adapter.setAlbums( response );
-
-        rf.eventExploreInfoLoaded();
-        activity.runOnUiThread( new Runnable()
-        {
-            public void run()
-            {
-                adapter.notifyDataSetChanged();
-            }
-        } );
-
-        if ( srl != null )
-            srl.setRefreshing( false );
 
     }
 }

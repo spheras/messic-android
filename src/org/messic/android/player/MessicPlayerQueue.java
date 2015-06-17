@@ -51,10 +51,13 @@ public class MessicPlayerQueue
     // event listeners for the messic player service
     private List<PlayerEventListener> listeners = new ArrayList<PlayerEventListener>();
 
+    private Context context;
+
     public MessicPlayerQueue( Context context )
     {
         // initialize position
         this.cursor = 0;
+        this.context = context;
         // create player
         this.player = new MediaPlayer();
         this.player.setWakeMode( context, PowerManager.PARTIAL_WAKE_LOCK );
@@ -231,24 +234,28 @@ public class MessicPlayerQueue
         }
     }
 
-    public void addSong( MDMSong song )
+    public synchronized void addSong( MDMSong song )
     {
         if ( !Configuration.isOffline() || ( song.getLfileName() != null && new File( song.getLfileName() ).exists() ) )
         {
-            this.queue.add( song );
-            if ( this.queue.size() == 1 )
+            synchronized ( this.queue )
             {
-                playSong();
+                this.queue.add( song );
+                if ( this.queue.size() == 1 )
+                {
+                    playSong();
+                }
+                else if ( !this.isPlaying() && !this.player.isPlaying() )
+                {
+                    nextSong();
+                }
+                else
+                {
+                    // String message = getString( R.string.player_added ) + " " + song.getName();
+                    // Toast.makeText( getApplicationContext(), message, Toast.LENGTH_SHORT ).show();
+                }
             }
-            else if ( !this.player.isPlaying() )
-            {
-                nextSong();
-            }
-            else
-            {
-                // String message = getString( R.string.player_added ) + " " + song.getName();
-                // Toast.makeText( getApplicationContext(), message, Toast.LENGTH_SHORT ).show();
-            }
+
             for ( PlayerEventListener eventListener : listeners )
             {
                 eventListener.added( song );
@@ -330,7 +337,7 @@ public class MessicPlayerQueue
             {
                 if ( !Configuration.isOffline() )
                 {
-                    player.setDataSource( playSong.getURL() );
+                    player.setDataSource( playSong.getURL( this.context ) );
                     player.prepareAsync();
                 }
             }
@@ -438,6 +445,7 @@ public class MessicPlayerQueue
     {
         this.stop();
         this.queue.clear();
+        this.cursor = 0;
         for ( PlayerEventListener eventListener : listeners )
         {
             eventListener.empty();

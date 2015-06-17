@@ -118,7 +118,7 @@ public class DownloadManagerService
         final File fcover = new File( scover );
         if ( !fcover.exists() )
         {
-            Bitmap cover = AlbumCoverCache.getCover( song.getAlbum(), new AlbumCoverCache.CoverListener()
+            Bitmap cover = AlbumCoverCache.getCover( this, song.getAlbum(), new AlbumCoverCache.CoverListener()
             {
 
                 public void setCover( Bitmap bitmap )
@@ -203,7 +203,7 @@ public class DownloadManagerService
                 }
             };
 
-            DownloadQueue.addDownload( new URL( song.getURL() ), song, listener );
+            DownloadQueue.addDownload( new URL( song.getURL( this ) ), song, listener );
 
         }
         catch ( MalformedURLException e )

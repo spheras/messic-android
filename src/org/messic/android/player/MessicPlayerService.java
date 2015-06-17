@@ -63,6 +63,14 @@ public class MessicPlayerService
     {
         Log.d( "MessicPlayerService", "onDestroy" );
         // Toast.makeText( this, "onDestroy", Toast.LENGTH_SHORT ).show();
+
+        this.playerqueue.stop();
+        this.playerqueue.clearQueue();
+        this.playerqueue = null;
+
+        this.playernotification.cancel();
+        this.playernotification = null;
+
         super.onDestroy();
     }
 
@@ -71,6 +79,14 @@ public class MessicPlayerService
     {
         Log.d( "MessicPlayerService", "onStartCommands" );
         // Toast.makeText( this, "onStartCommands", Toast.LENGTH_SHORT ).show();
+
+        if ( this.playerqueue == null )
+        {
+            this.playerqueue = new MessicPlayerQueue( this );
+            this.playernotification = new MessicPlayerNotification( this, this.playerqueue );
+            this.playerqueue.addListener( this.playernotification );
+        }
+
         return super.onStartCommand( intent, flags, startId );
     }
 
@@ -80,9 +96,11 @@ public class MessicPlayerService
         Log.d( "MessicPlayerService", "onBind" );
         // Toast.makeText( this, "onBind", Toast.LENGTH_SHORT ).show();
 
-        this.playerqueue = new MessicPlayerQueue( this );
-        this.playernotification = new MessicPlayerNotification( this, this.playerqueue );
-        this.playerqueue.addListener( this.playernotification );
+        List<PlayerEventListener> listeners = this.playerqueue.getListeners();
+        for ( PlayerEventListener listener : listeners )
+        {
+            listener.connected();
+        }
 
         return musicBind;
     }
@@ -93,15 +111,13 @@ public class MessicPlayerService
         Log.d( "MessicPlayerService", "onUnbind" );
         // Toast.makeText( this, "onUnbind", Toast.LENGTH_SHORT ).show();
 
-        playerqueue.stop();
+        // playerqueue.stop();
 
         List<PlayerEventListener> listeners = this.playerqueue.getListeners();
         for ( PlayerEventListener listener : listeners )
         {
             listener.disconnected();
         }
-
-        playerqueue = null;
 
         return false;
     }

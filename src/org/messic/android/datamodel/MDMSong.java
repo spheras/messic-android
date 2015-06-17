@@ -186,9 +186,9 @@ public class MDMSong
      * 
      * @return
      */
-    public String getURL()
+    public String getURL( Context ctx )
     {
-        return Configuration.getBaseUrl() + "/services/songs/" + this.sid + "/audio?messic_token="
+        return Configuration.getBaseUrl( ctx ) + "/services/songs/" + this.sid + "/audio?messic_token="
             + Configuration.getLastToken();
     }
 
@@ -215,7 +215,7 @@ public class MDMSong
      */
     public boolean isDownloaded( Context context )
     {
-        if ( getLfileName() == null && !isFlagFromLocalDatabase() )
+        if ( getLfileName() == null && !Configuration.isOffline() )
         {
             // we should contrast against the database if the file is or not
             DAOSong daosong = new DAOSong( context );

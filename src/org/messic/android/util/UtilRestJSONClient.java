@@ -21,21 +21,30 @@ package org.messic.android.util;
 import java.util.Arrays;
 
 import org.messic.android.R.string;
+import org.messic.android.controllers.Configuration;
+import org.messic.android.controllers.LoginController;
+import org.messic.android.util.UtilNetwork.MessicServerStatusListener;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class UtilRestJSONClient
 {
+    public static final int READ_TIME_OUT = 60 * 1000;
+
+    public static final int CONNECTION_TIME_OUT = 10 * 1000;
 
     public interface RestListener<T>
     {
@@ -55,10 +64,16 @@ public class UtilRestJSONClient
      * @param clazz Class<T/> class that you will marshall to a json object
      * @param rl {@link RestListener} listener to push the object returned
      */
-    public static <T> void post( final String url, MultiValueMap<?, ?> formData, final Class<T> clazz,
-                                 final RestListener<T> rl )
+    public static <T> void post( final Context ctx, final String url, MultiValueMap<?, ?> formData,
+                                 final Class<T> clazz, final RestListener<T> rl )
     {
         final RestTemplate restTemplate = new RestTemplate();
+
+        // we set timeout
+        SimpleClientHttpRequestFactory rf = (SimpleClientHttpRequestFactory) restTemplate.getRequestFactory();
+        rf.setReadTimeout( READ_TIME_OUT );
+        rf.setConnectTimeout( CONNECTION_TIME_OUT );
+
         restTemplate.getMessageConverters().add( new MappingJackson2HttpMessageConverter() );
 
         HttpHeaders requestHeaders = new HttpHeaders();
@@ -81,6 +96,27 @@ public class UtilRestJSONClient
                 }
                 catch ( Exception e )
                 {
+                    Log.e( "UtilRestJSONClient", e.getMessage(), e );
+                    e.printStackTrace();
+                    // maybe a timeout!???
+                    // is the server online yet??
+
+                    UtilNetwork.checkMessicServerUpAndRunning( Configuration.getCurrentMessicService(),
+                                                               new MessicServerStatusListener()
+                                                               {
+                                                                   public void setResponse( boolean reachable,
+                                                                                            boolean running )
+                                                                   {
+                                                                       if ( !running )
+                                                                       {
+                                                                           // server is no online anymore
+                                                                           LoginController lc = new LoginController();
+                                                                           lc.logout( ctx );
+
+                                                                       }
+                                                                   }
+                                                               } );
+
                     rl.fail( e );
                 }
                 return null;
@@ -101,9 +137,15 @@ public class UtilRestJSONClient
      * @param clazz Class<T/> class that you will marshall to a json object
      * @param rl {@link RestListener} listener to push the object returned
      */
-    public static <T> void get( final String url, final Class<T> clazz, final RestListener<T> rl )
+    public static <T> void get( final Context ctx, final String url, final Class<T> clazz, final RestListener<T> rl )
     {
         final RestTemplate restTemplate = new RestTemplate();
+
+        // we set timeout
+        SimpleClientHttpRequestFactory rf = (SimpleClientHttpRequestFactory) restTemplate.getRequestFactory();
+        rf.setReadTimeout( READ_TIME_OUT );
+        rf.setConnectTimeout( CONNECTION_TIME_OUT );
+
         restTemplate.getMessageConverters().add( new MappingJackson2HttpMessageConverter() );
 
         HttpHeaders requestHeaders = new HttpHeaders();
@@ -122,10 +164,30 @@ public class UtilRestJSONClient
                     ResponseEntity<T> response = restTemplate.exchange( url, HttpMethod.GET, requestEntity, clazz );
                     rl.response( response.getBody() );
                 }
-                catch ( Exception e )
+                catch ( RestClientException e )
                 {
                     Log.e( "UtilRestJSONClient", e.getMessage(), e );
                     e.printStackTrace();
+
+                    // maybe a timeout!???
+                    // is the server online yet??
+
+                    UtilNetwork.checkMessicServerUpAndRunning( Configuration.getCurrentMessicService(),
+                                                               new MessicServerStatusListener()
+                                                               {
+                                                                   public void setResponse( boolean reachable,
+                                                                                            boolean running )
+                                                                   {
+                                                                       if ( !running )
+                                                                       {
+                                                                           // server is no online anymore
+                                                                           LoginController lc = new LoginController();
+                                                                           lc.logout( ctx );
+
+                                                                       }
+                                                                   }
+                                                               } );
+
                     rl.fail( e );
                 }
                 return null;

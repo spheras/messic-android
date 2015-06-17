@@ -101,6 +101,22 @@ public class DAOAlbum
         return result;
     }
 
+    public MDMAlbum getByAlbumLSid( int albumLSid, boolean loadSongs )
+    {
+        open();
+        MDMAlbum result = null;
+
+        Cursor c = _getAll( MDMAlbum.COLUMN_LOCAL_SID + "=" + albumLSid, null );
+        if ( c.moveToFirst() )
+        {
+            result = new MDMAlbum( c, getContext(), loadSongs, false );
+            c.moveToNext();
+        }
+        c.close();
+        close();
+        return result;
+    }
+
     public List<MDMAlbum> getAllByAuthorLSid( int authorLSid, boolean loadSongs )
     {
         open();

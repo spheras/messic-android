@@ -113,23 +113,14 @@ public class PlayQueueFragment
                     UtilMusicPlayer.playSong( PlayQueueFragment.this.getActivity() );
                 }
 
-                public void elementRemove( MDMSong song, int index )
+                public boolean elementRemove( MDMSong song, int index )
                 {
-                    sa.removeElement( index );
                     UtilMusicPlayer.removeSong( PlayQueueFragment.this.getActivity(), index );
                     if ( index < sa.getCurrentSong() )
                     {
                         sa.setCurrentSong( sa.getCurrentSong() - 1 );
                     }
-
-                    getActivity().runOnUiThread( new Runnable()
-                    {
-                        public void run()
-                        {
-                            sa.notifyDataSetChanged();
-                        }
-                    } );
-
+                    return true;
                 }
 
                 public void playlistTouch( MDMPlaylist playlist, int index )

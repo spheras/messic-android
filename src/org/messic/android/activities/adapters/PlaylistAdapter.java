@@ -141,7 +141,7 @@ public class PlaylistAdapter
             }
         } );
 
-        Bitmap bm = AlbumCoverCache.getCover( song.getAlbum(), new AlbumCoverCache.CoverListener()
+        Bitmap bm = AlbumCoverCache.getCover( parent.getContext(), song.getAlbum(), new AlbumCoverCache.CoverListener()
         {
             public void setCover( final Bitmap bitmap )
             {

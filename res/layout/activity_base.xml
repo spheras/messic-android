@@ -22,7 +22,7 @@
     <org.messic.android.views.PlayerView
         android:id="@+id/base_bottomlayout"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="42dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"

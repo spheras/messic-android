@@ -105,31 +105,24 @@ public class DownloadedController
         }
     }
 
-    private void refreshData( List<MDMAlbum> response, final AlbumAdapter adapter, final Activity activity,
+    private void refreshData( final List<MDMAlbum> response, final AlbumAdapter adapter, final Activity activity,
                               final DownloadedFragment df, final SwipeRefreshLayout srl )
     {
-        adapter.clear();
         activity.runOnUiThread( new Runnable()
         {
             public void run()
             {
+                adapter.clear();
                 adapter.notifyDataSetChanged();
+
+                adapter.setAlbums( response );
+
+                df.eventDownloadedInfoLoaded();
+                adapter.notifyDataSetChanged();
+                if ( srl != null )
+                    srl.setRefreshing( false );
+
             }
         } );
-
-        adapter.setAlbums( response );
-
-        df.eventDownloadedInfoLoaded();
-        activity.runOnUiThread( new Runnable()
-        {
-            public void run()
-            {
-                adapter.notifyDataSetChanged();
-            }
-        } );
-
-        if ( srl != null )
-            srl.setRefreshing( false );
-
     }
 }
