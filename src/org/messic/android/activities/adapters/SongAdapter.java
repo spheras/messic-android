@@ -202,7 +202,7 @@ public class SongAdapter
             }
             else
             {
-                counterView.findViewById( R.id.songtrack_ivplay ).setVisibility( View.GONE );
+                counterView.findViewById( R.id.songtrack_ivplay ).setVisibility( View.INVISIBLE );
             }
 
             if ( !Configuration.isOffline() )
@@ -211,7 +211,7 @@ public class SongAdapter
                 ImageView ivremove = (ImageView) counterView.findViewById( R.id.songtrack_ivremove );
                 if ( song.isDownloaded( activity ) )
                 {
-                    ivdownload.setVisibility( View.GONE );
+                    ivdownload.setVisibility( View.INVISIBLE );
                     ivremove.setVisibility( View.VISIBLE );
                     counterView.setBackgroundResource( R.color.dowloaded_song_background );
                     ivremove.setOnClickListener( new View.OnClickListener()
@@ -225,7 +225,7 @@ public class SongAdapter
                 else
                 {
                     ivdownload.setVisibility( View.VISIBLE );
-                    ivremove.setVisibility( View.GONE );
+                    ivremove.setVisibility( View.INVISIBLE );
                     counterView.setBackgroundResource( R.color.dowloaded_false_song_background );
                     ivdownload.setOnClickListener( new View.OnClickListener()
                     {
@@ -271,14 +271,14 @@ public class SongAdapter
             }
             else
             {
-                counterView.findViewById( R.id.songtrack_ivdownload ).setVisibility( View.GONE );
+                counterView.findViewById( R.id.songtrack_ivdownload ).setVisibility( View.INVISIBLE );
                 if ( playableSong )
                 {
                     counterView.findViewById( R.id.songtrack_ivremove ).setVisibility( View.VISIBLE );
                 }
                 else
                 {
-                    counterView.findViewById( R.id.songtrack_ivremove ).setVisibility( View.GONE );
+                    counterView.findViewById( R.id.songtrack_ivremove ).setVisibility( View.INVISIBLE );
                 }
             }
         }

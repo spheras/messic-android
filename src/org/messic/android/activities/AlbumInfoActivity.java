@@ -31,6 +31,7 @@ import org.messic.android.datamodel.MDMAlbum;
 import org.messic.android.datamodel.MDMPlaylist;
 import org.messic.android.datamodel.MDMSong;
 import org.messic.android.download.DownloadListener;
+import org.messic.android.player.PlayerEventListener;
 import org.messic.android.util.AlbumCoverCache;
 import org.messic.android.util.UtilDownloadService;
 import org.messic.android.util.UtilMusicPlayer;
@@ -56,6 +57,7 @@ import android.widget.Toast;
 
 public class AlbumInfoActivity
     extends Activity
+    implements PlayerEventListener
 {
 
     public static final String EXTRA_ALBUM_SID = "ALBUM_SID";
@@ -70,7 +72,14 @@ public class AlbumInfoActivity
     protected void onDestroy()
     {
         super.onDestroy();
+        UtilMusicPlayer.removeListener( this, this );
+    }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        UtilMusicPlayer.addListener( this, this );
     }
 
     @Override
@@ -398,6 +407,83 @@ public class AlbumInfoActivity
         builder.setPositiveButton( ctx.getString( R.string.yes ), dialogClickListener );
         builder.setNegativeButton( ctx.getString( R.string.no ), dialogClickListener );
         builder.show();
+
+    }
+
+    public void paused( MDMSong song, int index )
+    {
+    }
+
+    public void playing( MDMSong song, boolean resumed, int index )
+    {
+        if ( song.getAlbum().getSid() == album.getSid() )
+        {
+            for ( int i = 0; i < album.getSongs().size(); i++ )
+            {
+                if ( album.getSongs().get( i ).getSid() == song.getSid() )
+                {
+                    this.adapter.setCurrentSong( i );
+                    if ( !resumed )
+                    {
+                        runOnUiThread( new Runnable()
+                        {
+                            public void run()
+                            {
+                                adapter.notifyDataSetChanged();
+                            }
+                        } );
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    public void completed( int index )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void added( MDMSong song )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void added( MDMAlbum album )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void added( MDMPlaylist playlist )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void removed( MDMSong song )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void empty()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void connected()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void disconnected()
+    {
+        // TODO Auto-generated method stub
 
     }
 

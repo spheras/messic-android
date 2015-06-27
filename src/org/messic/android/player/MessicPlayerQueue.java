@@ -72,6 +72,10 @@ public class MessicPlayerQueue
     {
         this.listeners.remove( listener );
         this.listeners.add( listener );
+        if ( isPlaying() )
+        {
+            listener.playing( getCurrentSong(), false, getCursor() );
+        }
     }
 
     public void removeListener( PlayerEventListener listener )

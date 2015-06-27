@@ -331,6 +331,22 @@ public class UtilMusicPlayer
         }
     }
 
+    public static void removeListener( Context ctx, PlayerEventListener listener )
+    {
+        MessicPlayerService mps = getMessicPlayerService( ctx );
+        if ( mps != null && mps.getPlayer() != null )
+        {
+            if ( mps.getPlayer() != null )
+            {
+                mps.getPlayer().removeListener( listener );
+            }
+        }
+        else
+        {
+            pendingListeners.add( listener );
+        }
+    }
+
     public static List<MDMSong> getQueue( Context ctx )
     {
         MessicPlayerService mps = getMessicPlayerService( ctx );
