@@ -1,0 +1,119 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* LICENSE
+* README.md
+* etc/
+* etc/1.0.0-screenshots/
+* etc/1.0.0-screenshots/01-searchmessic.png
+* etc/1.0.0-screenshots/02-login.png
+* etc/1.0.0-screenshots/03-random1.png
+* etc/1.0.0-screenshots/04-random2.png
+* etc/1.0.0-screenshots/05-random3.png
+* etc/1.0.0-screenshots/06-explore1.png
+* etc/1.0.0-screenshots/07-explore2.png
+* etc/1.0.0-screenshots/08-albuminfo.png
+* etc/1.0.0-screenshots/09-downloaded.png
+* etc/1.0.0-screenshots/10-playlistqueue1.png
+* etc/1.0.0-screenshots/10-playlistqueue2.png
+* etc/1.0.0-screenshots/11-search1.png
+* etc/1.0.0-screenshots/12-search2.png
+* etc/messic-180x120.png
+* etc/messic.png
+* ic_launcher-web.png
+* pom.xml
+* proguard-project.txt
+* target/
+* target/R.txt
+* target/classes.dex
+* target/classes/
+* target/classes/org/
+* target/classes/org/messic/
+* target/classes/org/messic/android/
+* target/classes/org/messic/android/BuildConfig.class
+* target/classes/org/messic/android/R$attr.class
+* target/classes/org/messic/android/R$dimen.class
+* target/classes/org/messic/android/R$drawable.class
+* target/classes/org/messic/android/R$id.class
+* target/classes/org/messic/android/R$layout.class
+* target/classes/org/messic/android/R$menu.class
+* target/classes/org/messic/android/R$string.class
+* target/classes/org/messic/android/R$style.class
+* target/classes/org/messic/android/R$xml.class
+* target/classes/org/messic/android/R.class
+* target/generated-sources/
+* target/generated-sources/r/
+* target/generated-sources/r/org/
+* target/generated-sources/r/org/messic/
+* target/generated-sources/r/org/messic/android/
+* target/generated-sources/r/org/messic/android/BuildConfig.java
+* target/generated-sources/r/org/messic/android/R.java
+* target/maven-archiver/
+* target/maven-archiver/pom.properties
+* target/maven-status/
+* target/maven-status/maven-compiler-plugin/
+* target/maven-status/maven-compiler-plugin/compile/
+* target/maven-status/maven-compiler-plugin/compile/default-compile/
+* target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+* target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+* target/messic-client-android.ap_
+* target/messic-client-android.apk
+* target/messic-client-android.jar
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:18.0.0
+
+Replaced Libraries with Dependencies:
+-------------------------------------
+The importer recognized the following library projects as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the source files in your project were of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the library replacement in the import wizard and try
+again:
+
+appcompat-v7 => [com.android.support:appcompat-v7:18.0.0]
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets
+* libs/android-support-v13.jar => app/libs/android-support-v13.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
