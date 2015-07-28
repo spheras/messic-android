@@ -1,1 +1,1 @@
-include ':app', ':core'
+include ':messic-smartphone', ':messic-core', ':messic-smarttv'
