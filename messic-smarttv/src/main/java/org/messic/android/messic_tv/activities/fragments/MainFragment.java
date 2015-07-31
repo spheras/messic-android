@@ -48,9 +48,12 @@ import org.messic.android.messic_tv.DetailsActivity;
 import org.messic.android.messic_tv.Movie;
 import org.messic.android.messic_tv.PicassoBackgroundManagerTarget;
 import org.messic.android.messic_tv.R;
+import org.messic.android.messic_tv.UtilMessic;
 import org.messic.android.messic_tv.activities.presenters.SongCardPresenter;
 import org.messic.android.messic_tv.controllers.AuthorsController;
 import org.messic.android.messiccore.datamodel.MDMRandomList;
+import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
 
 import java.net.URI;
 import java.util.Timer;
@@ -119,7 +122,7 @@ public class MainFragment extends BrowseFragment {
                 listRowAdapter.add(rl.getSongs().get(j));
             }
 
-            HeaderItem header = new HeaderItem(i + 30, randomlists[i].getTitle());
+            HeaderItem header = new HeaderItem(i + 30, UtilMessic.getRandomTitle(this.getActivity(), randomlists[i]));
             mRowsAdapter.add(new ListRow(header, listRowAdapter));
 
         }
@@ -222,6 +225,8 @@ public class MainFragment extends BrowseFragment {
                     Toast.makeText(getActivity(), ((String) item), Toast.LENGTH_SHORT)
                             .show();
                 }
+            } else if (item instanceof MDMSong) {
+                UtilMusicPlayer.addSong(getActivity(), (MDMSong) item);
             }
         }
     }

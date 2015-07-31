@@ -45,7 +45,7 @@ public class SongCardPresenter extends Presenter {
     private static Context mContext;
 
     //size in dps
-    private static int CARD_WIDTH = 313;
+    private static int CARD_WIDTH = 176;
     private static int CARD_HEIGHT = 176;
 
     static class ViewHolder extends Presenter.ViewHolder {
@@ -106,6 +106,7 @@ public class SongCardPresenter extends Presenter {
                 Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
                         + "/cover?preferredWidth=100&preferredHeight=100&messic_token="
                         + Configuration.getLastToken();
+
         //if (song.getCardImageUrl() != null) {
         ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
         ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
