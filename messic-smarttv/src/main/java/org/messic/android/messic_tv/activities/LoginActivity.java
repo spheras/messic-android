@@ -17,9 +17,11 @@ package org.messic.android.messic_tv.activities;
 import android.app.Activity;
 import android.os.Bundle;
 
+import org.messic.android.messic_tv.activities.notifications.MessicPlayerNotification;
 import org.messic.android.messic_tv.controllers.LoginController;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMMessicServerInstance;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
 
 /*
  * MainActivity class that loads MainFragment
@@ -35,14 +37,15 @@ public class LoginActivity extends Activity {
 
         MDMMessicServerInstance instance=new MDMMessicServerInstance();
         instance.description="local test messic";
-        instance.ip="10.0.2.2";//the emulator need to connect with the gateway to see the host machine "127.0.0.1";
+        instance.ip="192.168.1.36";//the emulator need to connect with the gateway to see the host machine "127.0.0.1";
         instance.port=8080;
         instance.secured=false;
-        Configuration.setMessicService(this,instance);
+        Configuration.setMessicService(this, instance);
+        UtilMusicPlayer.startMessicMusicService(this, new MessicPlayerNotification());
 
         LoginController lc = new LoginController();
         try {
-            lc.login(this, true, "spheras", "messic", null);
+            lc.login(this, true, "coira", "12345", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
