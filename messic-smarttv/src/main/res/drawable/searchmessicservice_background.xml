@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+
+        <layer-list>
+            <item>
+                <bitmap android:src="@drawable/noisy_grid"></bitmap>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke android:width="2px" android:color="#000000" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/noisy_grid"></bitmap>
+    </item>
+
+</selector>

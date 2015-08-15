@@ -25,7 +25,7 @@ public class LoginController {
             throws Exception {
         UtilNetwork.nukeNetwork();
 
-        final String baseURL = Configuration.getBaseUrl(context) + "/messiclogin";
+        final String baseURL = Configuration.getBaseUrl(context).replace("localhost", "10.0.2.2").replace("127.0.0.1", "10.0.2.2") + "/messiclogin";
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();
         formData.add("j_username", username);
         formData.add("j_password", password);
@@ -50,7 +50,9 @@ public class LoginController {
                             context.runOnUiThread(new Runnable() {
                                 public void run() {
                                     if (pd != null) {
+                                        //if (pd.isShowing()) {
                                         pd.dismiss();
+                                        //}
                                     }
                                     Toast.makeText(context, "Error", Toast.LENGTH_LONG).show();
                                 }

@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.messic.android.messic_tv.R;
-import org.messic.android.messic_tv.Utils;
+import org.messic.android.messic_tv.util.Utils;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMSong;
 
@@ -58,7 +58,7 @@ public class SongCardPresenter extends Presenter {
             super(view);
             mCardView = (ImageCardView) view;
             mImageCardViewTarget = new PicassoImageCardViewTarget(mCardView);
-            mDefaultCardImage = mContext.getResources().getDrawable(R.drawable.movie);
+            mDefaultCardImage = mContext.getResources().getDrawable(R.drawable.unknowncover);
         }
 
         public void setSong(MDMSong song) {

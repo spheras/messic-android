@@ -18,9 +18,9 @@
  */
 package org.messic.android.messiccore.datamodel;
 
-import org.messic.android.messiccore.datamodel.dao.DAO;
-
 import android.database.Cursor;
+
+import org.messic.android.messiccore.datamodel.dao.DAO;
 
 public class MDMMessicServerInstance
 {
@@ -67,11 +67,11 @@ public class MDMMessicServerInstance
 
     public String lastPassword;
 
-    public static int STATUS_UNKNOWN = 0;
+    public static final int STATUS_UNKNOWN = 0;
 
-    public static int STATUS_RUNNING = 1;
+    public static final int STATUS_RUNNING = 1;
 
-    public static int STATUS_DOWN = 2;
+    public static final int STATUS_DOWN = 2;
 
     /** last checked status... 0->unknown, 1->running, 2-> down */
     public int lastCheckedStatus = STATUS_UNKNOWN;
