@@ -70,7 +70,9 @@ public class UtilMusicPlayer {
 
     public static void startMessicMusicService(Context context, IMessicPlayerNotification notification) {
         if (!musicBound) {
-            UtilMusicPlayer.playernotification = notification;
+            if(notification != null) {
+                UtilMusicPlayer.playernotification = notification;
+            }
 
             // first we start the service (if it is not started yet)
             Context appctx = context.getApplicationContext();
