@@ -15,7 +15,7 @@ import org.messic.android.messiccore.util.UtilRestJSONClient;
  */
 public class AuthorsController {
 
-    public void loadAuthors(final MainFragment ctx) {
+    public void loadRandomPlaylists(final MainFragment ctx) {
         final String baseURL =
                 Configuration.getBaseUrl(ctx.getActivity())
                         + "/services/randomlists?messic_token="

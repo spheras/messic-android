@@ -223,8 +223,11 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
 
         //0. We fill the last saved sessions
         this.smController.getSavedSessions(this, adapter);
-        //And search messic services, if any others
-        searchMesicServices();
+
+        if (adapter.getInstances().size() == 0) {
+            //And search messic services, if any others
+            searchMesicServices();
+        }
 
     }
 
@@ -286,7 +289,7 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
                 login();
             }
         });
-        loginaction.requestFocus();
+        //loginaction.requestFocus();
     }
 
     /**

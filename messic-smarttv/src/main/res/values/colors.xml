@@ -2,7 +2,7 @@
     <color name="background_gradient_start">#000000</color>
     <color name="background_gradient_end">#DDDDDD</color>
     <color name="fastlane_background">#00AA00</color>
-    <color name="search_opaque">#008888</color>
+    <color name="search_opaque">#008800</color>
     <color name="detail_background">#0096a6</color>
     <color name="soft_opaque">#30000000</color>
     <color name="img_soft_opaque">#30FF0000</color>

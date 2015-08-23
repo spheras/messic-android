@@ -107,24 +107,32 @@ public class SongCardPresenter extends Presenter {
         ((ViewHolder) viewHolder).setSong(song);
 
         Log.d(TAG, "onBindViewHolder");
-        //TODO offline mode?
-        String coverOnlineURL =
-                Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
-                        + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
-                        + Configuration.getLastToken();
 
-        //if (song.getCardImageUrl() != null) {
-        ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
-        ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
-        ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+        if (song instanceof MDMQueueSong && song.getAlbum() == null) {
+            //then it is the empty list action?
+            ((ViewHolder) viewHolder).mCardView.setTitleText("Clear List");
+            ((ViewHolder) viewHolder).mCardView.setContentText("Clear the Queue PlayList");
+            ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+            ((ViewHolder) viewHolder).mCardView.setMainImage(mContext.getDrawable(R.drawable.ic_delete_white_48dp));
+
+        } else {
+            String coverOnlineURL =
+                    Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
+                            + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
+                            + Configuration.getLastToken();
 
 
-        try {
-            ((ViewHolder) viewHolder).updateCardViewImage(new URI(coverOnlineURL));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
+            ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
+            ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+
+
+            try {
+                ((ViewHolder) viewHolder).updateCardViewImage(new URI(coverOnlineURL));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
-        //}
     }
 
     @Override
