@@ -2,8 +2,8 @@
     <string name="RandomListNameRandom">Aleatoria</string>
     <string name="RandomListNameDate">Fecha</string>
     <string name="RandomListNameLoved">Mejores</string>
-    <string name="RandomListNameLessPlayed">- Oídas</string>
-    <string name="RandomListNameMostPlayed">+ Oídas</string>
+    <string name="RandomListNameLessPlayed">Menos Oídas</string>
+    <string name="RandomListNameMostPlayed">Más Oídas</string>
     <string name="RandomListNameAuthor">Autor</string>
     <string name="RandomListNameGenre">Estilo</string>
     <string name="RandomListNameRecent">Recientes</string>

@@ -16,6 +16,10 @@ package org.messic.android.messic_tv.activities.presenters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v17.leanback.widget.ImageCardView;
@@ -31,6 +35,7 @@ import org.messic.android.messic_tv.R;
 import org.messic.android.messic_tv.util.Utils;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,7 +47,7 @@ import java.net.URISyntaxException;
 public class SongCardPresenter extends Presenter {
     private static final String TAG = "CardPresenter";
 
-    private static Context mContext;
+    protected static Context mContext;
 
     //size in dps
     private static int CARD_WIDTH = 176;
@@ -58,11 +63,12 @@ public class SongCardPresenter extends Presenter {
             super(view);
             mCardView = (ImageCardView) view;
             mImageCardViewTarget = new PicassoImageCardViewTarget(mCardView);
-            mDefaultCardImage = mContext.getResources().getDrawable(R.drawable.unknowncover);
+            mDefaultCardImage = mContext.getResources().getDrawable(R.drawable.unknowncover, null);
         }
 
         public void setSong(MDMSong song) {
             mSong = song;
+            mImageCardViewTarget.setSong(song);
         }
 
         public MDMSong getSong() {
@@ -78,8 +84,7 @@ public class SongCardPresenter extends Presenter {
                     .load(uri.toString())
                     .resize(Utils.convertDpToPixel(mContext, CARD_WIDTH),
                             Utils.convertDpToPixel(mContext, CARD_HEIGHT))
-                    .error(mDefaultCardImage)
-                    .into(mImageCardViewTarget);
+                    .error(mDefaultCardImage).into(mImageCardViewTarget);
         }
     }
 
@@ -95,6 +100,7 @@ public class SongCardPresenter extends Presenter {
         return new ViewHolder(cardView);
     }
 
+
     @Override
     public void onBindViewHolder(Presenter.ViewHolder viewHolder, Object item) {
         MDMSong song = (MDMSong) item;
@@ -104,13 +110,15 @@ public class SongCardPresenter extends Presenter {
         //TODO offline mode?
         String coverOnlineURL =
                 Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
-                        + "/cover?preferredWidth=100&preferredHeight=100&messic_token="
+                        + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
                         + Configuration.getLastToken();
 
         //if (song.getCardImageUrl() != null) {
         ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
         ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
         ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+
+
         try {
             ((ViewHolder) viewHolder).updateCardViewImage(new URI(coverOnlineURL));
         } catch (URISyntaxException e) {
@@ -131,6 +139,11 @@ public class SongCardPresenter extends Presenter {
 
     public static class PicassoImageCardViewTarget implements Target {
         private ImageCardView mImageCardView;
+        private MDMSong mSong;
+
+        public void setSong(MDMSong song) {
+            mSong = song;
+        }
 
         public PicassoImageCardViewTarget(ImageCardView imageCardView) {
             mImageCardView = imageCardView;
@@ -138,8 +151,35 @@ public class SongCardPresenter extends Presenter {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-            Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
-            mImageCardView.setMainImage(bitmapDrawable);
+            if (mSong != null && mSong instanceof MDMQueueSong) {
+                int cursor = UtilMusicPlayer.getCursor(mContext);
+                MDMQueueSong mqs = (MDMQueueSong) mSong;
+                if (cursor == mqs.indexAtList) {
+
+
+                    Bitmap bm_ic_pause = BitmapFactory.decodeResource(mContext.getResources(), (UtilMusicPlayer.isPlaying(mContext) ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp));
+
+                    Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
+                    Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    Canvas c = new Canvas(mutableBitmap);
+                    int l = bitmap.getWidth() / 2 - bitmap.getWidth() / 4;
+                    int t = bitmap.getHeight() / 2 - bitmap.getHeight() / 4;
+
+                    Rect src = new Rect(0, 0, bm_ic_pause.getWidth(), bm_ic_pause.getHeight());
+                    Rect dst = new Rect(l, t, l + bitmap.getWidth() / 2, t + bitmap.getHeight() / 2);
+                    c.drawBitmap(bm_ic_pause, src, dst, new Paint());
+
+
+                    Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), mutableBitmap);
+                    mImageCardView.setMainImage(bitmapDrawable);
+                } else {
+                    Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
+                    mImageCardView.setMainImage(bitmapDrawable);
+                }
+            } else {
+                Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
+                mImageCardView.setMainImage(bitmapDrawable);
+            }
         }
 
         @Override
