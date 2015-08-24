@@ -98,7 +98,7 @@ public class UtilMusicPlayer {
         if (musicBound) {
             return musicService;
         } else {
-            startMessicMusicService(ctx, null);
+          //  startMessicMusicService(ctx, null);
             return null;
         }
     }

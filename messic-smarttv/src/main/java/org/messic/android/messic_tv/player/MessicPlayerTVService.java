@@ -51,7 +51,7 @@ public class MessicPlayerTVService
 
     @Override
     public void onCreate() {
-        Log.d("MessicPlayerService", "onCreate");
+        Log.d(SRV_LOG_NAME, "onCreate");
         // Toast.makeText( this, "onCreate", Toast.LENGTH_SHORT ).show();
         super.onCreate();
 
@@ -105,6 +105,7 @@ public class MessicPlayerTVService
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                 Log.e(SRV_LOG_NAME, "audio focus lost");
+                getPlayer().stop();
                 UtilMusicPlayer.stopMessicMusicService(getApplicationContext());
             }
         }
@@ -186,7 +187,9 @@ public class MessicPlayerTVService
 
         @Override
         public void completed(int index) {
-            Log.i(SRV_LOG_NAME, "list played");
+            Log.d(SRV_LOG_NAME, "messic list played");
+            mSession.setActive(false);
+            mSession.release();
         }
 
         @Override
@@ -221,7 +224,9 @@ public class MessicPlayerTVService
 
         @Override
         public void disconnected() {
-
+            Log.d(SRV_LOG_NAME, "messic service disconnected");
+            mSession.setActive(false);
+            mSession.release();
         }
     }
 }

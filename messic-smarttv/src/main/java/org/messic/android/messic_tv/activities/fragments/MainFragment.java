@@ -105,6 +105,7 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
         setupEventListeners();
 
         authorsController.loadRandomPlaylists(this);
+        UtilMusicPlayer.addListener(this.getActivity(), this);
     }
 
     @Override
