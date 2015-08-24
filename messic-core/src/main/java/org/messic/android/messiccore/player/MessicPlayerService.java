@@ -62,8 +62,9 @@ public class MessicPlayerService
         this.playerqueue.clearQueue();
         this.playerqueue = null;
 
-        UtilMusicPlayer.playernotification.cancel();
-        UtilMusicPlayer.playernotification = null;
+        IMessicPlayerNotification playerNotification = UtilMusicPlayer.getMessicPlayerNotification();
+        playerNotification.cancel();
+        UtilMusicPlayer.setMessicPlayerNotification(null);
 
         super.onDestroy();
     }
@@ -73,13 +74,14 @@ public class MessicPlayerService
         Log.d("MessicPlayerService", "onStartCommands");
         // Toast.makeText( this, "onStartCommands", Toast.LENGTH_SHORT ).show();
 
-        UtilMusicPlayer.playernotification.setService(this);
+        IMessicPlayerNotification playerNotification = UtilMusicPlayer.getMessicPlayerNotification();
+        playerNotification.setService(this);
 
         if (this.playerqueue == null) {
             this.playerqueue = new MessicPlayerQueue(this);
             //this.playernotification = new MessicPlayerNotification( this, this.playerqueue );
-            this.playerqueue.addListener(UtilMusicPlayer.playernotification);
-            UtilMusicPlayer.playernotification.setPlayer(this.playerqueue);
+            this.playerqueue.addListener(playerNotification);
+            playerNotification.setPlayer(this.playerqueue);
         }
 
         return super.onStartCommand(intent, flags, startId);

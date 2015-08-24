@@ -21,6 +21,8 @@ import java.util.List;
 public class UtilMusicPlayer {
     private static MessicPlayerService musicService = null;
 
+    private static IMessicPlayerNotification playernotification;
+
     private static boolean musicBound = false;
 
     /**
@@ -66,17 +68,17 @@ public class UtilMusicPlayer {
 
     };
 
-    public static IMessicPlayerNotification playernotification;
-
     public static void startMessicMusicService(Context context, IMessicPlayerNotification notification) {
-        if (!musicBound) {
-            if(notification != null) {
-                UtilMusicPlayer.playernotification = notification;
-            }
+        startMessicMusicService(context, notification, MessicPlayerService.class);
+    }
+
+    public static void startMessicMusicService(Context context, IMessicPlayerNotification notification, Class serviceClass) {
+        if (!musicBound && notification != null) {
+            setMessicPlayerNotification(notification);
 
             // first we start the service (if it is not started yet)
             Context appctx = context.getApplicationContext();
-            Intent messicPlayerIntent = new Intent(appctx, MessicPlayerService.class);
+            Intent messicPlayerIntent = new Intent(appctx, serviceClass);
             appctx.startService(messicPlayerIntent);
 
             // and we bind the service to interact with it
@@ -295,5 +297,13 @@ public class UtilMusicPlayer {
         }
         return null;
 
+    }
+
+    public static IMessicPlayerNotification getMessicPlayerNotification() {
+        return playernotification;
+    }
+
+    public static void setMessicPlayerNotification(IMessicPlayerNotification newMessicPlayerNotification) {
+        playernotification = newMessicPlayerNotification;
     }
 }

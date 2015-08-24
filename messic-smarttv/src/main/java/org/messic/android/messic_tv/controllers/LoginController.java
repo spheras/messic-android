@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import org.messic.android.messic_tv.activities.MainActivity;
 import org.messic.android.messic_tv.activities.notifications.MessicPlayerNotification;
+import org.messic.android.messic_tv.player.MessicPlayerTVService;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMLogin;
 import org.messic.android.messiccore.util.MessicPreferences;
@@ -43,9 +44,10 @@ public class LoginController {
                                 pd.dismiss();
                             }
                             Configuration.setOffline(false);
-                            UtilMusicPlayer.playernotification = new MessicPlayerNotification();
                             Intent ssa = new Intent(context, MainActivity.class);
                             context.startActivity(ssa);
+
+                            UtilMusicPlayer.startMessicMusicService(context, new MessicPlayerNotification(), MessicPlayerTVService.class);
                         }
 
                         public void fail(Exception e) {

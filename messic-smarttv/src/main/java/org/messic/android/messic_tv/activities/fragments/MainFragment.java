@@ -203,8 +203,6 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
         setOnItemViewClickedListener(new ItemViewClickedListener());
         setOnItemViewSelectedListener(new ItemViewSelectedListener());
-        UtilMusicPlayer.addListener(this.getActivity(), this);
-
     }
 
     private void updatePlayQueue() {
@@ -273,12 +271,12 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
     @Override
     public void connected() {
-
+        UtilMusicPlayer.addListener(this.getActivity(), this);
     }
 
     @Override
     public void disconnected() {
-
+        UtilMusicPlayer.removeListener(this.getActivity(), this);
     }
 
     private final class ItemViewClickedListener implements OnItemViewClickedListener {

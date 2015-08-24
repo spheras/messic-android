@@ -37,6 +37,10 @@
             android:label="@string/app_name"
             android:screenOrientation="landscape"></activity>
 
+        <service
+            android:name=".player.MessicPlayerTVService"
+            android:exported="false" />
+
     </application>
 
 </manifest>
