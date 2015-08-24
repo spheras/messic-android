@@ -144,6 +144,10 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
         adapter.removeItem(adapter.getSelected());
         adapter.notifyDataSetChanged();
         adapter.select(0);
+
+        if (adapter.getInstances().size() <= 0) {
+            findViewById(R.id.login_loginpanel).setVisibility(View.GONE);
+        }
     }
 
     private void searchMesicServices() {
@@ -298,6 +302,12 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
     private void login() {
         String username = ((TextView) findViewById(R.id.login_online_tusername)).getText().toString();
         String password = ((TextView) findViewById(R.id.login_online_tpassword)).getText().toString();
+
+        if (username.length() == 0 || password.length() == 0) {
+            Toast.makeText(this, getString(R.string.login_empty), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         boolean remember = ((CheckBox) findViewById(R.id.login_online_cbremember)).isChecked();
         try {
             ProgressDialog dialog =
@@ -306,7 +316,7 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
             Configuration.setMessicService(this, adapter.getInstances().get(adapter.getSelected()));
             loginController.login(LoginActivity.this, remember, username, password, dialog);
         } catch (Exception e) {
-            Toast.makeText(LoginActivity.this, "Error while trying to login", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, getString(R.string.login_error), Toast.LENGTH_LONG).show();
         }
     }
 

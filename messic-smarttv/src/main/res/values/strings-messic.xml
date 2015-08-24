@@ -20,7 +20,9 @@
     <string name="login_explanation">Put here your login credentials to start playing your messic server online.</string>
     <string name="login_offline">&#8230; or play offline music</string>
     <string name="login_searchonline">Search an Online Messic Service</string>
+    <string  name="login_empty">You must provide a username and password to log in messic</string>
     <string name="login_title">Login</string>
+    <string name="login_error">Error while trying to login</string>
     <string name="login_message">Please wait &#8230;</string>
 
     <!-- Search Messic Service Strings -->
