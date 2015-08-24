@@ -66,11 +66,8 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
         //smController.getSavedSessions(this, adapter);
         ListView lv = (ListView) findViewById(R.id.login_lvresults);
         lv.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-
         lv.setAdapter(adapter);
-        if (adapter.getInstances().size() > 0) {
-            findViewById(R.id.login_lempty).setVisibility(View.GONE);
-        }
+
 
         ((Button) findViewById(R.id.login_search_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -111,6 +108,9 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
             }
         });
 
+        if (adapter.getCount() > 0) {
+            findViewById(R.id.login_lempty).setVisibility(View.GONE);
+        }
 
 //        MDMMessicServerInstance instance = new MDMMessicServerInstance();
 //        instance.description = "local test messic";
@@ -224,7 +224,7 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
         //0. We fill the last saved sessions
         this.smController.getSavedSessions(this, adapter);
 
-        if (adapter.getInstances().size() == 0) {
+        if (adapter.getCount() == 0) {
             //And search messic services, if any others
             searchMesicServices();
         }
