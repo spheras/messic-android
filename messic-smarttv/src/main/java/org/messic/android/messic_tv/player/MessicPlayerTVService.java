@@ -21,6 +21,11 @@ package org.messic.android.messic_tv.player;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadata;
@@ -64,8 +69,7 @@ public class MessicPlayerTVService
 
     @Override
     public void onDestroy() {
-        mSession.setActive(false);
-        mSession.release();
+        releaseSession();
         super.onDestroy();
     }
 
@@ -115,7 +119,9 @@ public class MessicPlayerTVService
 
         @Override
         public void paused(MDMSong song, int index) {
-
+            if (mSession.isActive()) {
+                updateMetadataInfo(song, getApplicationContext());
+            }
         }
 
         @Override
@@ -138,58 +144,14 @@ public class MessicPlayerTVService
             }
 
             if (mSession.isActive()) {
-                final MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder();
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
-                        song.getAlbum().getName());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE,
-                        song.getName());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, song.getName());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, song.getAlbum().getName());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, song.getAlbum().getAuthor().getName());
-
-                try {
-                    String coverOnlineURL =
-                            Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
-                                    + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, 256) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, 256) + "&messic_token="
-                                    + Configuration.getLastToken();
-                    metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, coverOnlineURL);
-                    metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, coverOnlineURL);
-
-                    Target metadataTarget = new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON, bitmap);
-                            metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART, bitmap);
-                            metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap);
-                            mSession.setMetadata(metadataBuilder.build());
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-                            Log.e(SRV_LOG_NAME, "no image loaded");
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        }
-                    };
-                    Picasso.with(mContext).load(coverOnlineURL).error(mContext.getResources().getDrawable(R.drawable.unknowncover, null)).into(metadataTarget);
-                } catch (Exception e) {
-                    // no image
-                    Log.e(SRV_LOG_NAME, "no image loaded", e);
-                }
-
-                //    metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
-                //           song.getAlbum().getCover().get);
-                mSession.setMetadata(metadataBuilder.build());
+                updateMetadataInfo(song, mContext);
             }
         }
 
         @Override
         public void completed(int index) {
             Log.d(SRV_LOG_NAME, "messic list played");
-            mSession.setActive(false);
-            mSession.release();
+            releaseSession();
         }
 
         @Override
@@ -214,7 +176,8 @@ public class MessicPlayerTVService
 
         @Override
         public void empty() {
-
+            Log.d(SRV_LOG_NAME, "empty list, releasing session");
+            releaseSession();
         }
 
         @Override
@@ -225,8 +188,76 @@ public class MessicPlayerTVService
         @Override
         public void disconnected() {
             Log.d(SRV_LOG_NAME, "messic service disconnected");
+            releaseSession();
+        }
+    }
+
+    private void releaseSession() {
+        if (mSession.isActive()) {
             mSession.setActive(false);
             mSession.release();
         }
+    }
+
+    private void updateMetadataInfo(MDMSong song, Context mContext) {
+        final MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder();
+        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
+                song.getAlbum().getName());
+        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE,
+                song.getName());
+        metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, song.getName());
+        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, song.getAlbum().getName());
+        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, song.getAlbum().getAuthor().getName());
+
+        try {
+            String coverOnlineURL =
+                    Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
+                            + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, 256) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, 256) + "&messic_token="
+                            + Configuration.getLastToken();
+            metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, coverOnlineURL);
+            metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, coverOnlineURL);
+
+            Target metadataTarget = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    Context mContext = getApplicationContext();
+                    Bitmap bm_ic_pause = BitmapFactory.decodeResource(mContext.getResources(), getPlayer().isPlaying() ? R.drawable.ic_play_arrow_white_48dp : R.drawable.ic_pause_white_48dp);
+
+                    Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
+                    Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    Canvas c = new Canvas(mutableBitmap);
+                    int l = bitmap.getWidth() / 2 - bitmap.getWidth() / 4;
+                    int t = bitmap.getHeight() / 2 - bitmap.getHeight() / 4;
+
+                    Rect src = new Rect(0, 0, bm_ic_pause.getWidth(), bm_ic_pause.getHeight());
+                    Rect dst = new Rect(l, t, l + bitmap.getWidth() / 2, t + bitmap.getHeight() / 2);
+                    Paint aPaint = new Paint();
+                    aPaint.setAlpha(80);
+                    c.drawBitmap(bm_ic_pause, src, dst, aPaint);
+
+                    metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON, mutableBitmap);
+                    metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART, mutableBitmap);
+                    metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, mutableBitmap);
+                    mSession.setMetadata(metadataBuilder.build());
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    Log.e(SRV_LOG_NAME, "no image loaded");
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            };
+            Picasso.with(mContext).load(coverOnlineURL).error(mContext.getResources().getDrawable(R.drawable.unknowncover, null)).into(metadataTarget);
+        } catch (Exception e) {
+            // no image
+            Log.e(SRV_LOG_NAME, "no image loaded", e);
+        }
+
+        //    metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
+        //           song.getAlbum().getCover().get);
+        mSession.setMetadata(metadataBuilder.build());
     }
 }
