@@ -34,6 +34,7 @@ import com.squareup.picasso.Target;
 import org.messic.android.messic_tv.R;
 import org.messic.android.messic_tv.util.Utils;
 import org.messic.android.messiccore.controllers.Configuration;
+import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
 
@@ -103,27 +104,49 @@ public class SongCardPresenter extends Presenter {
 
     @Override
     public void onBindViewHolder(Presenter.ViewHolder viewHolder, Object item) {
-        MDMSong song = (MDMSong) item;
-        ((ViewHolder) viewHolder).setSong(song);
+        if (item instanceof MDMSong) {
+            MDMSong song = (MDMSong) item;
+            ((ViewHolder) viewHolder).setSong(song);
 
-        Log.d(TAG, "onBindViewHolder");
+            Log.d(TAG, "onBindViewHolder");
 
-        if (song instanceof MDMQueueSong && song.getAlbum() == null) {
-            //then it is the empty list action?
-            ((ViewHolder) viewHolder).mCardView.setTitleText("Clear List");
-            ((ViewHolder) viewHolder).mCardView.setContentText("Clear the Queue PlayList");
-            ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-            ((ViewHolder) viewHolder).mCardView.setMainImage(mContext.getDrawable(R.drawable.ic_delete_white_48dp));
+            if (song instanceof MDMQueueSong && song.getAlbum() == null) {
+                //then it is the empty list action?
+                ((ViewHolder) viewHolder).mCardView.setTitleText("Clear List");
+                ((ViewHolder) viewHolder).mCardView.setContentText("Clear the Queue PlayList");
+                ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+                ((ViewHolder) viewHolder).mCardView.setMainImage(mContext.getDrawable(R.drawable.ic_delete_white_48dp));
+                ((ViewHolder) viewHolder).mCardView.setBadgeImage(mContext.getDrawable(R.drawable.ic_delete_white_48dp));
 
-        } else {
+            } else {
+                String coverOnlineURL =
+                        Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
+                                + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
+                                + Configuration.getLastToken();
+
+
+                ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
+                ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
+                ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+                ((ViewHolder) viewHolder).mCardView.setBadgeImage(mContext.getDrawable(R.drawable.ic_launcher));
+
+
+                try {
+                    ((ViewHolder) viewHolder).updateCardViewImage(new URI(coverOnlineURL));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (item instanceof MDMAlbum) {
+            MDMAlbum album = (MDMAlbum) item;
             String coverOnlineURL =
-                    Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
+                    Configuration.getBaseUrl(mContext) + "/services/albums/" + album.getSid()
                             + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
                             + Configuration.getLastToken();
 
 
-            ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
-            ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
+            ((ViewHolder) viewHolder).mCardView.setTitleText(album.getName());
+            ((ViewHolder) viewHolder).mCardView.setContentText(album.getAuthor().getName());
             ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
 
 
@@ -132,6 +155,7 @@ public class SongCardPresenter extends Presenter {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
+
         }
     }
 

@@ -1,13 +1,13 @@
 <resources>
-    <string name="RandomListNameRandom">Aleatoria</string>
-    <string name="RandomListNameDate">Fecha</string>
-    <string name="RandomListNameLoved">Mejores</string>
-    <string name="RandomListNameLessPlayed">Menos Oídas</string>
-    <string name="RandomListNameMostPlayed">Más Oídas</string>
-    <string name="RandomListNameAuthor">Autor</string>
-    <string name="RandomListNameGenre">Estilo</string>
-    <string name="RandomListNameRecent">Recientes</string>
-    <string name="QueuePlayList">Lista de Reproducción</string>
+    <string name="RandomListNameRandom">Random</string>
+    <string name="RandomListNameDate">Date</string>
+    <string name="RandomListNameLoved">Best</string>
+    <string name="RandomListNameLessPlayed">Less Played</string>
+    <string name="RandomListNameMostPlayed">Most Played</string>
+    <string name="RandomListNameAuthor">Author</string>
+    <string name="RandomListNameGenre">Style</string>
+    <string name="RandomListNameRecent">Recent</string>
+    <string name="QueuePlayList">Playlist</string>
 
 
     <!-- Login Strings -->
@@ -20,7 +20,7 @@
     <string name="login_explanation">Put here your login credentials to start playing your messic server online.</string>
     <string name="login_offline">&#8230; or play offline music</string>
     <string name="login_searchonline">Search an Online Messic Service</string>
-    <string  name="login_empty">You must provide a username and password to log in messic</string>
+    <string name="login_empty">You must provide a username and password to log in messic</string>
     <string name="login_title">Login</string>
     <string name="login_error">Error while trying to login</string>
     <string name="login_message">Please wait &#8230;</string>
@@ -36,6 +36,9 @@
     <string name="searchMessicService_empty">(empty)</string>
     <string name="searchMessicService_notavailable">This server is not available now!</string>
 
+    <string name="header_title_authors">AUTHORS</string>
+    <string name="header_title_playlists">RANDOM</string>
+
     <!-- Search Results -->
-    <string name="searchResults">Resultados</string>
+    <string name="searchResults">Results</string>
 </resources>

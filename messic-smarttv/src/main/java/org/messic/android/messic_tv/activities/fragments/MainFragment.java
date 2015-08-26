@@ -47,11 +47,13 @@ import org.messic.android.messic_tv.activities.presenters.MDMQueueSong;
 import org.messic.android.messic_tv.activities.presenters.PlayQueueSongCardPresenter;
 import org.messic.android.messic_tv.activities.presenters.SongCardPresenter;
 import org.messic.android.messic_tv.controllers.AuthorsController;
+import org.messic.android.messic_tv.controllers.RandomListsController;
 import org.messic.android.messic_tv.controllers.SearchController;
 import org.messic.android.messic_tv.util.PicassoBackgroundManagerTarget;
 import org.messic.android.messic_tv.util.UtilMessic;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
+import org.messic.android.messiccore.datamodel.MDMAuthor;
 import org.messic.android.messiccore.datamodel.MDMPlaylist;
 import org.messic.android.messiccore.datamodel.MDMRandomList;
 import org.messic.android.messiccore.datamodel.MDMSong;
@@ -86,15 +88,17 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
     Presenter mCardPresenter;
 
     private SearchController searchController;
-    private AuthorsController authorsController;
+    private RandomListsController randomListsController;
+    private AuthorsController authorController;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onActivityCreated(savedInstanceState);
 
-        this.authorsController = new AuthorsController();
+        this.randomListsController = new RandomListsController();
         this.searchController = new SearchController();
+        this.authorController = new AuthorsController();
 
         prepareBackgroundManager();
 
@@ -104,7 +108,7 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
         setupEventListeners();
 
-        authorsController.loadRandomPlaylists(this);
+        randomListsController.loadRandomPlaylists(this);
         UtilMusicPlayer.addListener(this.getActivity(), this);
     }
 
@@ -115,6 +119,30 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
             Log.d(TAG, "onDestroy: " + mBackgroundTimer.toString());
             mBackgroundTimer.cancel();
         }
+    }
+
+    public void loadRows(MDMAuthor[] authors) {
+        int i;
+        int initial = mRowsAdapter.size();
+
+        HeaderItem headerSeparator = new HeaderItem(0, "░░ " + getString(R.string.header_title_authors) + " ░░░░░░░░░░░░░░░░░░░░░░░░");
+        mRowsAdapter.add(new ListRow(headerSeparator, new ArrayObjectAdapter()));
+
+        for (i = 0; i < authors.length; i++) {
+            MDMAuthor author = authors[i];
+            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(mCardPresenter);
+            //for (int j = 0; j < NUM_COLS; j++) {
+            for (int j = 0; j < author.getAlbums().size(); j++) {
+                MDMAlbum album = author.getAlbums().get(j);
+                album.setAuthor(author);
+                listRowAdapter.add(album);
+            }
+
+            HeaderItem header = new HeaderItem(i + mRowsAdapter.size() + 30, author.getName());
+            mRowsAdapter.add(new ListRow(header, listRowAdapter));
+        }
+
+        mRowsAdapter.notifyArrayItemRangeChanged(initial - 1, mRowsAdapter.size() - initial);
     }
 
     public void loadRows(MDMRandomList[] randomlists) {
@@ -137,6 +165,9 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
             mRowsAdapter.add(new ListRow(header, listRowAdapter));
         }
 
+        HeaderItem headerSeparator = new HeaderItem(0, "░░ " + getString(R.string.header_title_playlists) + " ░░░░░░░░░░░░░░░░░░░░░░░░");
+        mRowsAdapter.add(new ListRow(headerSeparator, new ArrayObjectAdapter()));
+
 
         //loading random lists
         mCardPresenter = new SongCardPresenter();
@@ -154,7 +185,7 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
         }
 
-
+        authorController.loadAuthors(this);
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -197,8 +228,6 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 startActivity(intent);
-//                Toast.makeText(getActivity(), "Implement your own in-app search", Toast.LENGTH_LONG)
-//                        .show();
             }
         });
 
@@ -217,11 +246,13 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
             newQueue.add(mqs);
         }
 
-        ArrayObjectAdapter listRowAdapter = (ArrayObjectAdapter) ((ListRow) mRowsAdapter.get(0)).getAdapter();
-        listRowAdapter.clear();
-        listRowAdapter.addAll(0, newQueue);
+        if (mRowsAdapter != null && mRowsAdapter.size() > 0) {
+            ArrayObjectAdapter listRowAdapter = (ArrayObjectAdapter) ((ListRow) mRowsAdapter.get(0)).getAdapter();
+            listRowAdapter.clear();
+            listRowAdapter.addAll(0, newQueue);
 
-        listRowAdapter.notifyArrayItemRangeChanged(0, listRowAdapter.size());
+            listRowAdapter.notifyArrayItemRangeChanged(0, listRowAdapter.size());
+        }
 
     }
 
@@ -334,6 +365,22 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
                     e.printStackTrace();
                 }
                 startBackgroundTimer();
+            } else if (item instanceof MDMAlbum) {
+                MDMAlbum album = (MDMAlbum) item;
+                for (int i = 0; i < mRowsAdapter.size(); i++) {
+                    ListRow lr = (ListRow) mRowsAdapter.get(i);
+                    ArrayObjectAdapter aoa = (ArrayObjectAdapter) lr.getAdapter();
+                    for (int j = 0; j < aoa.size(); j++) {
+                        Object obj = aoa.get(j);
+                        if (obj instanceof MDMAlbum) {
+                            MDMAlbum jalbum = (MDMAlbum) obj;
+                            if (jalbum.getSid() == album.getSid()) {
+                                authorController.loadAuthor(MainFragment.this, jalbum.getAuthor(), aoa);
+                                return;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

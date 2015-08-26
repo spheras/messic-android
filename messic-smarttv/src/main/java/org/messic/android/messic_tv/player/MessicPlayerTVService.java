@@ -25,7 +25,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaMetadata;
@@ -232,7 +231,7 @@ public class MessicPlayerTVService
                     Rect src = new Rect(0, 0, bm_ic_pause.getWidth(), bm_ic_pause.getHeight());
                     Rect dst = new Rect(l, t, l + bitmap.getWidth() / 2, t + bitmap.getHeight() / 2);
                     Paint aPaint = new Paint();
-                    aPaint.setAlpha(80);
+                    aPaint.setAlpha(60);
                     c.drawBitmap(bm_ic_pause, src, dst, aPaint);
 
                     metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON, mutableBitmap);

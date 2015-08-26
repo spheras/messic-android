@@ -37,7 +37,7 @@ import java.util.List;
 
 public class SearchMessicServiceAdapter
         extends BaseAdapter {
-    public static final String HIGHLIGHTED_ITEM_COLOR = "#2200FF00";
+    public static final String HIGHLIGHTED_ITEM_COLOR = "#4400FF00";
     private List<MDMMessicServerInstance> instances = new ArrayList<MDMMessicServerInstance>();
 
     private LayoutInflater inflater = null;

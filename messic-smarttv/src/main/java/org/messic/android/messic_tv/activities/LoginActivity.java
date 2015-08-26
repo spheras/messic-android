@@ -110,6 +110,13 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
 
         if (adapter.getCount() > 0) {
             findViewById(R.id.login_lempty).setVisibility(View.GONE);
+
+            String username = ((TextView) findViewById(R.id.login_online_tusername)).getText().toString();
+            String password = ((TextView) findViewById(R.id.login_online_tpassword)).getText().toString();
+            boolean remember = ((CheckBox) findViewById(R.id.login_online_cbremember)).isChecked();
+            if (remember && username.length() > 0 && password.length() > 0) {
+                login();
+            }
         }
 
 //        MDMMessicServerInstance instance = new MDMMessicServerInstance();
@@ -187,25 +194,25 @@ public class LoginActivity extends Activity implements SearchMessicServiceAdapte
                             if (adapter.addInstance(md)) {
                                 adapter.addInstance(md);
 
-                                MDMMessicServerInstance tmpi = new MDMMessicServerInstance();
-                                tmpi.description = "temporal";
-                                tmpi.ip = "127.1273.423.4";
-                                tmpi.lastCheckedStatus = 0;
-                                tmpi.lastUser = "raro";
-                                tmpi.lastPassword = "rarito";
-                                tmpi.port = 80;
-                                tmpi.secured = false;
-                                adapter.addInstance(tmpi);
-
-                                tmpi = new MDMMessicServerInstance();
-                                tmpi.description = "temporal2";
-                                tmpi.ip = "127.1273.423.5";
-                                tmpi.lastCheckedStatus = 1;
-                                tmpi.lastUser = "raro333";
-                                tmpi.lastPassword = "rarito44";
-                                tmpi.port = 8080;
-                                tmpi.secured = true;
-                                adapter.addInstance(tmpi);
+//                                MDMMessicServerInstance tmpi = new MDMMessicServerInstance();
+//                                tmpi.description = "temporal";
+//                                tmpi.ip = "127.1273.423.4";
+//                                tmpi.lastCheckedStatus = 0;
+//                                tmpi.lastUser = "raro";
+//                                tmpi.lastPassword = "rarito";
+//                                tmpi.port = 80;
+//                                tmpi.secured = false;
+//                                adapter.addInstance(tmpi);
+//
+//                                tmpi = new MDMMessicServerInstance();
+//                                tmpi.description = "temporal2";
+//                                tmpi.ip = "127.1273.423.5";
+//                                tmpi.lastCheckedStatus = 1;
+//                                tmpi.lastUser = "raro333";
+//                                tmpi.lastPassword = "rarito44";
+//                                tmpi.port = 8080;
+//                                tmpi.secured = true;
+//                                adapter.addInstance(tmpi);
 
                                 adapter.notifyDataSetChanged();
                             }
