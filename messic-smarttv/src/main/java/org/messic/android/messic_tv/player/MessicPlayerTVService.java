@@ -35,6 +35,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.messic.android.messic_tv.R;
+import org.messic.android.messic_tv.util.PicassoMessicUtil;
+import org.messic.android.messic_tv.util.UtilMessic;
 import org.messic.android.messic_tv.util.Utils;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
@@ -209,10 +211,7 @@ public class MessicPlayerTVService
         metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, song.getAlbum().getAuthor().getName());
 
         try {
-            String coverOnlineURL =
-                    Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
-                            + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, 256) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, 256) + "&messic_token="
-                            + Configuration.getLastToken();
+            String coverOnlineURL = PicassoMessicUtil.getCoverURL(mContext, song);
             metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, coverOnlineURL);
             metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI, coverOnlineURL);
 
@@ -249,7 +248,8 @@ public class MessicPlayerTVService
                 public void onPrepareLoad(Drawable placeHolderDrawable) {
                 }
             };
-            Picasso.with(mContext).load(coverOnlineURL).error(mContext.getResources().getDrawable(R.drawable.unknowncover, null)).into(metadataTarget);
+
+            PicassoMessicUtil.loadCover(mContext, song, metadataTarget);
         } catch (Exception e) {
             // no image
             Log.e(SRV_LOG_NAME, "no image loaded", e);

@@ -14,6 +14,8 @@
 
 package org.messic.android.messic_tv.activities.fragments;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -42,10 +44,12 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.messic.android.messic_tv.R;
+import org.messic.android.messic_tv.activities.MainActivity;
 import org.messic.android.messic_tv.activities.SearchActivity;
 import org.messic.android.messic_tv.activities.presenters.MDMQueueSong;
 import org.messic.android.messic_tv.activities.presenters.PlayQueueSongCardPresenter;
 import org.messic.android.messic_tv.activities.presenters.SongCardPresenter;
+import org.messic.android.messic_tv.activities.recommendations.UpdateRecommendationsService;
 import org.messic.android.messic_tv.controllers.AuthorsController;
 import org.messic.android.messic_tv.controllers.RandomListsController;
 import org.messic.android.messic_tv.controllers.SearchController;
@@ -71,6 +75,8 @@ import java.util.TimerTask;
 
 public class MainFragment extends BrowseFragment implements PlayerEventListener {
     private static final String TAG = "MainFragment";
+
+    private static final int NO_NOTIFICATION = -1;
 
     private static final int BACKGROUND_UPDATE_DELAY = 300;
     private static final int GRID_ITEM_WIDTH = 200;
@@ -110,6 +116,23 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
         randomListsController.loadRandomPlaylists(this);
         UtilMusicPlayer.addListener(this.getActivity(), this);
+
+        MDMSong selectedSong = getActivity().getIntent()
+                .getExtras() != null ? (MDMSong) getActivity().getIntent()
+                .getExtras().get(MainActivity.Song) : null;
+        if (selectedSong != null) {
+            removeNotification(getActivity().getIntent()
+                    .getIntExtra(MainActivity.NOTIFICATION_ID, NO_NOTIFICATION));
+            UtilMusicPlayer.getMessicPlayerService(getActivity()).getPlayer().addAndPlay(selectedSong);
+        }
+    }
+
+    private void removeNotification(int notificationId) {
+        if (notificationId != NO_NOTIFICATION) {
+            NotificationManager notificationManager = (NotificationManager) getActivity()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(notificationId);
+        }
     }
 
     @Override
@@ -304,6 +327,7 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
     @Override
     public void connected() {
         UtilMusicPlayer.addListener(this.getActivity(), this);
+        updateRecommendations();
     }
 
     @Override
@@ -457,4 +481,8 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
         }
     }
 
+    private void updateRecommendations() {
+        Intent recommendationIntent = new Intent(getActivity(), UpdateRecommendationsService.class);
+        getActivity().startService(recommendationIntent);
+    }
 }

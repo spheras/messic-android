@@ -23,6 +23,9 @@ import org.messic.android.messic_tv.R;
  * MainActivity class that loads MainFragment
  */
 public class MainActivity extends Activity {
+    public static final String Song = "Song";
+    public static final String NOTIFICATION_ID = "NotificationId";
+
     /**
      * Called when the activity is first created.
      */
@@ -33,4 +36,5 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
     }
+
 }
