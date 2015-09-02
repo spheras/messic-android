@@ -25,6 +25,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Leanback">
+
+        <receiver android:name=".activities.recommendations.BootupActivity"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activities.LoginActivity"
             android:icon="@drawable/app_icon_messic"
@@ -47,6 +56,9 @@
             android:name=".player.MessicPlayerTVService"
             android:exported="false" />
 
+        <service
+            android:name=".activities.recommendations.UpdateRecommendationsService"
+            android:enabled="true" />
     </application>
 
 </manifest>
