@@ -9,8 +9,8 @@ android {
         applicationId "org.messic.android.messic_tv"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.2"
     }
     buildTypes {
         release {
@@ -35,7 +35,7 @@ dependencies {
     compile 'com.android.support:leanback-v17:22.2.1'
     compile 'com.squareup.picasso:picasso:2.5.0'
 
-    compile(project(':messic-core')){
+    compile(project(':messic-core')) {
         exclude module: 'support-v4'
     }
 }
