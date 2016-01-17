@@ -147,7 +147,7 @@ public class MessicPlayerNotification
         mNotificationManager = (NotificationManager) this.service.getSystemService(Context.NOTIFICATION_SERVICE);
         RemoteViews contentView =
                 new RemoteViews(this.service.getPackageName(), R.layout.bignotification_player_layout);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.service);
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.service);
         mBuilder.setSmallIcon(R.drawable.ic_launcher);
         mBuilder.setContentTitle("title");
         mBuilder.setPriority(Notification.PRIORITY_MAX);

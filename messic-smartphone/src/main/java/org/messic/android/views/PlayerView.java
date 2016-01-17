@@ -101,7 +101,7 @@ public class PlayerView
             public void onClick( View v )
             {
                 MDMSong song = UtilMusicPlayer.getCurrentSong( PlayerView.this.getContext() );
-                if ( Configuration.isOffline() )
+                if ( Configuration.isOffline(getContext()) )
                 {
                     AlbumController.getAlbumInfoOffline( getContext(), song.getAlbum() );
                 }

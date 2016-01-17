@@ -36,7 +36,7 @@ public class SearchController {
 
         final String baseURL =
                 Configuration.getBaseUrl(activity) + "/services/search?content=" + searchContent + "&messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(activity);
         flagSearching = true;
         UtilRestJSONClient.get(activity, baseURL, MDMRandomList.class,
                 new UtilRestJSONClient.RestListener<MDMRandomList>() {

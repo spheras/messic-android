@@ -19,16 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UtilMusicPlayer {
+
     private static MessicPlayerService musicService = null;
-
     private static IMessicPlayerNotification playernotification;
-
     private static boolean musicBound = false;
-
-    /**
-     * listener list to store there the pending listeners to notify to the music service while connecting
-     */
-    private static List<PlayerEventListener> pendingListeners = new ArrayList<PlayerEventListener>();
 
     // connect to the service
     private static ServiceConnection messicPlayerConnection = new ServiceConnection() {
@@ -68,6 +62,12 @@ public class UtilMusicPlayer {
 
     };
 
+
+    /**
+     * listener list to store there the pending listeners to notify to the music service while connecting
+     */
+    private static List<PlayerEventListener> pendingListeners = new ArrayList<PlayerEventListener>();
+
     public static void startMessicMusicService(Context context, IMessicPlayerNotification notification) {
         startMessicMusicService(context, notification, MessicPlayerService.class);
     }
@@ -98,7 +98,7 @@ public class UtilMusicPlayer {
         if (musicBound) {
             return musicService;
         } else {
-          //  startMessicMusicService(ctx, null);
+            //  startMessicMusicService(ctx, null);
             return null;
         }
     }
@@ -149,7 +149,7 @@ public class UtilMusicPlayer {
     public static boolean addSongsAndPlay(Context ctx, List<MDMSong> songs) {
         MessicPlayerService mps = getMessicPlayerService(ctx);
         if (mps != null && mps.getPlayer() != null) {
-            if (Configuration.isOffline()) {
+            if (Configuration.isOffline(ctx)) {
                 List<MDMSong> fsongs = new ArrayList<MDMSong>();
                 for (int i = 0; i < songs.size(); i++) {
                     MDMSong song = songs.get(i);
@@ -303,6 +303,9 @@ public class UtilMusicPlayer {
         return playernotification;
     }
 
+    /**
+     * @param newMessicPlayerNotification
+     */
     public static void setMessicPlayerNotification(IMessicPlayerNotification newMessicPlayerNotification) {
         playernotification = newMessicPlayerNotification;
     }

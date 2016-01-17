@@ -4,7 +4,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "org.messic.android.messic_tv"
         minSdkVersion 21
@@ -18,7 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -27,14 +25,15 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/license.txt'
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:leanback-v17:22.2.1'
     compile 'com.squareup.picasso:picasso:2.5.0'
-
     compile(project(':messic-core')) {
         exclude module: 'support-v4'
     }

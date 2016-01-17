@@ -295,7 +295,7 @@ public class BaseActivity
 
         private void createBasicFragments() {
             Locale l = Locale.getDefault();
-            if (Configuration.isOffline()) {
+            if (Configuration.isOffline(BaseActivity.this)) {
                 fragments.add(new RandomFragment(getString(R.string.title_section_random).toUpperCase(l)));
                 fragments.add(new DownloadedFragment(getString(R.string.title_section_downloaded).toUpperCase(l)));
                 fragments.add(new PlayQueueFragment(getString(R.string.title_section_queue).toUpperCase(l)));

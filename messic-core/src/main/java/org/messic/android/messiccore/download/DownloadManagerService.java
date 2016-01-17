@@ -89,10 +89,13 @@ public class DownloadManagerService
                     author.addAlbum(song.getAlbum());
                     daoauthor.save(this.getApplicationContext(), author, true);
                 }
+                cAuthor.close();
                 daoauthor.close();
             }
+            cAlbum.close();
             daoalbum.close();
         }
+        csong.close();
         daosong.close();
     }
 

@@ -55,7 +55,7 @@ public class SearchController
             {
                 lastContent = searchContent;
             }
-            if ( Configuration.isOffline() )
+            if ( Configuration.isOffline(activity) )
             {
                 searchOffline( adapter, activity, rf, srl, searchContent );
             }
@@ -154,7 +154,7 @@ public class SearchController
 
         final String baseURL =
             Configuration.getBaseUrl( activity ) + "/services/search?content=" + lastContent + "&messic_token="
-                + Configuration.getLastToken();
+                + Configuration.getLastToken(activity);
         flagSearching = true;
         UtilRestJSONClient.get( activity, baseURL, MDMRandomList.class,
                                 new UtilRestJSONClient.RestListener<MDMRandomList>()

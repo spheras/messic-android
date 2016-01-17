@@ -28,7 +28,7 @@ public class PicassoMessicUtil {
         return
                 Configuration.getBaseUrl(aContext) + "/services/albums/" + song.getAlbum().getSid()
                         + "/cover?preferredWidth=" + Utils.convertDpToPixel(aContext, 256) + "&preferredHeight=" + Utils.convertDpToPixel(aContext, 256) + "&messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(aContext);
     }
 
     public static Bitmap getCover(Context aContext, MDMSong song) throws IOException {

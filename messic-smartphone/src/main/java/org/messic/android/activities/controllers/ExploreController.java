@@ -47,7 +47,7 @@ public class ExploreController
             final String baseURL =
                 Configuration.getBaseUrl(activity) + "/services/albums?pageFromResult=" + from + "&pageMaxResults="
                     + max + "&songsInfo=true&authorInfo=true&orderDesc=false&orderByAuthor=true&messic_token="
-                    + Configuration.getLastToken();
+                    + Configuration.getLastToken(activity);
             downloading = true;
             UtilRestJSONClient.get( activity, baseURL, MDMAlbum[].class,
                                     new UtilRestJSONClient.RestListener<MDMAlbum[]>()

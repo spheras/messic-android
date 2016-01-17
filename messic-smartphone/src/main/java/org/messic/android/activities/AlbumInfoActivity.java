@@ -101,7 +101,7 @@ public class AlbumInfoActivity
         this.album = (MDMAlbum) getIntent().getExtras().get(EXTRA_ALBUM_SID);
 
         if (this.album.getSongs() == null || this.album.getSongs().size() == 0) {
-            if (!Configuration.isOffline()) {
+            if (!Configuration.isOffline(this)) {
                 AlbumController.getAlbumInfoOnline(this, this.album.getSid());
             } else {
                 AlbumController.getAlbumInfoOffline(this, this.album);
@@ -258,7 +258,7 @@ public class AlbumInfoActivity
 
         // Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.menu_album, popup.getMenu());
-        if (Configuration.isOffline()) {
+        if (Configuration.isOffline(this)) {
             popup.getMenu().removeItem(R.id.menu_album_item_download);
         }
 

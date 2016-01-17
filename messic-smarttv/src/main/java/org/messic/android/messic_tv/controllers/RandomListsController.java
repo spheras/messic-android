@@ -21,7 +21,7 @@ public class RandomListsController {
         final String baseURL =
                 Configuration.getBaseUrl(ctx.getActivity())
                         + "/services/randomlists?messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(ctx.getActivity());
         UtilRestJSONClient.get(ctx.getActivity(), baseURL, MDMRandomList[].class,
                 new UtilRestJSONClient.RestListener<MDMRandomList[]>() {
                     public void response(MDMRandomList[] response) {
@@ -49,7 +49,7 @@ public class RandomListsController {
         final String baseURL =
                 Configuration.getBaseUrl(recommendationsService.getApplicationContext())
                         + "/services/randomlists?messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(ctx);
         UtilRestJSONClient.get(ctx, baseURL, MDMRandomList[].class,
                 new UtilRestJSONClient.RestListener<MDMRandomList[]>() {
                     public void response(MDMRandomList[] response) {

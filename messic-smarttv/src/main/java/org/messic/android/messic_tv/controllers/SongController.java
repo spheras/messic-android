@@ -19,7 +19,7 @@ public class SongController {
         final String baseURL =
                 Configuration.getBaseUrl(ctx.getActivity())
                         + "/services/albums/" + album.getSid() + "?songsInfo=true&messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(ctx.getActivity());
         UtilRestJSONClient.get(ctx.getActivity(), baseURL, MDMAlbum[].class,
                 new UtilRestJSONClient.RestListener<MDMAlbum[]>() {
                     public void response(MDMAlbum[] response) {

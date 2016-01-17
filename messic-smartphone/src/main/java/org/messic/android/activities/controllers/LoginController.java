@@ -45,7 +45,7 @@ public class LoginController
 
     public void logout( Context context )
     {
-        Configuration.setToken(null);
+        Configuration.setToken(context, null);
         Intent intent = new Intent( context, LoginActivity.class );
         intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK );
         context.startActivity( intent );
@@ -76,7 +76,7 @@ public class LoginController
     public boolean check( final Context context )
     {
         String surl =
-            Configuration.getBaseUrl( context ) + "/services/check??messic_token=" + Configuration.getLastToken();
+            Configuration.getBaseUrl( context ) + "/services/check??messic_token=" + Configuration.getLastToken(context);
         try
         {
             URL url = new URL( surl );
@@ -107,11 +107,11 @@ public class LoginController
                                          public void response( MDMLogin response )
                                          {
                                              MessicPreferences mp = new MessicPreferences( context );
-                                             mp.setRemember( remember, username, password );
-                                             Configuration.setToken( response.getMessic_token() );
+                                             mp.setRemember( context,remember, username, password );
+                                             Configuration.setToken( context, response.getMessic_token() );
 
                                              pd.dismiss();
-                                             Configuration.setOffline( false );
+                                             Configuration.setOffline( context,false );
                                              Intent ssa = new Intent( context, BaseActivity.class );
                                              context.startActivity( ssa );
                                          }

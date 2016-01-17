@@ -41,7 +41,7 @@ public class PlaylistController
         {
             final String baseURL =
                 Configuration.getBaseUrl(activity) + "/services/playlists?songsInfo=true&messic_token="
-                    + Configuration.getLastToken();
+                    + Configuration.getLastToken(activity);
             UtilRestJSONClient.get( activity, baseURL, MDMPlaylist[].class,
                                     new UtilRestJSONClient.RestListener<MDMPlaylist[]>()
                                     {

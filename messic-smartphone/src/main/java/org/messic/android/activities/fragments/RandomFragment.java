@@ -72,7 +72,7 @@ public class RandomFragment
     {
         super.onStart();
         getActivity().findViewById( R.id.random_progress ).setVisibility( View.VISIBLE );
-        if ( Configuration.isOffline() )
+        if ( Configuration.isOffline(getActivity()) )
         {
             controller.getRandomMusicOffline( sa, getActivity(), this, false, null );
 
@@ -96,7 +96,7 @@ public class RandomFragment
 
             public void textTouch( MDMSong song, int index )
             {
-                if ( Configuration.isOffline() )
+                if ( Configuration.isOffline(getActivity()) )
                 {
                     DAOAlbum dao = new DAOAlbum( RandomFragment.this.getActivity() );
                     MDMAlbum album = dao.getByAlbumLSid( song.getAlbum().getLsid(), true );
@@ -151,7 +151,7 @@ public class RandomFragment
                             if ( rp != null )
                             {
                                 rp.setVisibility( View.VISIBLE );
-                                if ( Configuration.isOffline() )
+                                if ( Configuration.isOffline(getActivity()) )
                                 {
                                     controller.getRandomMusicOffline( sa, getActivity(), RandomFragment.this, true, srl );
                                 }

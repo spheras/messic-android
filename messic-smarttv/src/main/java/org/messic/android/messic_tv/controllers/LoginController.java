@@ -37,13 +37,13 @@ public class LoginController {
                     new UtilRestJSONClient.RestListener<MDMLogin>() {
                         public void response(MDMLogin response) {
                             MessicPreferences mp = new MessicPreferences(context);
-                            mp.setRemember(remember, username, password);
-                            Configuration.setToken(response.getMessic_token());
+                            mp.setRemember(context,remember, username, password);
+                            Configuration.setToken(context,response.getMessic_token());
 
                             if (pd != null) {
                                 pd.dismiss();
                             }
-                            Configuration.setOffline(false);
+                            Configuration.setOffline(context,false);
                             Intent ssa = new Intent(context, MainActivity.class);
                             context.startActivity(ssa);
 

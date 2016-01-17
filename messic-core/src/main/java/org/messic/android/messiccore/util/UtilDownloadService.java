@@ -121,14 +121,14 @@ public class UtilDownloadService {
                 daosong._recreate();
                 daogenre._recreate();
 
-                File fbase = new File(UtilFile.getMessicFolderAbsolutePath());
+                File fbase = new File(UtilFile.getMessicOfflineFolderAbsolutePath());
                 if (fbase.exists()) {
                     UtilFile.deleteDirectory(fbase);
                 }
                 pd.dismiss();
 
 
-                if (Configuration.isOffline()) {
+                if (Configuration.isOffline(ctx)) {
                     if (Configuration.getLoginActivityClass() != null) {
                         Intent ssa = new Intent(ctx, Configuration.getLoginActivityClass());
                         ctx.startActivity(ssa);
@@ -221,6 +221,7 @@ public class UtilDownloadService {
 
             }
         }
+        c.close();
         daoalbum.close();
 
         return true;

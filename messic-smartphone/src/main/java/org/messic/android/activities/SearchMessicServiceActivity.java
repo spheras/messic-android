@@ -165,7 +165,7 @@ public class SearchMessicServiceActivity
         } else {
             voffline.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Configuration.setOffline(true);
+                    Configuration.setOffline(SearchMessicServiceActivity.this,true);
                     Intent ssa = new Intent(SearchMessicServiceActivity.this, BaseActivity.class);
                     SearchMessicServiceActivity.this.startActivity(ssa);
                 }

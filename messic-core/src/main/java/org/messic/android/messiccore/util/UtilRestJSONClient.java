@@ -91,12 +91,14 @@ public class UtilRestJSONClient {
                     // maybe a timeout!???
                     // is the server online yet??
 
-                    UtilNetwork.checkMessicServerUpAndRunning(Configuration.getCurrentMessicService(),
+                    UtilNetwork.checkMessicServerUpAndRunning(Configuration.getCurrentMessicService(ctx),
                             new MessicServerStatusListener() {
                                 public void setResponse(boolean reachable,
                                                         boolean running) {
                                     if (!running) {
-                                        Configuration.logout(ctx);
+
+                                        // @TODO remove comment
+                                        //Configuration.logout(ctx);
                                     }
                                 }
                             });
@@ -150,14 +152,15 @@ public class UtilRestJSONClient {
                     // maybe a timeout!???
                     // is the server online yet??
 
-                    UtilNetwork.checkMessicServerUpAndRunning(Configuration.getCurrentMessicService(),
+                    UtilNetwork.checkMessicServerUpAndRunning(Configuration.getCurrentMessicService(ctx),
                             new MessicServerStatusListener() {
                                 public void setResponse(boolean reachable,
                                                         boolean running) {
                                     if (!running) {
 
                                         // server is no online anymore
-                                        Configuration.logout(ctx);
+                                        // @TODO remove comment
+                                        //Configuration.logout(ctx);
                                     }
                                 }
                             });

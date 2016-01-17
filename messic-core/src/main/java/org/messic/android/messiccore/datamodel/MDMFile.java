@@ -21,10 +21,9 @@ package org.messic.android.messiccore.datamodel;
 import java.io.Serializable;
 
 public class MDMFile
-    implements Serializable
-{
+        implements Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -1343793219016926339L;
 
@@ -32,112 +31,111 @@ public class MDMFile
 
     protected String code;
 
-    /** the server filename */
+    /**
+     * the server filename
+     */
     protected String fileName;
 
     protected String lfileName;
 
     protected long size;
 
+
+    protected int volume;
+
     protected MDMAlbum album;
 
-    /** flag to know if the entity has been recovered from database or from cloud json entity */
+    /**
+     * flag to know if the entity has been recovered from database or from cloud json entity
+     */
     private boolean flagFromLocalDatabase;
 
     /**
      * default constructor
      */
-    public MDMFile()
-    {
+    public MDMFile() {
 
     }
 
-    public final MDMAlbum getAlbum()
-    {
+    public final MDMAlbum getAlbum() {
         return album;
     }
 
-    public final void setAlbum( MDMAlbum album )
-    {
+    public final void setAlbum(MDMAlbum album) {
         this.album = album;
     }
 
-    public String getCode()
-    {
+    public String getCode() {
         return code;
     }
 
-    public void setCode( String code )
-    {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public long getSid()
-    {
+    public long getSid() {
         return sid;
     }
 
-    public void setSid( long sid )
-    {
+    public void setSid(long sid) {
         this.sid = sid;
     }
 
-    public long getSize()
-    {
+    public long getSize() {
         return size;
     }
 
-    public void setSize( long size )
-    {
+    public void setSize(long size) {
         this.size = size;
     }
 
     /**
      * @return the lfileName
      */
-    public String getLfileName()
-    {
+    public String getLfileName() {
         return lfileName;
     }
 
     /**
      * @return the flagFromLocalDatabase
      */
-    public boolean isFlagFromLocalDatabase()
-    {
+    public boolean isFlagFromLocalDatabase() {
         return flagFromLocalDatabase;
     }
 
     /**
      * @param flagFromLocalDatabase the flagFromLocalDatabase to set
      */
-    public void setFlagFromLocalDatabase( boolean flagFromLocalDatabase )
-    {
+    public void setFlagFromLocalDatabase(boolean flagFromLocalDatabase) {
         this.flagFromLocalDatabase = flagFromLocalDatabase;
     }
 
     /**
      * @param lfileName the lfileName to set
      */
-    public void setLfileName( String lfileName )
-    {
+    public void setLfileName(String lfileName) {
         this.lfileName = lfileName;
     }
 
     /**
      * @return the fileName
      */
-    public String getFileName()
-    {
+    public String getFileName() {
         return fileName;
     }
 
     /**
      * @param fileName the fileName to set
      */
-    public void setFileName( String fileName )
-    {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
 }

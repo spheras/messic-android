@@ -30,9 +30,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 public class MDMAlbum
-    extends MDMFile
-    implements Serializable
-{
+        extends MDMFile
+        implements Serializable {
     public static int COLUMN_LOCAL_SID_INDEX = 0;
 
     public static final String COLUMN_LOCAL_SID = "lsid";
@@ -45,6 +44,8 @@ public class MDMAlbum
 
     public static final String COLUMN_COMMENTS = "comments";
 
+    public static final String COLUMN_VOLUMES = "volumes";
+
     public static final String COLUMN_SERVER_FILENAME = "sfilename";
 
     public static final String COLUMN_LOCAL_FILENAME = "lfilename";
@@ -56,49 +57,53 @@ public class MDMAlbum
     public static final String TABLE_NAME = "albums";
 
     public static final String TABLE_CREATE = "create table " + TABLE_NAME + "(" + COLUMN_LOCAL_SID
-        + " integer primary key autoincrement, " + COLUMN_SERVER_SID + " integer not null, " + COLUMN_NAME
-        + " text not null," + COLUMN_YEAR + " integer," + COLUMN_COMMENTS + " text," + COLUMN_LOCAL_FILENAME + " text,"
-        + COLUMN_SERVER_FILENAME + " text," + COLUMN_FK_AUTHOR + " integer not null," + COLUMN_FK_GENRE + " integer"
-        + ");";
+            + " integer primary key autoincrement, " + COLUMN_SERVER_SID + " integer not null, " + COLUMN_NAME
+            + " text not null," + COLUMN_YEAR + " integer," + COLUMN_COMMENTS + " text," + COLUMN_VOLUMES + " integer," + COLUMN_LOCAL_FILENAME + " text,"
+            + COLUMN_SERVER_FILENAME + " text," + COLUMN_FK_AUTHOR + " integer not null," + COLUMN_FK_GENRE + " integer"
+            + ");";
 
-    public static String[] getColumns()
-    {
-        return new String[] { COLUMN_LOCAL_SID, COLUMN_SERVER_SID, COLUMN_NAME, COLUMN_YEAR, COLUMN_COMMENTS,
-            COLUMN_LOCAL_FILENAME, COLUMN_SERVER_FILENAME, COLUMN_FK_AUTHOR, COLUMN_FK_GENRE };
+    public static String[] getColumns() {
+        return new String[]{COLUMN_LOCAL_SID, COLUMN_SERVER_SID, COLUMN_NAME, COLUMN_YEAR, COLUMN_COMMENTS, COLUMN_VOLUMES,
+                COLUMN_LOCAL_FILENAME, COLUMN_SERVER_FILENAME, COLUMN_FK_AUTHOR, COLUMN_FK_GENRE};
     }
 
-    public MDMAlbum( Cursor cursor, Context context, boolean loadSongs, boolean downloadedOnly )
-    {
-        this.lsid = cursor.getInt( MDMAlbum.COLUMN_LOCAL_SID_INDEX );
-        this.sid = cursor.getInt( 1 );
-        this.name = cursor.getString( 2 );
-        this.year = cursor.getInt( 3 );
-        this.comments = cursor.getString( 4 );
-        this.lfileName = cursor.getString( 5 );
-        this.fileName = cursor.getString( 6 );
-        DAOGenre daogenre = new DAOGenre( context );
+    public MDMAlbum(Cursor cursor, Context context, boolean loadSongs, boolean downloadedOnly) {
+        this.lsid = cursor.getInt(MDMAlbum.COLUMN_LOCAL_SID_INDEX);
+        this.sid = cursor.getInt(1);
+        this.name = cursor.getString(2);
+        this.year = cursor.getInt(3);
+        this.comments = cursor.getString(4);
+        this.volumes = cursor.getInt(5);
+        this.lfileName = cursor.getString(6);
+        this.fileName = cursor.getString(7);
+        DAOGenre daogenre = new DAOGenre(context);
         daogenre.open();
-        int sidGenre = cursor.getInt( 8 );
-        Cursor cGenre = daogenre._get( sidGenre );
-        this.genre = new MDMGenre( cGenre );
-        DAOAuthor daoauthor = new DAOAuthor( context );
+        int sidGenre = cursor.getInt(9);
+        if (sidGenre > 0) {
+            Cursor cGenre = daogenre._get(sidGenre);
+            this.genre = new MDMGenre(cGenre);
+            cGenre.close();
+        } else {
+            this.genre = null;
+        }
+        DAOAuthor daoauthor = new DAOAuthor(context);
         daoauthor.open();
-        int sidAuthor = cursor.getInt( 7 );
-        Cursor cAuthor = daoauthor._get( sidAuthor );
-        this.author = new MDMAuthor( cAuthor );
+        int sidAuthor = cursor.getInt(8);
+        Cursor cAuthor = daoauthor._get(sidAuthor);
+        this.author = new MDMAuthor(cAuthor);
+        cAuthor.close();
         daoauthor.close();
         daogenre.close();
 
-        if ( loadSongs )
-        {
-            DAOSong daoSong = new DAOSong( context );
-            List<MDMSong> songs = daoSong.getSongsByAlbum( this.lsid, downloadedOnly, null );
-            setSongs( songs );
+        if (loadSongs) {
+            DAOSong daoSong = new DAOSong(context);
+            List<MDMSong> songs = daoSong.getSongsByAlbum(this.lsid, downloadedOnly, null);
+            setSongs(songs);
         }
     }
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -1992627692327048300L;
 
@@ -126,169 +131,143 @@ public class MDMAlbum
 
     private String comments;
 
+    private Integer volumes;
+
     /**
      * Default constructor
      */
-    public MDMAlbum()
-    {
+    public MDMAlbum() {
 
     }
 
-    public final long getSid()
-    {
+    public final long getSid() {
         return sid;
     }
 
-    public final void setSid( long sid )
-    {
+    public final void setSid(long sid) {
         this.sid = sid;
     }
 
-    public final String getName()
-    {
+    public final String getName() {
         return name;
     }
 
-    public final void setName( String name )
-    {
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public final Integer getYear()
-    {
+    public final Integer getYear() {
         return year;
     }
 
-    public final void setYear( Integer year )
-    {
+    public final void setYear(Integer year) {
         this.year = year;
     }
 
-    public final MDMAuthor getAuthor()
-    {
+    public final MDMAuthor getAuthor() {
         return author;
     }
 
-    public final void setAuthor( MDMAuthor author )
-    {
+    public final void setAuthor(MDMAuthor author) {
         this.author = author;
     }
 
-    public final List<MDMSong> getSongs()
-    {
+    public final List<MDMSong> getSongs() {
         return songs;
     }
 
-    public final void setSongs( List<MDMSong> songs )
-    {
+    public final void setSongs(List<MDMSong> songs) {
         this.songs = songs;
     }
 
-    public final void addSong( MDMSong song )
-    {
-        if ( this.songs == null )
-        {
+    public final void addSong(MDMSong song) {
+        if (this.songs == null) {
             this.songs = new ArrayList<MDMSong>();
         }
-        this.songs.add( song );
+        this.songs.add(song);
     }
 
-    public final List<MDMFile> getArtworks()
-    {
+    public final List<MDMFile> getArtworks() {
         return artworks;
     }
 
-    public final void setArtworks( List<MDMFile> artworks )
-    {
+    public final void setArtworks(List<MDMFile> artworks) {
         this.artworks = artworks;
     }
 
-    public final void addArtwork( MDMFile artwork )
-    {
-        if ( this.artworks == null )
-        {
+    public final void addArtwork(MDMFile artwork) {
+        if (this.artworks == null) {
             this.artworks = new ArrayList<MDMFile>();
         }
-        this.artworks.add( artwork );
+        this.artworks.add(artwork);
     }
 
-    public final List<MDMFile> getOthers()
-    {
+    public final List<MDMFile> getOthers() {
         return others;
     }
 
-    public final void setOthers( List<MDMFile> others )
-    {
+    public final void setOthers(List<MDMFile> others) {
         this.others = others;
     }
 
-    public final void addOther( MDMFile other )
-    {
-        if ( this.others == null )
-        {
+    public final void addOther(MDMFile other) {
+        if (this.others == null) {
             this.others = new ArrayList<MDMFile>();
         }
-        this.others.add( other );
+        this.others.add(other);
     }
 
-    public MDMGenre getGenre()
-    {
+    public MDMGenre getGenre() {
         return genre;
     }
 
-    public void setGenre( MDMGenre genre )
-    {
+    public void setGenre(MDMGenre genre) {
         this.genre = genre;
     }
 
-    public String getComments()
-    {
+    public String getComments() {
         return comments;
     }
 
-    public void setComments( String comments )
-    {
+    public Integer getVolumes() {
+        return volumes;
+    }
+
+    public void setComments(String comments) {
         this.comments = comments;
     }
 
-    public String getCode()
-    {
+    public String getCode() {
         return code;
     }
 
-    public void setCode( String code )
-    {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public MDMFile getCover()
-    {
+    public MDMFile getCover() {
         return cover;
     }
 
-    public void setCover( MDMFile cover )
-    {
+    public void setCover(MDMFile cover) {
         this.cover = cover;
     }
 
-    public String calculateExternalStorageFolder()
-    {
+    public String calculateExternalStorageFolder() {
         return getAuthor().calculateExternalStorageFolder() + "/" + "al" + getSid();
     }
 
     /**
      * @return the lsid
      */
-    public int getLsid()
-    {
+    public int getLsid() {
         return lsid;
     }
 
     /**
      * @param lsid the lsid to set
      */
-    public void setLsid( int lsid )
-    {
+    public void setLsid(int lsid) {
         this.lsid = lsid;
     }
 }

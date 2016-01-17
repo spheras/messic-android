@@ -70,6 +70,7 @@ public class LoginActivity
             {
                 public void onClick( View v )
                 {
+                    Configuration.setOffline( LoginActivity.this, false );
                     Intent ssa = new Intent( LoginActivity.this, SearchMessicServiceActivity.class );
                     LoginActivity.this.startActivity( ssa );
                     finish();
@@ -88,7 +89,7 @@ public class LoginActivity
             {
                 public void onClick( View v )
                 {
-                    Configuration.setOffline( true );
+                    Configuration.setOffline(  LoginActivity.this, true );
                     Intent ssa = new Intent( LoginActivity.this, BaseActivity.class );
                     LoginActivity.this.startActivity( ssa );
                 }
@@ -180,7 +181,7 @@ public class LoginActivity
     private void fillOnline()
     {
         MessicPreferences p = new MessicPreferences( this );
-        MDMMessicServerInstance instance = Configuration.getCurrentMessicService();
+        MDMMessicServerInstance instance = Configuration.getCurrentMessicService(this);
         ( (TextView) findViewById( R.id.login_online_thostname ) ).setText( instance.name );
         ( (TextView) findViewById( R.id.login_online_thostname_ip ) ).setText( instance.ip );
         ( (CheckBox) findViewById( R.id.login_online_cbremember ) ).setChecked( p.getRemember() );
@@ -188,9 +189,9 @@ public class LoginActivity
         final TextView tpass = ( (TextView) findViewById( R.id.login_online_tpassword ) );
         if ( p.getRemember() )
         {
-            String user = Configuration.getLastMessicUser();
+            String user = Configuration.getLastMessicUser(this);
             tlogin.setText( ( user != null ? user : "" ) );
-            String password = Configuration.getLastMessicPassword();
+            String password = Configuration.getLastMessicPassword(this);
             tpass.setText( ( password != null ? password : "" ) );
         }
 

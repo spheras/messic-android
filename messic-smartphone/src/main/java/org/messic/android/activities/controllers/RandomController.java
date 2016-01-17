@@ -45,16 +45,16 @@ public class RandomController
     {
         if ( rlist != null )
         {
-            UtilMusicPlayer.addSongsAndPlay( ctx, rlist[0].getSongs() );
+            UtilMusicPlayer.addSongsAndPlay(ctx, rlist[0].getSongs());
         }
         else
         {
-            if ( !Configuration.isOffline() )
+            if ( !Configuration.isOffline(ctx) )
             {
                 final String baseURL =
                     Configuration.getBaseUrl( ctx )
                         + "/services/randomlists?filterRandomListName=RandomListName-Random&messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(ctx);
                 UtilRestJSONClient.get( ctx, baseURL, MDMRandomList[].class,
                                         new UtilRestJSONClient.RestListener<MDMRandomList[]>()
                                         {
@@ -130,6 +130,8 @@ public class RandomController
         {
             rlist = null;
 
+            adapter.clear();
+
             AsyncTask<Void, MDMSong, Void> at = new AsyncTask<Void, MDMSong, Void>()
             {
                 private DAOSong.SongPublisher p = new DAOSong.SongPublisher()
@@ -168,6 +170,16 @@ public class RandomController
                     return null;
                 }
 
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+
+                    if(srl!=null){
+                        srl.setRefreshing(false);
+                    }
+                    rf.eventRandomInfoLoaded();
+                    adapter.notifyDataSetChanged();
+                }
             };
             at.execute();
 
@@ -189,7 +201,7 @@ public class RandomController
             final String baseURL =
                 Configuration.getBaseUrl( activity )
                     + "/services/randomlists?filterRandomListName=RandomListName-Random&messic_token="
-                    + Configuration.getLastToken();
+                    + Configuration.getLastToken(activity);
             UtilRestJSONClient.get( activity, baseURL, MDMRandomList[].class,
                                     new UtilRestJSONClient.RestListener<MDMRandomList[]>()
                                     {

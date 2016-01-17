@@ -379,7 +379,7 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
                 }
 
                 String coverOnlineURL =
-                        Configuration.getBaseUrl(MainFragment.this.getActivity()) + "/services/albums/" + song.getAlbum().getSid() + "/cover?messic_token=" + Configuration.getLastToken();
+                        Configuration.getBaseUrl(MainFragment.this.getActivity()) + "/services/albums/" + song.getAlbum().getSid() + "/cover?messic_token=" + Configuration.getLastToken(getActivity());
 
                 try {
                     mBackgroundURI = new URL(coverOnlineURL).toURI();

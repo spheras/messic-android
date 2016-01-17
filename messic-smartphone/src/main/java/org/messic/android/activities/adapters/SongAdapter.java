@@ -152,7 +152,7 @@ public class SongAdapter
         TextView tsongtrack = null;
 
         boolean playableSong =
-                ((Configuration.isOffline() && song.isDownloaded(activity)) || !Configuration.isOffline());
+                ((Configuration.isOffline(activity) && song.isDownloaded(activity)) || !Configuration.isOffline(activity));
 
         if (type == SongAdapterType.cover) {
             icover = (ImageView) counterView.findViewById(R.id.song_icover);
@@ -181,7 +181,7 @@ public class SongAdapter
                 counterView.findViewById(R.id.songtrack_ivplay).setVisibility(View.INVISIBLE);
             }
 
-            if (!Configuration.isOffline()) {
+            if (!Configuration.isOffline(activity)) {
                 ImageView ivdownload = (ImageView) counterView.findViewById(R.id.songtrack_ivdownload);
                 ImageView ivremove = (ImageView) counterView.findViewById(R.id.songtrack_ivremove);
                 if (song.isDownloaded(activity)) {

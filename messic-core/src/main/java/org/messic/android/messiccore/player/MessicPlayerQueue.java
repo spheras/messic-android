@@ -181,7 +181,7 @@ public class MessicPlayerQueue
         for ( int i = 0; i < songs.size(); i++ )
         {
             MDMSong song = songs.get( i );
-            if ( !Configuration.isOffline()
+            if ( !Configuration.isOffline(context)
                 || ( song.getLfileName() != null && new File( song.getLfileName() ).exists() ) )
             {
                 this.queue.add( song );
@@ -215,7 +215,7 @@ public class MessicPlayerQueue
         for ( int i = 0; i < songs.size(); i++ )
         {
             MDMSong song = songs.get( i );
-            if ( !Configuration.isOffline()
+            if ( !Configuration.isOffline(context)
                 || ( song.getLfileName() != null && new File( song.getLfileName() ).exists() ) )
             {
                 song.setAlbum( album );
@@ -240,7 +240,7 @@ public class MessicPlayerQueue
 
     public synchronized void addSong( MDMSong song )
     {
-        if ( !Configuration.isOffline() || ( song.getLfileName() != null && new File( song.getLfileName() ).exists() ) )
+        if ( !Configuration.isOffline(context) || ( song.getLfileName() != null && new File( song.getLfileName() ).exists() ) )
         {
             synchronized ( this.queue )
             {
@@ -339,7 +339,7 @@ public class MessicPlayerQueue
             }
             else
             {
-                if ( !Configuration.isOffline() )
+                if ( !Configuration.isOffline(context) )
                 {
                     player.setDataSource( playSong.getURL( this.context ) );
                     player.prepareAsync();

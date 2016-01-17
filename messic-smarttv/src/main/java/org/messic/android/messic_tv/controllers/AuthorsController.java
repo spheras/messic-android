@@ -24,7 +24,7 @@ public class AuthorsController {
         final String baseURL =
                 Configuration.getBaseUrl(ctx.getActivity())
                         + "/services/authors?albumsInfo=true&songsInfo=false&messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(ctx.getActivity());
         UtilRestJSONClient.get(ctx.getActivity(), baseURL, MDMAuthor[].class,
                 new UtilRestJSONClient.RestListener<MDMAuthor[]>() {
                     public void response(MDMAuthor[] response) {
@@ -51,7 +51,7 @@ public class AuthorsController {
         final String baseURL =
                 Configuration.getBaseUrl(ctx.getActivity())
                         + "/services/authors/" + author.getSid() + "?albumsInfo=true&songsInfo=true&messic_token="
-                        + Configuration.getLastToken();
+                        + Configuration.getLastToken(ctx.getActivity());
         UtilRestJSONClient.get(ctx.getActivity(), baseURL, MDMAuthor.class,
                 new UtilRestJSONClient.RestListener<MDMAuthor>() {
                     public void response(final MDMAuthor response) {

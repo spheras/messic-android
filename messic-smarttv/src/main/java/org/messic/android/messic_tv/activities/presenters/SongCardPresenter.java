@@ -122,7 +122,7 @@ public class SongCardPresenter extends Presenter {
                 String coverOnlineURL =
                         Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
                                 + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
-                                + Configuration.getLastToken();
+                                + Configuration.getLastToken(mContext);
 
 
                 ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
@@ -142,7 +142,7 @@ public class SongCardPresenter extends Presenter {
             String coverOnlineURL =
                     Configuration.getBaseUrl(mContext) + "/services/albums/" + album.getSid()
                             + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
-                            + Configuration.getLastToken();
+                            + Configuration.getLastToken(mContext);
 
 
             ((ViewHolder) viewHolder).mCardView.setTitleText(album.getName());

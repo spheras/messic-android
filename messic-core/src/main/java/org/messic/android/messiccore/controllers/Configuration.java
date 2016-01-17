@@ -28,15 +28,20 @@ import org.messic.android.messiccore.util.MessicPreferences;
 
 public class Configuration {
 
+    /**
+     * flag to know if the static fields has been removed and need to be reloaded
+     */
+    private static Object objFlag = null;
+
     private static MDMMessicServerInstance instance = null;
 
     private static String lastToken = null;
 
-    private static boolean offline = false;
-
     private static boolean firstTime = false;
 
     private static Class loginActivityClass;
+
+    private static boolean offline;
 
     public static void setLoginActivityClass(Class loginActivityClass) {
         Configuration.loginActivityClass = loginActivityClass;
@@ -46,12 +51,25 @@ public class Configuration {
         return Configuration.loginActivityClass;
     }
 
-    public static String getLastToken() {
+    public static String getLastToken(Context ctx) {
+        checkConfiguration(ctx);
         return lastToken;
     }
 
+    /**
+     * Check if the static values has been removed and need to be reloaded from preferences
+     */
+    private static void checkConfiguration(Context ctx) {
+        if (objFlag == null) {
+            objFlag = new Object();
+            MessicPreferences mp = new MessicPreferences(ctx);
+            lastToken = mp.getCurrentToken();
+            offline = mp.getCurrentOffline();
+        }
+    }
+
     public static void logout(Context context) {
-        Configuration.setToken(null);
+        Configuration.setToken(context, null);
 
         if (getLoginActivityClass() != null) {
             Intent intent = new Intent(context, getLoginActivityClass());
@@ -66,14 +84,18 @@ public class Configuration {
     }
 
 
-    public static void setToken(String token) {
+    public static void setToken(Context ctx, String token) {
         lastToken = token;
+        new MessicPreferences(ctx).setCurrentToken(token);
     }
 
     public static String getBaseUrl(Context ctx) {
-        MDMMessicServerInstance instance = getCurrentMessicService();
-        if (instance == null && !Configuration.isOffline()) {
-            Configuration.logout(ctx);
+        checkConfiguration(ctx);
+
+        MDMMessicServerInstance instance = getCurrentMessicService(ctx);
+        if (instance == null && !Configuration.isOffline(ctx)) {
+            // @TODO remove comment
+            //Configuration.logout(ctx);
             return "http://localhost/messic";
         }
         return getBaseUrl(instance);
@@ -96,14 +118,18 @@ public class Configuration {
         return instance;
     }
 
-    public static String getLastMessicUser() {
+    public static String getLastMessicUser(Context ctx) {
+        checkConfiguration(ctx);
+
         if (instance != null)
             return instance.lastUser;
         else
             return null;
     }
 
-    public static String getLastMessicPassword() {
+    public static String getLastMessicPassword(Context ctx) {
+        checkConfiguration(ctx);
+
         if (instance != null)
             return instance.lastPassword;
         else
@@ -115,22 +141,26 @@ public class Configuration {
      *
      * @return {@link String}
      */
-    public static MDMMessicServerInstance getCurrentMessicService() {
+    public static MDMMessicServerInstance getCurrentMessicService(Context ctx) {
+        checkConfiguration(ctx);
         return instance;
     }
 
     /**
      * @return the offline
      */
-    public static boolean isOffline() {
+    public static boolean isOffline(Context ctx) {
+        checkConfiguration(ctx);
+
         return offline;
     }
 
     /**
      * @param offline the offline to set
      */
-    public static void setOffline(boolean offline) {
+    public static void setOffline(Context ctx, boolean offline) {
         Configuration.offline = offline;
+        new MessicPreferences(ctx).setCurrentOffline(offline);
     }
 
     /**

@@ -64,7 +64,7 @@ public class AlbumController
 
         final String baseURL =
             Configuration.getBaseUrl(originActivity) + "/services/albums/" + sid
-                + "?songsInfo=true&authorInfo=true&messic_token=" + Configuration.getLastToken();
+                + "?songsInfo=true&authorInfo=true&messic_token=" + Configuration.getLastToken(originActivity);
         UtilRestJSONClient.get( originActivity, baseURL, MDMAlbum.class,
                                 new UtilRestJSONClient.RestListener<MDMAlbum>()
                                 {

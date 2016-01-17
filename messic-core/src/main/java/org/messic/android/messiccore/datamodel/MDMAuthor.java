@@ -125,7 +125,7 @@ public class MDMAuthor
 
     public String calculateExternalStorageFolder()
     {
-        String folder = UtilFile.getMessicFolderAbsolutePath() + "/" + "a" + getSid();
+        String folder = UtilFile.getMessicOfflineFolderAbsolutePath() + "/" + "a" + getSid();
         return folder;
     }
 

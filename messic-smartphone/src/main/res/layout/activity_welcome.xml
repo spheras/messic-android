@@ -14,6 +14,8 @@
         <Button
             android:id="@+id/welcome_continue"
             style="@style/messic_button"
+            android:background="@color/red"
+            android:textColor="@color/white"
             android:layout_width="40dp"
             android:layout_height="25dp"
             android:layout_alignParentRight="true"

@@ -90,7 +90,7 @@ public class PlayQueueFragment
 
                 public void textTouch( MDMSong song, int index )
                 {
-                    if ( Configuration.isOffline() )
+                    if ( Configuration.isOffline(getActivity()) )
                     {
                         AlbumController.getAlbumInfoOffline( PlayQueueFragment.this.getActivity(), song.getAlbum() );
                     }

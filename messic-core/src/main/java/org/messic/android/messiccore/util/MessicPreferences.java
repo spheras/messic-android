@@ -32,6 +32,10 @@ public class MessicPreferences
 
     public static final String PREFERENCE_MESSIC_SERVER_REMEMBER = "MESSIC_SERVER_REMEMBER";
 
+    public static final String PREFERENCE_MESSIC_CURRENT_OFFLINE = "MESSIC_SERVER_CURRENT_OFFILINE";
+
+    public static final String PREFERENCE_MESSIC_CURRENT_TOKEN = "MESSIC_SERVER_CURRENT_TOKEN";
+
     private SharedPreferences sp = null;
 
     private Context context;
@@ -51,7 +55,7 @@ public class MessicPreferences
 
     public MDMMessicServerInstance getLastMessicServerUsed()
     {
-        int sid = this.sp.getInt( PREFERENCE_LAST_MESSIC_SERVER, 0 );
+        int sid = this.sp.getInt(PREFERENCE_LAST_MESSIC_SERVER, 0);
         if ( sid > 0 )
         {
             DAOServerInstance dao = new DAOServerInstance( context );
@@ -63,18 +67,36 @@ public class MessicPreferences
         }
     }
 
+    public boolean getCurrentOffline(){
+        return this.sp.getBoolean( PREFERENCE_MESSIC_CURRENT_OFFLINE, false );
+    }
+    public void setCurrentOffline(boolean offline){
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean( PREFERENCE_MESSIC_CURRENT_OFFLINE, offline );
+        editor.commit();
+    }
+
+    public String getCurrentToken(){
+        return this.sp.getString( PREFERENCE_MESSIC_CURRENT_TOKEN, "" );
+    }
+    public void setCurrentToken(String token){
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString( PREFERENCE_MESSIC_CURRENT_TOKEN, token );
+        editor.commit();
+    }
+
     public boolean getRemember()
     {
         return this.sp.getBoolean( PREFERENCE_MESSIC_SERVER_REMEMBER, false );
     }
 
-    public void setRemember( boolean remember, String username, String password )
+    public void setRemember( Context ctx, boolean remember, String username, String password )
     {
         SharedPreferences.Editor editor = sp.edit();
         if ( remember )
         {
             editor.putBoolean( PREFERENCE_MESSIC_SERVER_REMEMBER, true );
-            MDMMessicServerInstance instance = Configuration.getCurrentMessicService();
+            MDMMessicServerInstance instance = Configuration.getCurrentMessicService(ctx);
             instance.lastUser = username;
             instance.lastPassword = password;
             DAOServerInstance dao = new DAOServerInstance( context );
@@ -83,7 +105,7 @@ public class MessicPreferences
         else
         {
             editor.putBoolean( PREFERENCE_MESSIC_SERVER_REMEMBER, false );
-            MDMMessicServerInstance instance = Configuration.getCurrentMessicService();
+            MDMMessicServerInstance instance = Configuration.getCurrentMessicService(ctx);
             instance.lastUser = "";
             instance.lastPassword = "";
             DAOServerInstance dao = new DAOServerInstance( context );

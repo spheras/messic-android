@@ -75,15 +75,19 @@ public class MessicPlayerService
         // Toast.makeText( this, "onStartCommands", Toast.LENGTH_SHORT ).show();
 
         IMessicPlayerNotification playerNotification = UtilMusicPlayer.getMessicPlayerNotification();
-        playerNotification.setService(this);
+        if (playerNotification != null) {
+            playerNotification.setService(this);
 
-        if (this.playerqueue == null) {
-            this.playerqueue = new MessicPlayerQueue(this);
-            //this.playernotification = new MessicPlayerNotification( this, this.playerqueue );
-            this.playerqueue.addListener(playerNotification);
-            playerNotification.setPlayer(this.playerqueue);
+            if (this.playerqueue == null) {
+                this.playerqueue = new MessicPlayerQueue(this);
+                //this.playernotification = new MessicPlayerNotification( this, this.playerqueue );
+                this.playerqueue.addListener(playerNotification);
+                playerNotification.setPlayer(this.playerqueue);
+            }
+
+        } else {
+            Log.d("MessicPlayerService", "null notification!!!");
         }
-
         return super.onStartCommand(intent, flags, startId);
     }
 
