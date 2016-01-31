@@ -33,7 +33,7 @@ public class SplashScreenActivity
 
         setContentView( R.layout.activity_splash );
 
-        UtilMusicPlayer.startMessicMusicService( this, new MessicPlayerNotification());
+        UtilMusicPlayer.startMessicMusicService( this, MessicPlayerNotification.class);
         UtilDownloadService.startDownloadService( this, new DownloadNotification());
 
         TimerTask task = new TimerTask()

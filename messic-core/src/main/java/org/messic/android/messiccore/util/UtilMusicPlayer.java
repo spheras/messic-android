@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
@@ -15,8 +16,10 @@ import org.messic.android.messiccore.player.MessicPlayerService;
 import org.messic.android.messiccore.player.MessicPlayerService.MusicBinder;
 import org.messic.android.messiccore.player.PlayerEventListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class UtilMusicPlayer {
 
@@ -31,8 +34,6 @@ public class UtilMusicPlayer {
             MusicBinder binder = (MusicBinder) service;
             // get service
             musicService = binder.getService();
-            // pass list
-            musicBound = true;
 
             for (int i = 0; i < pendingListeners.size(); i++) {
                 pendingListeners.get(i).connected();
@@ -50,6 +51,9 @@ public class UtilMusicPlayer {
                 }
             }
             pendingListeners.clear();
+
+            // pass list
+            musicBound = true;
         }
 
         public void onServiceDisconnected(ComponentName name) {
@@ -68,12 +72,29 @@ public class UtilMusicPlayer {
      */
     private static List<PlayerEventListener> pendingListeners = new ArrayList<PlayerEventListener>();
 
-    public static void startMessicMusicService(Context context, IMessicPlayerNotification notification) {
+    public static void startMessicMusicService(Context context, Class<? extends IMessicPlayerNotification> notification) {
         startMessicMusicService(context, notification, MessicPlayerService.class);
     }
 
-    public static void startMessicMusicService(Context context, IMessicPlayerNotification notification, Class serviceClass) {
-        if (!musicBound && notification != null) {
+    public static void startMessicMusicService(Context context, Class notificationClass, Class serviceClass) {
+        if (!musicBound && notificationClass != null) {
+            IMessicPlayerNotification notification = null;
+            try {
+                notification = (IMessicPlayerNotification) (notificationClass.getConstructor().newInstance());
+            } catch (NoSuchMethodException nsme) {
+                nsme.printStackTrace();
+                return;
+            } catch (InstantiationException ie) {
+                ie.printStackTrace();
+                return;
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+                return;
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+                return;
+            }
+
             setMessicPlayerNotification(notification);
 
             // first we start the service (if it is not started yet)
@@ -83,6 +104,11 @@ public class UtilMusicPlayer {
 
             // and we bind the service to interact with it
             appctx.bindService(messicPlayerIntent, messicPlayerConnection, Context.BIND_AUTO_CREATE);
+
+
+            MessicPreferences mp = new MessicPreferences(context);
+            mp.setLastMessicNotificationClassUsed(notification.getClass().getName());
+            mp.setLastMessicServiceClassUsed(serviceClass.getName());
         }
     }
 
@@ -98,8 +124,34 @@ public class UtilMusicPlayer {
         if (musicBound) {
             return musicService;
         } else {
-            //  startMessicMusicService(ctx, null);
-            return null;
+            MessicPreferences mp = new MessicPreferences(ctx);
+
+            String sNotificationClass = mp.getLastMessicNotificationClassUsed();
+            String sServiceClass = mp.getLastMessicServiceClassUsed();
+            if (sNotificationClass != null && sServiceClass != null && sNotificationClass.length() > 0 && sServiceClass.length() > 0) {
+                try {
+                    startMessicMusicService(ctx, Class.forName(sNotificationClass), Class.forName(sServiceClass));
+                    long time = 0;
+                    while (!musicBound && time < 5000) {
+                        try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException ie) {
+                            ie.printStackTrace();
+                        }
+                        time = time + 300;
+                    }
+                    if (musicBound) {
+                        return musicService;
+                    } else {
+                        return null;
+                    }
+                } catch (ClassNotFoundException cnfe) {
+                    cnfe.printStackTrace();
+                    return null;
+                }
+            } else {
+                return null;
+            }
         }
     }
 

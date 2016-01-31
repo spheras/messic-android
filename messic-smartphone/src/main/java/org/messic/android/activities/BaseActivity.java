@@ -44,6 +44,8 @@ import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
 import org.messic.android.R;
+import org.messic.android.activities.controllers.LoginController;
+import org.messic.android.activities.controllers.RandomController;
 import org.messic.android.activities.fragments.DownloadedFragment;
 import org.messic.android.activities.fragments.ExploreFragment;
 import org.messic.android.activities.fragments.PlayQueueFragment;
@@ -52,8 +54,6 @@ import org.messic.android.activities.fragments.RandomFragment;
 import org.messic.android.activities.fragments.SearchFragment;
 import org.messic.android.activities.fragments.TitleFragment;
 import org.messic.android.messiccore.controllers.Configuration;
-import org.messic.android.activities.controllers.LoginController;
-import org.messic.android.activities.controllers.RandomController;
 import org.messic.android.messiccore.util.UtilDownloadService;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
 
@@ -65,25 +65,20 @@ public class BaseActivity
         extends Activity
         implements ActionBar.TabListener, OnQueryTextListener {
 
+    private static final String STATE_SEARCHFRAGMENTS = "search_fragments";
+    private static final String STATE_SELECTEDTAB = "selected_tab";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory. If this becomes too
      * memory intensive, it may be best to switch to a {@link android.support.v13.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
     private List<Fragment> fragments = new ArrayList<Fragment>();
-
     private SearchView mSearchView;
-
-    private static final String STATE_SEARCHFRAGMENTS = "search_fragments";
-
-    private static final String STATE_SELECTEDTAB = "selected_tab";
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -287,84 +282,6 @@ public class BaseActivity
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter
-            extends FragmentPagerAdapter {
-
-        private void createBasicFragments() {
-            Locale l = Locale.getDefault();
-            if (Configuration.isOffline(BaseActivity.this)) {
-                fragments.add(new RandomFragment(getString(R.string.title_section_random).toUpperCase(l)));
-                fragments.add(new DownloadedFragment(getString(R.string.title_section_downloaded).toUpperCase(l)));
-                fragments.add(new PlayQueueFragment(getString(R.string.title_section_queue).toUpperCase(l)));
-            } else {
-                fragments.add(new RandomFragment(getString(R.string.title_section_random).toUpperCase(l)));
-                fragments.add(new ExploreFragment(getString(R.string.title_section_explore).toUpperCase(l)));
-                fragments.add(new PlaylistFragment(getString(R.string.title_section_playlist).toUpperCase(l)));
-                fragments.add(new DownloadedFragment(getString(R.string.title_section_downloaded).toUpperCase(l)));
-                fragments.add(new PlayQueueFragment(getString(R.string.title_section_queue).toUpperCase(l)));
-
-            }
-
-        }
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-            createBasicFragments();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-            // // getItem is called to instantiate the fragment for the given page.
-            // // Return a PlaceholderFragment (defined as a static inner class below).
-            // return PlaceholderFragment.newInstance( position + 1 );
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return ((TitleFragment) fragments.get(position)).getTitle();
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment
-            extends Fragment {
-        /**
-         * The fragment argument representing the section number for this fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_base, container, false);
-            return rootView;
-        }
-    }
-
     public boolean onQueryTextChange(String newText) {
         // Toast.makeText( this, newText, Toast.LENGTH_SHORT ).show();
         return false;
@@ -413,5 +330,83 @@ public class BaseActivity
     private void logout() {
         LoginController lc = new LoginController();
         lc.logout(this);
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment
+            extends Fragment {
+        /**
+         * The fragment argument representing the section number for this fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_base, container, false);
+            return rootView;
+        }
+    }
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter
+            extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+            createBasicFragments();
+        }
+
+        private void createBasicFragments() {
+            Locale l = Locale.getDefault();
+
+            if (Configuration.isOffline(BaseActivity.this)) {
+                fragments.add(new RandomFragment().setTitle(getString(R.string.title_section_random).toUpperCase(l)));
+                fragments.add(new DownloadedFragment().setTitle(getString(R.string.title_section_downloaded).toUpperCase(l)));
+                fragments.add(new PlayQueueFragment().setTitle(getString(R.string.title_section_queue).toUpperCase(l)));
+            } else {
+                fragments.add(new RandomFragment().setTitle(getString(R.string.title_section_random).toUpperCase(l)));
+                fragments.add(new ExploreFragment().setTitle(getString(R.string.title_section_explore).toUpperCase(l)));
+                fragments.add(new PlaylistFragment().setTitle(getString(R.string.title_section_playlist).toUpperCase(l)));
+                fragments.add(new DownloadedFragment().setTitle(getString(R.string.title_section_downloaded).toUpperCase(l)));
+                fragments.add(new PlayQueueFragment().setTitle(getString(R.string.title_section_queue).toUpperCase(l)));
+            }
+
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+            // // getItem is called to instantiate the fragment for the given page.
+            // // Return a PlaceholderFragment (defined as a static inner class below).
+            // return PlaceholderFragment.newInstance( position + 1 );
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return ((TitleFragment) fragments.get(position)).getTitle();
+        }
     }
 }

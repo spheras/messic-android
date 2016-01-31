@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="1dp"
+    android:paddingTop="10dp"
+    tools:context="${relativePackage}.${activityClass}">
+
+    <ImageView
+        android:id="@+id/author_albums_album_icover"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:background="@color/black"
+        android:contentDescription="@string/app_name"></ImageView>
+
+
+    <TextView
+        android:id="@+id/author_albums_album_talbum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/author_albums_album_icover"
+        android:layout_below="@+id/author_albums_album_icover"
+        android:width="100dp"
+        android:background="#00FF00"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:maxWidth="100dp"
+        android:scrollHorizontally="true"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/author_albums_album_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/author_albums_album_icover"
+        android:layout_alignTop="@+id/author_albums_album_icover"
+        android:layout_marginLeft="27dp"
+        android:layout_marginTop="25dp"
+        android:alpha="0.5"
+        android:src="@drawable/ic_play_circle_outline_white_48dp" />
+
+    <ImageView
+        android:id="@+id/author_albums_album_ivmore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/author_albums_album_icover"
+        android:layout_toRightOf="@+id/author_albums_album_icover"
+        android:background="@drawable/more_button"
+        android:src="@drawable/ic_more_vert_black_24dp" />
+
+</RelativeLayout>

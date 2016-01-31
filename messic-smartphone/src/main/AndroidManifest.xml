@@ -31,6 +31,8 @@
         </activity>
         <activity android:name=".activities.SearchMessicServiceActivity" >
         </activity>
+        <activity android:name=".activities.SearchManualMessicServiceActivity" >
+        </activity>
         <activity android:name=".activities.WelcomeActivity" >
         </activity>
         <activity

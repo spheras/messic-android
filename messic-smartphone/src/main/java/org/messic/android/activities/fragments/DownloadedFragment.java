@@ -18,20 +18,6 @@
  */
 package org.messic.android.activities.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.messic.android.R;
-import org.messic.android.activities.adapters.AlbumAdapter;
-import org.messic.android.activities.swipedismiss.SwipeDismissListViewTouchListener;
-import org.messic.android.activities.controllers.AlbumController;
-import org.messic.android.activities.controllers.DownloadedController;
-import org.messic.android.messiccore.datamodel.MDMAlbum;
-import org.messic.android.messiccore.datamodel.MDMSong;
-import org.messic.android.messiccore.datamodel.dao.DAOAlbum;
-import org.messic.android.messiccore.util.UtilDownloadService;
-import org.messic.android.messiccore.util.UtilMusicPlayer;
-
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -48,6 +34,20 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import org.messic.android.R;
+import org.messic.android.activities.adapters.AlbumAdapter;
+import org.messic.android.activities.controllers.AlbumController;
+import org.messic.android.activities.controllers.DownloadedController;
+import org.messic.android.activities.swipedismiss.SwipeDismissListViewTouchListener;
+import org.messic.android.messiccore.datamodel.MDMAlbum;
+import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.datamodel.dao.DAOAlbum;
+import org.messic.android.messiccore.util.UtilDownloadService;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DownloadedFragment
         extends Fragment
         implements TitleFragment {
@@ -55,20 +55,16 @@ public class DownloadedFragment
 
     private AlbumAdapter sa = null;
 
-    private String title;
+    private String title = "Downloaded";
 
-    public DownloadedFragment(String title) {
-        super();
-        this.title = title;
-    }
-
-    public DownloadedFragment() {
-        super();
-        this.title = "";
-    }
 
     public String getTitle() {
         return this.title;
+    }
+
+    public DownloadedFragment setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     @Override

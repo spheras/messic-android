@@ -265,7 +265,7 @@ public class LoginActivity
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_login );
 
-        UtilMusicPlayer.startMessicMusicService( this, new MessicPlayerNotification());
+        UtilMusicPlayer.startMessicMusicService( this, MessicPlayerNotification.class);
         UtilDownloadService.startDownloadService( this, new DownloadNotification());
 
     }

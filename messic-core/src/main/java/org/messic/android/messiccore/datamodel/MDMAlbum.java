@@ -32,6 +32,7 @@ import android.database.Cursor;
 public class MDMAlbum
         extends MDMFile
         implements Serializable {
+
     public static int COLUMN_LOCAL_SID_INDEX = 0;
 
     public static final String COLUMN_LOCAL_SID = "lsid";

@@ -18,18 +18,6 @@
  */
 package org.messic.android.activities.fragments;
 
-import org.messic.android.R;
-import org.messic.android.activities.adapters.SongAdapter;
-import org.messic.android.activities.adapters.SongAdapter.SongAdapterType;
-import org.messic.android.activities.controllers.AlbumController;
-import org.messic.android.messiccore.controllers.Configuration;
-import org.messic.android.activities.controllers.QueueController;
-import org.messic.android.messiccore.datamodel.MDMAlbum;
-import org.messic.android.messiccore.datamodel.MDMPlaylist;
-import org.messic.android.messiccore.datamodel.MDMSong;
-import org.messic.android.messiccore.player.PlayerEventListener;
-import org.messic.android.messiccore.util.UtilMusicPlayer;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
@@ -41,117 +29,103 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.messic.android.R;
+import org.messic.android.activities.adapters.SongAdapter;
+import org.messic.android.activities.adapters.SongAdapter.SongAdapterType;
+import org.messic.android.activities.controllers.AlbumController;
+import org.messic.android.activities.controllers.QueueController;
+import org.messic.android.messiccore.controllers.Configuration;
+import org.messic.android.messiccore.datamodel.MDMAlbum;
+import org.messic.android.messiccore.datamodel.MDMPlaylist;
+import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.player.PlayerEventListener;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
+
 public class PlayQueueFragment
-    extends Fragment
-    implements PlayerEventListener, TitleFragment
-{
+        extends Fragment
+        implements PlayerEventListener, TitleFragment {
     private QueueController controller = new QueueController();
 
     private SongAdapter sa = null;
 
-    private String title;
+    private String title = "Queue";
 
-    public PlayQueueFragment( String title )
-    {
-        super();
-        this.title = title;
-    }
-
-    public PlayQueueFragment()
-    {
-        super();
-        this.title = "";
-    }
-
-    public String getTitle()
-    {
+    public String getTitle() {
         return this.title;
     }
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        controller.getQueueSongs( sa, getActivity(), this, false, null );
+    public PlayQueueFragment setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
-    {
-        View rootView = inflater.inflate( R.layout.fragment_queue, container, false );
+    public void onStart() {
+        super.onStart();
+        controller.getQueueSongs(sa, getActivity(), this, false, null);
+    }
 
-        rootView.findViewById( R.id.queue_progress ).setVisibility( View.GONE );
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_queue, container, false);
 
-        ListView gv = (ListView) rootView.findViewById( R.id.queue_lvitems );
-        if ( sa == null )
-        {
-            sa = new SongAdapter( getActivity(), new SongAdapter.EventListener()
-            {
+        rootView.findViewById(R.id.queue_progress).setVisibility(View.GONE);
 
-                public void textTouch( MDMSong song, int index )
-                {
-                    if ( Configuration.isOffline(getActivity()) )
-                    {
-                        AlbumController.getAlbumInfoOffline( PlayQueueFragment.this.getActivity(), song.getAlbum() );
+        ListView gv = (ListView) rootView.findViewById(R.id.queue_lvitems);
+        if (sa == null) {
+            sa = new SongAdapter(getActivity(), new SongAdapter.EventListener() {
+
+                public void textTouch(MDMSong song, int index) {
+                    if (Configuration.isOffline(getActivity())) {
+                        AlbumController.getAlbumInfoOffline(PlayQueueFragment.this.getActivity(), song.getAlbum());
+                    } else {
+                        AlbumController.getAlbumInfoOnline(PlayQueueFragment.this.getActivity(),
+                                song.getAlbum().getSid());
                     }
-                    else
-                    {
-                        AlbumController.getAlbumInfoOnline( PlayQueueFragment.this.getActivity(),
-                                                            song.getAlbum().getSid() );
-                    }
                 }
 
-                public void coverTouch( MDMSong song, int index )
-                {
-                    UtilMusicPlayer.setSong( PlayQueueFragment.this.getActivity(), index );
-                    UtilMusicPlayer.playSong( PlayQueueFragment.this.getActivity() );
+                public void coverTouch(MDMSong song, int index) {
+                    UtilMusicPlayer.setSong(PlayQueueFragment.this.getActivity(), index);
+                    UtilMusicPlayer.playSong(PlayQueueFragment.this.getActivity());
                 }
 
-                public void coverLongTouch( MDMSong song, int index )
-                {
-                    UtilMusicPlayer.setSong( PlayQueueFragment.this.getActivity(), index );
-                    UtilMusicPlayer.playSong( PlayQueueFragment.this.getActivity() );
+                public void coverLongTouch(MDMSong song, int index) {
+                    UtilMusicPlayer.setSong(PlayQueueFragment.this.getActivity(), index);
+                    UtilMusicPlayer.playSong(PlayQueueFragment.this.getActivity());
                 }
 
-                public boolean elementRemove( MDMSong song, int index )
-                {
-                    UtilMusicPlayer.removeSong( PlayQueueFragment.this.getActivity(), index );
-                    if ( index < sa.getCurrentSong() )
-                    {
-                        sa.setCurrentSong( sa.getCurrentSong() - 1 );
+                public boolean elementRemove(MDMSong song, int index) {
+                    UtilMusicPlayer.removeSong(PlayQueueFragment.this.getActivity(), index);
+                    if (index < sa.getCurrentSong()) {
+                        sa.setCurrentSong(sa.getCurrentSong() - 1);
                     }
                     return true;
                 }
 
-                public void playlistTouch( MDMPlaylist playlist, int index )
-                {
+                public void playlistTouch(MDMPlaylist playlist, int index) {
                     // TODO Auto-generated method stub
 
                 }
-            }, SongAdapterType.detailed );
+            }, SongAdapterType.detailed);
 
-            sa.setCurrentSong( UtilMusicPlayer.getCursor( this.getActivity() ) );
+            sa.setCurrentSong(UtilMusicPlayer.getCursor(this.getActivity()));
         }
-        gv.setAdapter( sa );
+        gv.setAdapter(sa);
 
-        final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.queue_swipe );
-        srl.setColorSchemeColors( Color.RED, Color.GREEN, Color.BLUE, Color.CYAN );
-        srl.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener()
-        {
-            public void onRefresh()
-            {
-                new Handler().post( new Runnable()
-                {
-                    public void run()
-                    {
-                        getActivity().findViewById( R.id.queue_progress ).setVisibility( View.VISIBLE );
-                        controller.getQueueSongs( sa, getActivity(), PlayQueueFragment.this, true, srl );
+        final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.queue_swipe);
+        srl.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            public void onRefresh() {
+                new Handler().post(new Runnable() {
+                    public void run() {
+                        getActivity().findViewById(R.id.queue_progress).setVisibility(View.VISIBLE);
+                        controller.getQueueSongs(sa, getActivity(), PlayQueueFragment.this, true, srl);
                     }
-                } );
+                });
             }
-        } );
+        });
 
-        UtilMusicPlayer.addListener( this.getActivity(), this );
+        UtilMusicPlayer.addListener(this.getActivity(), this);
 
         return rootView;
     }
@@ -159,112 +133,89 @@ public class PlayQueueFragment
     /**
      * The info have been loaded, and we need to remove the progress component
      */
-    public void eventRandomInfoLoaded()
-    {
-        if ( getActivity() != null )
-        {
-            getActivity().runOnUiThread( new Runnable()
-            {
+    public void eventRandomInfoLoaded() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     Activity activity = getActivity();
-                    if ( activity != null )
-                    {
-                        View qp = activity.findViewById( R.id.queue_progress );
-                        if ( qp != null )
-                        {
-                            qp.setVisibility( View.GONE );
+                    if (activity != null) {
+                        View qp = activity.findViewById(R.id.queue_progress);
+                        if (qp != null) {
+                            qp.setVisibility(View.GONE);
                         }
                     }
 
                 }
-            } );
+            });
 
         }
     }
 
-    public void update()
-    {
-        controller.getQueueSongs( sa, getActivity(), this, true, null );
+    public void update() {
+        controller.getQueueSongs(sa, getActivity(), this, true, null);
     }
 
-    public void paused( MDMSong song, int index )
-    {
+    public void paused(MDMSong song, int index) {
         // TODO Auto-generated method stub
 
     }
 
-    public void playing( MDMSong song, boolean resumed, int index )
-    {
-        sa.setCurrentSong( index );
-        if ( !resumed && isVisible() )
-        {
-            getActivity().runOnUiThread( new Runnable()
-            {
-                public void run()
-                {
+    public void playing(MDMSong song, boolean resumed, int index) {
+        sa.setCurrentSong(index);
+        if (!resumed && isVisible()) {
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
                     sa.notifyDataSetChanged();
                 }
-            } );
+            });
         }
     }
 
-    public void completed( int index )
-    {
+    public void completed(int index) {
         // TODO Auto-generated method stub
 
     }
 
-    public void added( MDMSong song )
-    {
+    public void added(MDMSong song) {
         update();
 
     }
 
-    public void added( MDMAlbum album )
-    {
+    public void added(MDMAlbum album) {
         update();
 
     }
 
-    public void added( MDMPlaylist playlist )
-    {
+    public void added(MDMPlaylist playlist) {
         update();
 
     }
 
-    public void connected()
-    {
+    public void connected() {
 
-        sa.setCurrentSong( UtilMusicPlayer.getCursor( PlayQueueFragment.this.getActivity() ) );
+        sa.setCurrentSong(UtilMusicPlayer.getCursor(PlayQueueFragment.this.getActivity()));
         Activity activity = getActivity();
-        if ( activity != null )
-        {
-            activity.runOnUiThread( new Runnable()
-            {
-                public void run()
-                {
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                public void run() {
                     sa.notifyDataSetChanged();
                 }
-            } );
+            });
         }
 
         update();
     }
 
-    public void disconnected()
-    {
+    public void disconnected() {
         // nothing to do
     }
 
-    public void removed( MDMSong song )
-    {
+    public void removed(MDMSong song) {
         // nothing to do
     }
 
-    public void empty()
-    {
+    public void empty() {
         update();
     }
 }

@@ -47,7 +47,7 @@ public class LoginController {
                             Intent ssa = new Intent(context, MainActivity.class);
                             context.startActivity(ssa);
 
-                            UtilMusicPlayer.startMessicMusicService(context, new MessicPlayerNotification(), MessicPlayerTVService.class);
+                            UtilMusicPlayer.startMessicMusicService(context, MessicPlayerNotification.class, MessicPlayerTVService.class);
                         }
 
                         public void fail(Exception e) {

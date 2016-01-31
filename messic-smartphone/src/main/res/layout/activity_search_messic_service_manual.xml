@@ -1,0 +1,191 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context="${relativePackage}.${activityClass}">
+
+    <ScrollView
+        android:id="@+id/searchmessicservice_manual_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/searchmessicservice_manual_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_title"
+                    style="@style/messic_description_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/searchMessicServiceManual_explanation_title" />
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_explanation"
+                    style="@style/messic_description_body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/searchMessicServiceManual_explanation"
+                    android:textAppearance="?android:attr/textAppearance" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/searchmessicservice_manual_namegroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchmessicservice_manual_description"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_name_title"
+                    style="@style/messic_description_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name" />
+
+                <EditText
+                    android:id="@+id/searchmessicservice_manual_name_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/searchmessicservice_manual_ipgroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchmessicservice_manual_namegroup"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_ip_title"
+                    style="@style/messic_description_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hostname or IP" />
+
+                <EditText
+                    android:id="@+id/searchmessicservice_manual_ip_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/searchmessicservice_manual_portgroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchmessicservice_manual_ipgroup"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_port_title"
+                    style="@style/messic_description_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Port" />
+
+                <EditText
+                    android:id="@+id/searchmessicservice_manual_port_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:numeric="integer"
+                    android:text="80" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/searchmessicservice_manual_securedgroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchmessicservice_manual_portgroup"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_secured_title"
+                    style="@style/messic_description_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Secured" />
+
+                <CheckBox
+                    android:id="@+id/searchmessicservice_manual_secured_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:numeric="integer" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/searchmessicservice_manual_descriptiongroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchmessicservice_manual_securedgroup"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/searchmessicservice_manual_description_title"
+                    style="@style/messic_description_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description" />
+
+                <EditText
+                    android:id="@+id/searchmessicservice_manual_description_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/searchmessicservice_manual_save"
+            style="@style/messic_button"
+            android:layout_width="match_parent"
+            android:layout_weight="0.5"
+            android:layout_height="31dp"
+            android:background="@drawable/messic_button"
+            android:text="Save" />
+
+
+        <Button
+            android:id="@+id/searchmessicservice_manual_cancel"
+            style="@style/messic_button"
+            android:layout_width="match_parent"
+            android:layout_weight="0.5"
+            android:layout_height="31dp"
+            android:background="@drawable/messic_button"
+            android:text="Cancel" />
+
+    </LinearLayout>
+
+</RelativeLayout>

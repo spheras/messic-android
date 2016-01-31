@@ -65,6 +65,7 @@ public class Configuration {
             MessicPreferences mp = new MessicPreferences(ctx);
             lastToken = mp.getCurrentToken();
             offline = mp.getCurrentOffline();
+            instance = mp.getLastMessicServerUsed();
         }
     }
 

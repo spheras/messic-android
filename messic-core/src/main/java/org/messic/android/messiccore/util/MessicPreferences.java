@@ -36,6 +36,9 @@ public class MessicPreferences
 
     public static final String PREFERENCE_MESSIC_CURRENT_TOKEN = "MESSIC_SERVER_CURRENT_TOKEN";
 
+    public static final String PREFERENCE_MESSIC_LAST_NOTIFICATION_CLASS="MESSIC_SERVER_LAST_NOTIFICATION_CLASS";
+    public static final String PREFERENCE_MESSIC_LAST_SERVICE_CLASS="MESSIC_SERVER_LAST_SERVICE_CLASS";
+
     private SharedPreferences sp = null;
 
     private Context context;
@@ -44,6 +47,27 @@ public class MessicPreferences
     {
         this.sp = PreferenceManager.getDefaultSharedPreferences( context );
         this.context = context;
+    }
+
+    public void setLastMessicNotificationClassUsed( String lastNotificationClass )
+    {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString( PREFERENCE_MESSIC_LAST_NOTIFICATION_CLASS, lastNotificationClass);
+        editor.commit();
+    }
+    public void setLastMessicServiceClassUsed( String lastServiceClass )
+    {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(PREFERENCE_MESSIC_LAST_SERVICE_CLASS, lastServiceClass);
+        editor.commit();
+    }
+
+    public String getLastMessicNotificationClassUsed(){
+        return this.sp.getString( PREFERENCE_MESSIC_LAST_NOTIFICATION_CLASS, "" );
+    }
+
+    public String getLastMessicServiceClassUsed(){
+        return this.sp.getString( PREFERENCE_MESSIC_LAST_SERVICE_CLASS, "" );
     }
 
     public void setLastMessicServerUsed( MDMMessicServerInstance msi )

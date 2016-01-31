@@ -18,15 +18,6 @@
  */
 package org.messic.android.activities.fragments;
 
-import org.messic.android.R;
-import org.messic.android.activities.adapters.PlaylistAdapter;
-import org.messic.android.activities.adapters.SongAdapter;
-import org.messic.android.activities.controllers.AlbumController;
-import org.messic.android.activities.controllers.PlaylistController;
-import org.messic.android.messiccore.datamodel.MDMPlaylist;
-import org.messic.android.messiccore.datamodel.MDMSong;
-import org.messic.android.messiccore.util.UtilMusicPlayer;
-
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -38,104 +29,92 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import org.messic.android.R;
+import org.messic.android.activities.adapters.PlaylistAdapter;
+import org.messic.android.activities.adapters.SongAdapter;
+import org.messic.android.activities.controllers.AlbumController;
+import org.messic.android.activities.controllers.PlaylistController;
+import org.messic.android.messiccore.datamodel.MDMPlaylist;
+import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
+
 public class PlaylistFragment
-    extends Fragment
-    implements TitleFragment
-{
+        extends Fragment
+        implements TitleFragment {
     private PlaylistController controller = new PlaylistController();
 
     private PlaylistAdapter sa = null;
 
-    private String title;
+    private String title = "Playlists";
 
-    public PlaylistFragment( String title )
-    {
-        super();
-        this.title = title;
-    }
 
-    public PlaylistFragment()
-    {
-        super();
-        this.title = "";
-    }
-
-    public String getTitle()
-    {
+    public String getTitle() {
         return this.title;
     }
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        getActivity().findViewById( R.id.playlist_progress ).setVisibility( View.VISIBLE );
-        controller.getPlaylistMusic( sa, getActivity(), this, false, null );
+    public PlaylistFragment setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
-    {
-        View rootView = inflater.inflate( R.layout.fragment_playlist, container, false );
+    public void onStart() {
+        super.onStart();
+        getActivity().findViewById(R.id.playlist_progress).setVisibility(View.VISIBLE);
+        controller.getPlaylistMusic(sa, getActivity(), this, false, null);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
 
         getMessicService();
 
-        ExpandableListView gv = (ExpandableListView) rootView.findViewById( R.id.playlist_elistview );
-        if ( sa == null )
-        {
-            sa = new PlaylistAdapter( getActivity(), new SongAdapter.EventListener()
-            {
+        ExpandableListView gv = (ExpandableListView) rootView.findViewById(R.id.playlist_elistview);
+        if (sa == null) {
+            sa = new PlaylistAdapter(getActivity(), new SongAdapter.EventListener() {
 
-                public void textTouch( MDMSong song, int index )
-                {
-                    AlbumController.getAlbumInfoOnline( PlaylistFragment.this.getActivity(), song.getAlbum().getSid() );
+                public void textTouch(MDMSong song, int index) {
+                    AlbumController.getAlbumInfoOnline(PlaylistFragment.this.getActivity(), song.getAlbum().getSid());
                 }
 
-                public void coverTouch( MDMSong song, int index )
-                {
-                    UtilMusicPlayer.addSong( getActivity(), song );
-                    Toast.makeText( getActivity(), getResources().getText( R.string.player_added ) + song.getName(),
-                                    Toast.LENGTH_SHORT ).show();
+                public void coverTouch(MDMSong song, int index) {
+                    UtilMusicPlayer.addSong(getActivity(), song);
+                    Toast.makeText(getActivity(), getResources().getText(R.string.player_added) + song.getName(),
+                            Toast.LENGTH_SHORT).show();
                 }
 
-                public void coverLongTouch( MDMSong song, int index )
-                {
-                    UtilMusicPlayer.addSongAndPlay( getActivity(), song );
+                public void coverLongTouch(MDMSong song, int index) {
+                    UtilMusicPlayer.addSongAndPlay(getActivity(), song);
                 }
 
-                public boolean elementRemove( MDMSong song, int index )
-                {
+                public boolean elementRemove(MDMSong song, int index) {
                     return false;
                 }
 
-                public void playlistTouch( MDMPlaylist playlist, int index )
-                {
-                    UtilMusicPlayer.addPlaylist( getActivity(), playlist );
-                    Toast.makeText( getActivity(),
-                                    getResources().getText( R.string.player_added ) + playlist.getName(),
-                                    Toast.LENGTH_SHORT ).show();
+                public void playlistTouch(MDMPlaylist playlist, int index) {
+                    UtilMusicPlayer.addPlaylist(getActivity(), playlist);
+                    Toast.makeText(getActivity(),
+                            getResources().getText(R.string.player_added) + playlist.getName(),
+                            Toast.LENGTH_SHORT).show();
                 }
-            } );
+            });
         }
-        gv.setAdapter( sa );
+        gv.setAdapter(sa);
 
-        final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.playlist_swipe );
+        final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.playlist_swipe);
         // sets the colors used in the refresh animation
-        srl.setColorSchemeColors( Color.RED, Color.GREEN, Color.BLUE, Color.CYAN );
-        srl.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener()
-        {
-            public void onRefresh()
-            {
-                new Handler().post( new Runnable()
-                {
-                    public void run()
-                    {
-                        getActivity().findViewById( R.id.playlist_progress ).setVisibility( View.VISIBLE );
-                        controller.getPlaylistMusic( sa, getActivity(), PlaylistFragment.this, true, srl );
+        srl.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            public void onRefresh() {
+                new Handler().post(new Runnable() {
+                    public void run() {
+                        getActivity().findViewById(R.id.playlist_progress).setVisibility(View.VISIBLE);
+                        controller.getPlaylistMusic(sa, getActivity(), PlaylistFragment.this, true, srl);
                     }
-                } );
+                });
             }
-        } );
+        });
 
         return rootView;
     }
@@ -143,31 +122,24 @@ public class PlaylistFragment
     /**
      * The info have been loaded, and we need to remove the progress component
      */
-    public void eventPlaylistInfoLoaded()
-    {
-        if ( getActivity() != null )
-        {
-            getActivity().runOnUiThread( new Runnable()
-            {
+    public void eventPlaylistInfoLoaded() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
 
-                public void run()
-                {
-                    if ( getActivity() != null )
-                    {
-                        View rp = getActivity().findViewById( R.id.playlist_progress );
-                        if ( rp != null )
-                        {
-                            rp.setVisibility( View.GONE );
+                public void run() {
+                    if (getActivity() != null) {
+                        View rp = getActivity().findViewById(R.id.playlist_progress);
+                        if (rp != null) {
+                            rp.setVisibility(View.GONE);
                         }
                     }
                 }
-            } );
+            });
         }
     }
 
-    private void getMessicService()
-    {
-        UtilMusicPlayer.getMessicPlayerService( this.getActivity() );
+    private void getMessicService() {
+        UtilMusicPlayer.getMessicPlayerService(this.getActivity());
     }
 
 }

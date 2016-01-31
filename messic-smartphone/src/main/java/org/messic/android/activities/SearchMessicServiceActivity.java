@@ -47,20 +47,40 @@ public class SearchMessicServiceActivity
     private SearchMessicServiceController controller = new SearchMessicServiceController();
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        ListView lv = (ListView) findViewById(R.id.searchmessicservice_lvresults);
+        SearchMessicServiceAdapter adapter = (SearchMessicServiceAdapter) lv.getAdapter();
+        controller.getSavedSessions(this, adapter);
+        if (adapter.getInstances().size() > 0) {
+            findViewById(R.id.searchmessicservice_lempty).setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_messic_service);
 
-        UtilMusicPlayer.startMessicMusicService(this, new MessicPlayerNotification());
+        UtilMusicPlayer.startMessicMusicService(this, MessicPlayerNotification.class);
         UtilDownloadService.startDownloadService(this, new DownloadNotification());
 
         final SearchMessicServiceAdapter adapter = new SearchMessicServiceAdapter(this);
-        controller.getSavedSessions(this, adapter);
+        //controller.getSavedSessions(this, adapter);
         ListView lv = (ListView) findViewById(R.id.searchmessicservice_lvresults);
         lv.setAdapter(adapter);
-        if (adapter.getInstances().size() > 0) {
+        /*if (adapter.getInstances().size() > 0) {
             findViewById(R.id.searchmessicservice_lempty).setVisibility(View.GONE);
-        }
+        }*/
+
+        findViewById(R.id.searchmessicservice_bmanual).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ssa = new Intent(SearchMessicServiceActivity.this, SearchManualMessicServiceActivity.class);
+                SearchMessicServiceActivity.this.startActivity(ssa);
+            }
+        });
 
         // Create a ListView-specific touch listener. ListViews are given special treatment because
         // by default they handle touches for their list items... i.e. they're in charge of drawing
@@ -165,7 +185,7 @@ public class SearchMessicServiceActivity
         } else {
             voffline.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Configuration.setOffline(SearchMessicServiceActivity.this,true);
+                    Configuration.setOffline(SearchMessicServiceActivity.this, true);
                     Intent ssa = new Intent(SearchMessicServiceActivity.this, BaseActivity.class);
                     SearchMessicServiceActivity.this.startActivity(ssa);
                 }

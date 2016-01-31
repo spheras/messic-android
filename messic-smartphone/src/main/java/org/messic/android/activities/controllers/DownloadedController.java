@@ -84,15 +84,19 @@ public class DownloadedController
                 {
                     DAOAlbum daoAlbum = new DAOAlbum( activity );
                     List<MDMAlbum> albums = daoAlbum.getAllByAuthor( p );
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
                     // refreshData( albums, adapter, activity, df, srl );
                     if ( srl != null )
                         srl.setRefreshing( false );
 
                     df.eventDownloadedInfoLoaded();
-
-                    return null;
                 }
-
             };
             at.execute();
         }

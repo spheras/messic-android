@@ -36,82 +36,62 @@ import org.messic.android.messiccore.util.UtilRestJSONClient;
 
 import java.util.List;
 
-public class RandomController
-{
+public class RandomController {
 
     private static MDMRandomList[] rlist = null;
 
-    public static void addRandomSongsToPlaylist( final Context ctx )
-    {
-        if ( rlist != null )
-        {
+    public static void addRandomSongsToPlaylist(final Context ctx) {
+        if (rlist != null) {
             UtilMusicPlayer.addSongsAndPlay(ctx, rlist[0].getSongs());
-        }
-        else
-        {
-            if ( !Configuration.isOffline(ctx) )
-            {
+        } else {
+            if (!Configuration.isOffline(ctx)) {
                 final String baseURL =
-                    Configuration.getBaseUrl( ctx )
-                        + "/services/randomlists?filterRandomListName=RandomListName-Random&messic_token="
-                        + Configuration.getLastToken(ctx);
-                UtilRestJSONClient.get( ctx, baseURL, MDMRandomList[].class,
-                                        new UtilRestJSONClient.RestListener<MDMRandomList[]>()
-                                        {
-                                            public void response( MDMRandomList[] response )
-                                            {
-                                                rlist = response;
-                                                UtilMusicPlayer.addSongsAndPlay( ctx, rlist[0].getSongs() );
-                                            }
+                        Configuration.getBaseUrl(ctx)
+                                + "/services/randomlists?filterRandomListName=RandomListName-Random&messic_token="
+                                + Configuration.getLastToken(ctx);
+                UtilRestJSONClient.get(ctx, baseURL, MDMRandomList[].class,
+                        new UtilRestJSONClient.RestListener<MDMRandomList[]>() {
+                            public void response(MDMRandomList[] response) {
+                                rlist = response;
+                                UtilMusicPlayer.addSongsAndPlay(ctx, rlist[0].getSongs());
+                            }
 
-                                            public void fail( final Exception e )
-                                            {
-                                                Log.e( "Random", e.getMessage(), e );
-                                                if ( ctx instanceof Activity )
-                                                {
-                                                    ( (Activity) ctx ).runOnUiThread( new Runnable()
-                                                    {
+                            public void fail(final Exception e) {
+                                Log.e("Random", e.getMessage(), e);
+                                if (ctx instanceof Activity) {
+                                    ((Activity) ctx).runOnUiThread(new Runnable() {
 
-                                                        public void run()
-                                                        {
-                                                            Toast.makeText( ctx, "Server Error", Toast.LENGTH_SHORT ).show();
+                                        public void run() {
+                                            Toast.makeText(ctx, "Server Error", Toast.LENGTH_SHORT).show();
 
-                                                        }
-                                                    } );
-                                                }
-                                            }
+                                        }
+                                    });
+                                }
+                            }
 
-                                        } );
-            }
-            else
-            {
+                        });
+            } else {
 
-                AsyncTask<Void, MDMSong, Void> at = new AsyncTask<Void, MDMSong, Void>()
-                {
-                    private DAOSong.SongPublisher p = new DAOSong.SongPublisher()
-                    {
+                AsyncTask<Void, MDMSong, Void> at = new AsyncTask<Void, MDMSong, Void>() {
+                    private DAOSong.SongPublisher p = new DAOSong.SongPublisher() {
 
-                        public void publish( MDMSong song )
-                        {
-                            publishProgress( song );
+                        public void publish(MDMSong song) {
+                            publishProgress(song);
                         }
                     };
 
                     @Override
-                    protected void onProgressUpdate( MDMSong... values )
-                    {
-                        super.onProgressUpdate( values );
-                        for ( MDMSong mdmSong : values )
-                        {
-                            UtilMusicPlayer.addSong( ctx, mdmSong );
+                    protected void onProgressUpdate(MDMSong... values) {
+                        super.onProgressUpdate(values);
+                        for (MDMSong mdmSong : values) {
+                            UtilMusicPlayer.addSong(ctx, mdmSong);
                         }
                     }
 
                     @Override
-                    protected Void doInBackground( Void... params )
-                    {
-                        DAOSong ds = new DAOSong( ctx );
-                        ds.getRandomSongs( 45, p );
+                    protected Void doInBackground(Void... params) {
+                        DAOSong ds = new DAOSong(ctx);
+                        ds.getRandomSongs(45, p);
                         return null;
                     }
 
@@ -123,50 +103,40 @@ public class RandomController
         }
     }
 
-    public void getRandomMusicOffline( final SongAdapter adapter, final Activity activity, final RandomFragment rf,
-                                       boolean refresh, final SwipeRefreshLayout srl )
-    {
-        if ( rlist == null || refresh )
-        {
+    public void getRandomMusicOffline(final SongAdapter adapter, final Activity activity, final RandomFragment rf,
+                                      boolean refresh, final SwipeRefreshLayout srl) {
+        if (rlist == null || refresh) {
             rlist = null;
 
             adapter.clear();
 
-            AsyncTask<Void, MDMSong, Void> at = new AsyncTask<Void, MDMSong, Void>()
-            {
-                private DAOSong.SongPublisher p = new DAOSong.SongPublisher()
-                {
+            AsyncTask<Void, MDMSong, Void> at = new AsyncTask<Void, MDMSong, Void>() {
+                private DAOSong.SongPublisher p = new DAOSong.SongPublisher() {
 
-                    public void publish( MDMSong song )
-                    {
-                        publishProgress( song );
+                    public void publish(MDMSong song) {
+                        publishProgress(song);
                     }
                 };
 
                 @Override
-                protected void onProgressUpdate( MDMSong... values )
-                {
-                    super.onProgressUpdate( values );
-                    for ( MDMSong mdmSong : values )
-                    {
-                        adapter.addSong( mdmSong );
+                protected void onProgressUpdate(MDMSong... values) {
+                    super.onProgressUpdate(values);
+                    for (MDMSong mdmSong : values) {
+                        adapter.addSong(mdmSong);
                     }
 
                     rf.eventRandomInfoLoaded();
-                    activity.runOnUiThread( new Runnable()
-                    {
-                        public void run()
-                        {
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
                             adapter.notifyDataSetChanged();
                         }
-                    } );
+                    });
                 }
 
                 @Override
-                protected Void doInBackground( Void... params )
-                {
-                    DAOSong ds = new DAOSong( activity );
-                    ds.getRandomSongs( 45, p );
+                protected Void doInBackground(Void... params) {
+                    DAOSong ds = new DAOSong(activity);
+                    ds.getRandomSongs(45, p);
                     return null;
                 }
 
@@ -174,7 +144,7 @@ public class RandomController
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
 
-                    if(srl!=null){
+                    if (srl != null) {
                         srl.setRefreshing(false);
                     }
                     rf.eventRandomInfoLoaded();
@@ -183,84 +153,68 @@ public class RandomController
             };
             at.execute();
 
-        }
-        else
-        {
-            if ( rlist != null )
-            {
-                refreshData( adapter, activity, rf, srl );
+        } else {
+            if (rlist != null) {
+                refreshData(adapter, activity, rf, srl);
             }
         }
     }
 
-    public void getRandomMusicOnline( final SongAdapter adapter, final Activity activity, final RandomFragment rf,
-                                      boolean refresh, final SwipeRefreshLayout srl )
-    {
-        if ( rlist == null || refresh )
-        {
+    public void getRandomMusicOnline(final SongAdapter adapter, final Activity activity, final RandomFragment rf,
+                                     boolean refresh, final SwipeRefreshLayout srl) {
+        if (rlist == null || refresh) {
             final String baseURL =
-                Configuration.getBaseUrl( activity )
-                    + "/services/randomlists?filterRandomListName=RandomListName-Random&messic_token="
-                    + Configuration.getLastToken(activity);
-            UtilRestJSONClient.get( activity, baseURL, MDMRandomList[].class,
-                                    new UtilRestJSONClient.RestListener<MDMRandomList[]>()
-                                    {
-                                        public void response( MDMRandomList[] response )
-                                        {
-                                            rlist = response;
-                                            refreshData( adapter, activity, rf, srl );
-                                        }
+                    Configuration.getBaseUrl(activity)
+                            + "/services/randomlists?filterRandomListName=RandomListName-Random&messic_token="
+                            + Configuration.getLastToken(activity);
+            UtilRestJSONClient.get(activity, baseURL, MDMRandomList[].class,
+                    new UtilRestJSONClient.RestListener<MDMRandomList[]>() {
+                        public void response(MDMRandomList[] response) {
+                            rlist = response;
+                            refreshData(adapter, activity, rf, srl);
+                        }
 
-                                        public void fail( final Exception e )
-                                        {
-                                            Log.e( "Random", e.getMessage(), e );
-                                            activity.runOnUiThread( new Runnable()
-                                            {
+                        public void fail(final Exception e) {
+                            Log.e("Random", e.getMessage(), e);
+                            activity.runOnUiThread(new Runnable() {
 
-                                                public void run()
-                                                {
-                                                    Toast.makeText( activity, "Server Error", Toast.LENGTH_SHORT ).show();
+                                public void run() {
+                                    Toast.makeText(activity, "Server Error", Toast.LENGTH_SHORT).show();
 
-                                                }
-                                            } );
-                                        }
+                                }
+                            });
+                        }
 
-                                    } );
-        }
-        else
-        {
-            if ( rlist != null )
-            {
-                refreshData( adapter, activity, rf, srl );
+                    });
+        } else {
+            if (rlist != null) {
+                refreshData(adapter, activity, rf, srl);
             }
         }
     }
 
-    private void refreshData( final SongAdapter adapter, final Activity activity, final RandomFragment rf,
-                              final SwipeRefreshLayout srl )
-    {
+    private void refreshData(final SongAdapter adapter, final Activity activity, final RandomFragment rf,
+                             final SwipeRefreshLayout srl) {
         adapter.clear();
-        activity.runOnUiThread( new Runnable()
-        {
-            public void run()
-            {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
                 adapter.notifyDataSetChanged();
-                for ( int i = 0; i < rlist.length; i++ )
-                {
-                    List<MDMSong> songs = rlist[i].getSongs();
-                    for ( int j = 0; j < songs.size(); j++ )
-                    {
-                        MDMSong song = songs.get( j );
-                        adapter.addSong( song );
+                for (int i = 0; i < rlist.length; i++) {
+                    if (rlist[i] != null) {
+                        List<MDMSong> songs = rlist[i].getSongs();
+                        for (int j = 0; j < songs.size(); j++) {
+                            MDMSong song = songs.get(j);
+                            adapter.addSong(song);
+                        }
                     }
                 }
                 rf.eventRandomInfoLoaded();
                 adapter.notifyDataSetChanged();
 
-                if ( srl != null )
-                    srl.setRefreshing( false );
+                if (srl != null)
+                    srl.setRefreshing(false);
             }
-        } );
+        });
 
     }
 }

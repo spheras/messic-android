@@ -23,93 +23,128 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.messic.android.activities.adapters.AlbumAdapter;
+import org.messic.android.activities.adapters.ExploreAuthorRecyclerViewAdapter;
 import org.messic.android.activities.fragments.ExploreFragment;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
+import org.messic.android.messiccore.datamodel.MDMAuthor;
 import org.messic.android.messiccore.util.UtilRestJSONClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ExploreController
-{
-    private static List<MDMAlbum> albums = new ArrayList<MDMAlbum>();
-
+public class ExploreController {
     public static boolean downloading = false;
+    private static List<MDMAlbum> albums = new ArrayList<MDMAlbum>();
+    private static List<MDMAuthor> authors = new ArrayList<MDMAuthor>();
 
-    public void getExploreAlbums( final AlbumAdapter adapter, final Activity activity, final ExploreFragment rf,
-                                  final boolean refresh, final SwipeRefreshLayout srl, int from, int max )
-    {
-        if ( albums == null || refresh || ( from + max ) >= albums.size() )
-        {
+    public void getAllBasicInfo(final ExploreAuthorRecyclerViewAdapter adapter, final Activity activity, final ExploreFragment rf,
+                                final boolean refresh, final SwipeRefreshLayout srl) {
+        if (authors == null || refresh) {
             final String baseURL =
-                Configuration.getBaseUrl(activity) + "/services/albums?pageFromResult=" + from + "&pageMaxResults="
-                    + max + "&songsInfo=true&authorInfo=true&orderDesc=false&orderByAuthor=true&messic_token="
-                    + Configuration.getLastToken(activity);
+                    Configuration.getBaseUrl(activity) + "/services/authors?albumsInfo=false&songsInfo=false&messic_token=" + Configuration.getLastToken(activity);
+
             downloading = true;
-            UtilRestJSONClient.get( activity, baseURL, MDMAlbum[].class,
-                                    new UtilRestJSONClient.RestListener<MDMAlbum[]>()
-                                    {
-                                        public void response( MDMAlbum[] response )
-                                        {
-                                            if ( refresh )
-                                            {
-                                                albums = new ArrayList<MDMAlbum>();
-                                            }
-                                            List<MDMAlbum> newList = Arrays.asList( response );
-                                            albums.addAll( newList );
-                                            refreshData( albums, adapter, activity, rf, srl );
-                                            downloading = false;
-                                        }
+            UtilRestJSONClient.get(activity, baseURL, MDMAuthor[].class,
+                    new UtilRestJSONClient.RestListener<MDMAuthor[]>() {
+                        public void response(MDMAuthor[] response) {
+                            if (refresh) {
+                                authors = new ArrayList<MDMAuthor>();
+                            }
+                            List<MDMAuthor> newList = Arrays.asList(response);
+                            for (int i = 0; i < newList.size(); i++) {
+                                newList.get(i).flagFullInfoServer = false;
+                            }
+                            authors.addAll(newList);
 
-                                        public void fail( final Exception e )
-                                        {
-                                            Log.e( "Random", e.getMessage(), e );
-                                            activity.runOnUiThread( new Runnable()
-                                            {
+                            refreshData(authors, adapter, activity, rf, srl);
 
-                                                public void run()
-                                                {
-                                                    Toast.makeText( activity, "Server Error", Toast.LENGTH_SHORT ).show();
+                        }
 
-                                                }
-                                            } );
-                                            downloading = false;
-                                        }
+                        public void fail(final Exception e) {
+                            Log.e("Explore", e.getMessage(), e);
+                            activity.runOnUiThread(new Runnable() {
 
-                                    } );
-        }
-        else
-        {
-            if ( albums != null )
-            {
-                refreshData( albums, adapter, activity, rf, srl );
+                                public void run() {
+                                    Toast.makeText(activity, "Server Error", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            downloading = false;
+                        }
+                    });
+
+        } else {
+            if (albums != null) {
+                refreshData(authors, adapter, activity, rf, srl);
             }
         }
     }
 
-    private void refreshData( final List<MDMAlbum> response, final AlbumAdapter adapter, final Activity activity,
-                              final ExploreFragment rf, final SwipeRefreshLayout srl )
-    {
-        activity.runOnUiThread( new Runnable()
-        {
-            public void run()
-            {
+    public void getExploreAlbums(final ExploreAuthorRecyclerViewAdapter adapter, final Activity activity, final ExploreFragment rf,
+                                 final boolean refresh, final SwipeRefreshLayout srl) {
+
+        getAllBasicInfo(adapter, activity, rf, refresh, srl);
+    }
+
+/*
+    private void getAlbums(final ExploreAuthorRecyclerViewAdapter adapter, final Activity activity, final ExploreFragment rf,
+                           final boolean refresh, final SwipeRefreshLayout srl) {
+
+        if (albums == null || refresh) {
+            final String baseURL =
+                    Configuration.getBaseUrl(activity) + "/services/albums?authorInfo=true&orderDesc=false&orderByAuthor=true&messic_token="
+                            + Configuration.getLastToken(activity);
+            downloading = true;
+            UtilRestJSONClient.get(activity, baseURL, MDMAlbum[].class,
+                    new UtilRestJSONClient.RestListener<MDMAlbum[]>() {
+                        public void response(MDMAlbum[] response) {
+                            if (refresh) {
+                                albums = new ArrayList<MDMAlbum>();
+                            }
+                            List<MDMAlbum> newList = Arrays.asList(response);
+                            albums.addAll(newList);
+                            refreshData(albums, adapter, activity, rf, srl);
+                            downloading = false;
+                        }
+
+                        public void fail(final Exception e) {
+                            Log.e("Random", e.getMessage(), e);
+                            activity.runOnUiThread(new Runnable() {
+
+                                public void run() {
+                                    Toast.makeText(activity, "Server Error", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                            downloading = false;
+                        }
+
+                    });
+        } else {
+            if (albums != null) {
+                refreshData(albums, adapter, activity, rf, srl);
+            }
+        }
+    }*/
+
+    private void refreshData(final List<MDMAuthor> response, final ExploreAuthorRecyclerViewAdapter adapter, final Activity activity,
+                             final ExploreFragment rf, final SwipeRefreshLayout srl) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
                 adapter.clear();
                 adapter.notifyDataSetChanged();
 
-                adapter.setAlbums( response );
+                adapter.addAuthors(response);
 
                 rf.eventExploreInfoLoaded();
 
                 adapter.notifyDataSetChanged();
 
-                if ( srl != null )
-                    srl.setRefreshing( false );
+                if (srl != null)
+                    srl.setRefreshing(false);
             }
-        } );
+        });
 
     }
 }

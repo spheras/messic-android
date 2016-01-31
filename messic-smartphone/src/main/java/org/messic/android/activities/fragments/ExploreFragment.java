@@ -18,61 +18,60 @@
  */
 package org.messic.android.activities.fragments;
 
-import java.util.List;
-
-import org.messic.android.R;
-import org.messic.android.activities.AlbumInfoActivity;
-import org.messic.android.activities.adapters.AlbumAdapter;
-import org.messic.android.activities.controllers.AlbumController;
-import org.messic.android.activities.controllers.ExploreController;
-import org.messic.android.messiccore.datamodel.MDMAlbum;
-import org.messic.android.messiccore.datamodel.MDMSong;
-import org.messic.android.messiccore.util.UtilDownloadService;
-import org.messic.android.messiccore.util.UtilMusicPlayer;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import org.messic.android.R;
+import org.messic.android.activities.AlbumInfoActivity;
+import org.messic.android.activities.adapters.AlbumAdapter;
+import org.messic.android.activities.adapters.ExploreAuthorRecyclerViewAdapter;
+import org.messic.android.activities.controllers.AlbumController;
+import org.messic.android.activities.controllers.ExploreController;
+import org.messic.android.fastscroller.FastScroller;
+import org.messic.android.messiccore.datamodel.MDMAlbum;
+import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.util.UtilDownloadService;
+import org.messic.android.messiccore.util.UtilMusicPlayer;
+
+import java.util.List;
 
 public class ExploreFragment
         extends Fragment
         implements TitleFragment {
     private ExploreController controller = new ExploreController();
 
-    private AlbumAdapter sa = null;
+    private ExploreAuthorRecyclerViewAdapter sa = null;
 
-    private String title;
+    private String title = "Explore";
+    private StaggeredGridLayoutManager gaggeredGridLayoutManager;
 
-    public ExploreFragment(String title) {
-        super();
-        this.title = title;
-    }
-
-    public ExploreFragment() {
-        super();
-        this.title = "";
-    }
 
     public String getTitle() {
         return this.title;
+    }
+
+    public ExploreFragment setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     @Override
     public void onStart() {
         super.onStart();
         getActivity().findViewById(R.id.explore_progress).setVisibility(View.VISIBLE);
-        controller.getExploreAlbums(sa, getActivity(), this, false, null, 0, 10);
+        controller.getExploreAlbums(sa, getActivity(), this, true, null);
     }
 
     @Override
@@ -81,7 +80,68 @@ public class ExploreFragment
 
         getMessicService();
 
-        ListView gv = (ListView) rootView.findViewById(R.id.explore_lvitems);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.explore_recyclerview);
+        recyclerView.setHasFixedSize(true);
+        gaggeredGridLayoutManager = new StaggeredGridLayoutManager(3, 1);
+        recyclerView.setLayoutManager(gaggeredGridLayoutManager);
+
+        FastScroller fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroller);
+        fastScroller.setRecyclerView(recyclerView);
+
+        sa = new ExploreAuthorRecyclerViewAdapter(getActivity(), new AlbumAdapter.EventListener() {
+
+            public void textTouch(MDMAlbum album) {
+                // AlbumController.getAlbumInfo( ExploreFragment.this.getActivity(), album.getSid() );
+                AlbumController.getAlbumInfoOffline(ExploreFragment.this.getActivity(), album);
+            }
+
+            public void coverTouch(MDMAlbum album) {
+                addAlbum(album);
+            }
+
+            public void coverLongTouch(MDMAlbum album) {
+                playNowAlbum(album);
+            }
+
+            public void moreTouch(final MDMAlbum album, View anchor, final int index) {
+                // Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(ExploreFragment.this.getActivity(), anchor);
+
+                // Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.menu_album, popup.getMenu());
+
+                // registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_album_item_download:
+                                downloadAlbum(album);
+                                break;
+                            case R.id.menu_album_item_play:
+                                addAlbum(album);
+                                break;
+                            case R.id.menu_album_item_playnow:
+                                playNowAlbum(album);
+                                break;
+                            case R.id.menu_album_item_remove:
+                                AlbumInfoActivity.removeAlbum(getActivity(), album);
+                                break;
+                        }
+                        return true;
+                    }
+
+                });
+
+                popup.show();// showing popup menu
+            }
+        });
+
+
+        recyclerView.setAdapter(sa);
+
+
+        /*
+        ListView gv = (ListView) rootView.findViewById(R.id.explore_recyclerview);
 
         sa = new AlbumAdapter(getActivity(), new AlbumAdapter.EventListener() {
 
@@ -149,6 +209,7 @@ public class ExploreFragment
                 }
             }
         });
+        */
 
         final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById(R.id.explore_swipe);
         srl.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
@@ -160,7 +221,7 @@ public class ExploreFragment
                             View v = getActivity().findViewById(R.id.explore_progress);
                             if (v != null) {
                                 v.setVisibility(View.VISIBLE);
-                                controller.getExploreAlbums(sa, getActivity(), ExploreFragment.this, true, srl, 0, 10);
+                                controller.getExploreAlbums(sa, getActivity(), ExploreFragment.this, true, srl);
                             }
                         }
                     }

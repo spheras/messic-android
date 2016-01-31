@@ -43,23 +43,41 @@
             android:textSize="40sp" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/searchmessicservice_bsearch"
-        style="@style/messic_button"
-        android:layout_width="match_parent"
-        android:layout_height="31dp"
+    <LinearLayout
+        android:id="@+id/searchmessicservice_buttons"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/searchmessicservice_description"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:text="@string/searchMessicService_searchaction" />
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="31dp">
+
+        <Button
+            android:id="@+id/searchmessicservice_bsearch"
+            style="@style/messic_button"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:layout_weight="0.2"
+            android:text="@string/searchMessicService_searchaction" />
+
+        <Button
+            android:id="@+id/searchmessicservice_bmanual"
+            style="@style/messic_button"
+            android:layout_weight="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:layout_marginLeft="15dp"
+            android:text="..." />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/searchmessicservice_found_list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/searchmessicservice_bsearch"
+        android:layout_below="@+id/searchmessicservice_buttons"
         android:background="#EFEFEF"
         android:gravity="center"
         android:text="@string/searchMessicService_results"
