@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:tag="parent"
+    android:background="#FAFAFA"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/fragment_playlist_parent_tname"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="30dp"
+        android:paddingLeft="10dp"
+        android:layout_toLeftOf="@+id/fragment_playlist_parent_rlplay"
+        android:background="@color/fragment_playlist"
+        android:gravity="left|center"
+        android:text="Test Text of playlist"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#444444"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/fragment_playlist_parent_rlplay"
+        android:layout_width="24dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/messic_playright">
+
+        <ImageView
+            android:id="@+id/fragment_playlist_parent_ivplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="18dp"
+            android:alpha="0.3"
+            android:src="@drawable/ic_play_arrow_black_24dp" />
+    </RelativeLayout>
+
+</RelativeLayout>    
+

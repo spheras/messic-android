@@ -1,0 +1,68 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="events"
+            type="org.messic.android.activities.searchmessicservice.SearchMessicServiceActivity" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:onClick=""
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/searchmessicservice_item_icover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <View
+            android:id="@+id/searchmessicservice_item_vstatus"
+            android:layout_width="10dp"
+            android:layout_height="50dp"
+            android:transitionName="status"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#FFFF00" />
+        />
+
+        <TextView
+            android:id="@+id/searchmessicservice_item_hostname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/searchmessicservice_item_icover"
+            android:layout_toRightOf="@+id/searchmessicservice_item_icover"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/searchmessicservice_item_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/searchmessicservice_item_icover"
+            android:layout_toLeftOf="@+id/searchmessicservice_item_version"
+            android:layout_toRightOf="@+id/searchmessicservice_item_icover"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/searchmessicservice_item_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/searchmessicservice_item_ip"
+            android:layout_alignBottom="@+id/searchmessicservice_item_ip"
+            android:layout_alignParentRight="true"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </RelativeLayout>
+</layout>

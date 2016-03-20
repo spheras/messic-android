@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="activity_albuminfo_title">#353535</color>
+    <color name="activity_albuminfo_row">#FAFAFA</color>
+    <color name="activity_albuminfo_rowodd">#EAEAEA</color>
+    <color name="activity_albuminfo_row_downloaded">#5500FF00</color>
+    <color name="activity_albuminfo_row_downloadedodd">#FF00FF00</color>
+    <color name="activity_albuminfo_row_playing">#00FF00</color>
+</resources>

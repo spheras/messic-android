@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fragment_explore_card_background">#FFFFFF</color>
+    <color name="fragment_explore_card_background_selected">#DDDDDD</color>
+    <color name="fragment_explore_card">#00FF00</color>
+    <color name="fragment_explore_card_selected">#444444</color>
+</resources>

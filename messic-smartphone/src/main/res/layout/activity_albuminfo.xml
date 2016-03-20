@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="events"
+            type="org.messic.android.activities.albuminfo.AlbumInfoActivity" />
+
+    </data>
+
+    <ScrollView
+        android:id="@+id/albuminfo_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/albuminfo_art"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:scaleType="fitXY"
+                android:transitionName="cover" />
+
+            <RelativeLayout
+                android:id="@+id/albuminfo_title_container"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/albuminfo_art"
+                android:background="#353535"
+                android:paddingLeft="40dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/albuminfo_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Large Text"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/albuminfo_album"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/albuminfo_author"
+                    android:layout_below="@id/albuminfo_author"
+                    android:text="New Text"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/albuminfo_share"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_toLeftOf="@+id/albuminfo_remove"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/messic_button_icon"
+                    android:onClick="@{events.onShareAlbumButton}"
+                    android:src="@drawable/ic_share_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/albuminfo_remove"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_toLeftOf="@+id/albuminfo_download"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/messic_button_icon"
+                    android:onClick="@{events.onRemoveAlbumButton}"
+                    android:src="@drawable/ic_delete_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/albuminfo_download"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_toLeftOf="@+id/albuminfo_wikipedia"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/messic_button_icon"
+                    android:onClick="@{events.onDownloadAlbumButton}"
+                    android:src="@drawable/ic_cloud_download_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/albuminfo_wikipedia"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="4dp"
+                    android:layout_alignParentBottom="true"
+                    android:scaleType="fitXY"
+                    android:layout_marginBottom="2dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/messic_button_icon"
+                    android:onClick="@{events.onWikipediaButton}"
+                    android:src="@drawable/wikipedia" />
+
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/albuminfo_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/albuminfo_title_container"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="-30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/messic_playbutton"
+                android:onClick="@{events.onPlayButton}"
+                android:onLongClick="@{events.onLongPlayButton}"
+                android:src="@drawable/ic_play_arrow_white_36dp" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/albuminfo_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/albuminfo_title_container"
+                android:scrollbars="vertical" />
+        </RelativeLayout>
+    </ScrollView>
+</layout>

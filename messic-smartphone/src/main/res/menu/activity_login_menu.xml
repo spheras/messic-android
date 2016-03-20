@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.messic.android.LoginActivity">
+
+    <item
+        android:id="@+id/menu_login_action_scan"
+        android:icon="@drawable/ic_wifi_white_24dp"
+        android:title="@string/action_scan"
+        app:showAsAction="ifRoom" />
+
+</menu>

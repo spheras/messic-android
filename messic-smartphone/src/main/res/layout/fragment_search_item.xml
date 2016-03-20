@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="events"
+            type="org.messic.android.activities.main.fragments.random.RandomFragment" />
+    </data>
+
+
+    <RelativeLayout
+        android:id="@+id/search_item_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <ImageButton
+            android:id="@+id/search_item_ib_background"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="0dp"
+            android:background="@drawable/messic_button_icon"
+            android:padding="0dp" />
+
+        <ImageView
+            android:id="@+id/search_item_icover"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#000000"
+            android:transitionName="cover" />
+
+        <TextView
+            android:id="@+id/search_item_tauthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/search_item_icover"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/search_item_icover"
+            android:ellipsize="end"
+            android:lines="1"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#444444"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/search_item_talbum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/search_item_tauthor"
+            android:layout_below="@+id/search_item_tauthor"
+            android:ellipsize="end"
+            android:lines="1"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#4444FF" />
+
+        <TextView
+            android:id="@+id/search_item_tsongname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/search_item_talbum"
+            android:layout_below="@+id/search_item_talbum"
+            android:ellipsize="end"
+            android:lines="1"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#444444" />
+
+        <ImageButton
+            android:id="@+id/search_item_bplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="7dp"
+            android:alpha="0.5"
+            android:background="@drawable/messic_button_icon"
+            android:src="@drawable/ic_play_circle_outline_white_48dp" />
+
+    </RelativeLayout>
+
+</layout>

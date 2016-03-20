@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="yes">si</string>
+    <string name="no">no</string>
+    <string name="action_settings">Configuración</string>
+
+    <!-- SHARE -->
+    <string name="share_album_text_start">Creo que te podría gustar este album</string>
+    <string name="share_album_text_of">de</string>
+    <string name="share_song_text_start">Creo que te podría gustar esta canción</string>
+    <string name="share_song_text_album">del album</string>
+    <string name="share_song_text_of">de</string>
+    <string name="share_subject">Recomendación de messic</string>
+    <string name="share_by">Compartir vía...</string>
+
+    <string name="share_song">Compartir canción</string>
+    <string name="share_song_select">Selecciona si quieres compartir el fichero de AUDIO, o tan sólo un TEXTO de recomendación</string>
+    <string name="share_song_select_audio">Audio</string>
+    <string name="share_song_select_text">Texto</string>
+    <string name="share_cancel">Cancelar</string>
+
+    <!-- LOGIN ACTIVITY -->
+    <string name="login_remember">recordar</string>
+    <string name="login_loginhint">usuario</string>
+    <string name="login_passwordhint">password</string>
+    <string name="login_loginaction">Entrar</string>
+    <string name="login_sonline">Conectado</string>
+    <string name="login_server_offline">El último servidor messic al que se conectó parece que no está disponible ahora mismo. Presiona el botón Buscar para encontrar otro servidor messic en su red.</string>
+    <string name="login_explanation">Ponga aquí sus credenciales para empezar a reproducir música conectado al servidor messic.</string>
+    <string name="login_explanation_title">Datos de acceso al servicio messic</string>
+
+    <!-- SEARCH MESSIC SERVICE ACTIVITY -->
+    <string name="searchMessicService_explanation_title">Buscar un servidor messic</string>
+    <string name="searchMessicService_explanation">Debes buscar un servidor messic dentro de tu red. Presiona el botón \'Comenzar\' para empezar a buscar servidores messic en tu red.</string>
+    <string name="searchMessicService_searchaction">Buscar servidor messic</string>
+    <string name="searchMessicService_countdown_searching">buscando</string>
+    <string name="searchMessicService_countdown_seconds">seg</string>
+    <string name="searchMessicService_results">Servidores messic encontrados</string>
+    <string name="searchMessicService_manual">&#8230; o Búsqueda manual</string>
+    <string name="searchMessicService_empty">(vacío)</string>
+    <string name="searchMessicService_notavailable">¡Este servidor no esta disponible ahora!</string>
+
+    <!-- MANUAL MESSIC SERVICE ACTIIVTY -->
+    <string name="searchMessicServiceManual_explanation_title">Añadir servicio messic manualmente</string>
+    <string name="searchMessicServiceManual_explanation">Puede añadir manualmente un servicio messic existente.  Esto sólo se recomienda cuando tu servicio no se está ejecutando dentro de tu red local sino en internet.  Debido a la imposibilidad de realizar una búsqueda automática sobre todo internet para encontrar tu servicio messic, puedes detallar aquí dónde está publicado tu servidor messic.</string>
+    <string name="searchMessicServiceManual_name">Nombre</string>
+    <string name="searchMessicServiceManual_hostname">Hostname o IP</string>
+    <string name="searchMessicServiceManual_port">Puerto</string>
+    <string name="searchMessicServiceManual_secured">Securizado</string>
+    <string name="searchMessicServiceManual_description">Descripción</string>
+    <string name="searchMessicServiceManual_save">Guardar</string>
+    <string name="searchMessicServiceManual_cancel">Cancelar</string>
+    <string name="searchMessicServiceManual_mandatory">Debes rellenar al menos el nombre y el hostname/ip</string>
+
+
+    <string name="title_section_random">Música Aleatoria</string>
+    <string name="title_section_explore">Explorar Discografía</string>
+    <string name="title_section_playlist">Playlists</string>
+    <string name="title_section_downloaded">Música Descargada</string>
+    <string name="title_section_queue">Reproducción actual</string>
+    <string name="title_section_search">Resultados de Busqueda</string>
+
+
+    <string name="title_activity_base">messic</string>
+
+    <string name="player_playing">Reproduciendo:</string>
+    <string name="player_added">Añadido:</string>
+    <string name="albuminfo_loading">Cargando información de Álbum</string>
+    <string name="albuminfo_wait">Por favor espere&#8230;</string>
+    <string name="login_offline">&#8230; o reproduzca música offline</string>
+    <string name="login_searchonline">Buscar un servidor de messic</string>
+    <string name="login_title">Login</string>
+    <string name="login_message">Por favor espere &#8230;</string>
+    <string name="download_added">descargando:</string>
+    <string name="action_scan">Escanear</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_searchmusic_toast">Buscando</string>
+    <string name="action_search_hint">Buscar &#8230;</string>
+    <string name="action_remove_local_song">¿Estás seguro de eliminar la canción DE TU DISPOSITIVO LOCAL?</string>
+    <string name="action_remove_local_album">¿Estás seguro de eliminar el álbum completo DE TU DISPOSITIVO LOCAL? (esto no eliminará ninguna canción en tu servidor)</string>
+    <string name="action_removing_local_album_title">Eliminado álbum en local</string>
+    <string name="action_removing_local_album_content">Por favor, espere</string>
+    <string name="action_local_album_removed">Álbum eliminado localmente:</string>
+    <string name="action_empty_localdatabase">¿Está seguro de eliminar TODA la base de datos LOCAL? (esto no eliminará ningún archivo remoto en el servidor de messic)</string>
+    <string name="action_empty_localdatabase_reallysure">¿Estás COMPLETAMENTE SEGURO de eliminar TODA la base de datos LOCAL????? (esto no se puede deshacer)</string>
+    <string name="action_emptying_localdatabase_title">Limpiando el almacenamiento local</string>
+    <string name="action_emptying_localdatabase_content">Porfavor espere</string>
+    <string name="bignotification_player_cover_contentdescription">Carátula</string>
+    <string name="bignotification_player_back_contentdescription">Anterior</string>
+    <string name="bignotification_player_next_contentdescription">Siguiente</string>
+    <string name="bignotification_player_play_contentdescription">Reproducir</string>
+    <string name="bignotification_player_pause_contentdescription">Pausar</string>
+    <string name="bignotification_player_close_contentdescription">Cerrar</string>
+    <string name="menu_album_download">Descargar Álbum</string>
+    <string name="menu_album_remove">Eliminar Álbum</string>
+    <string name="menu_album_add">Añadir este Álbum</string>
+    <string name="menu_album_playnow">Reproducir AHORA este Álbum</string>
+    <string name="menu_base_clearplaylist">Limpiar la Lista de Reproducción</string>
+    <string name="menu_base_removedatabase">Eliminar base de datos Local</string>
+    <string name="menu_base_logout">Logout</string>
+    <string name="menu_base_showlicense">Ver Licencia</string>
+    <string name="search_results_obtained">resultados obtenidos</string>
+    <string name="search_searching">Buscando&#8230; por favor, espere</string>
+    <string name="help_welcome_head">Bienvenido a messic app</string>
+    <string name="help_welcome_content_html"><![CDATA[<p>Bienvenido a <b>messic</b>. Esta es la <b>primera vez</b> que ejecutas esta app y la primera cosa que necesitas saber es que esta app necesita conectarse a un servidor messic para comenzar a funcionar.  Después de eso, puedes descargar música de allí a tu dispositivo y reproducirla sin sin conexión al servidor.  Pero, es necesario remarcar que al menos necesitas una primera conexión con el servidor messic</p><p>Lo segundo más imprtante que debes conocer es que esta app es <b>open source</b> y <b>gratuita</b>.  En este caso, esto significa que ha sido realizada con el esfuerzo de algunos locos que creen en esos conceptos.  Pero necesitamos ayuda.  Si crees que puedes ayudarnos a mejorar esta aplicación o messic (la parte servidora) bien reportando incidencias, haciendo traducciones, creando plugins, creando contenido visual, etc.., entonces eres más que bienvenido.  Es muy difícil para nosotros mantener esta aplicación.</p><p>Por lo tanto, ya estás listo para usar esta app. <b>¡DISFRÚTALA!</b></p>]]></string>
+
+</resources>

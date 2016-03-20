@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="bignotification_cover_width">120dp</dimen>
+    <dimen name="bignotification_cover_height">110dp</dimen>
+
+</resources>
