@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alpha="1"
-            android:background="@drawable/messic_button"
+            android:background="#FFFFFF"
             android:ellipsize="end"
             android:gravity="center"
             android:paddingBottom="12dp"

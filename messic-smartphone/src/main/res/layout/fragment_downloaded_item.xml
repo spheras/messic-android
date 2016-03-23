@@ -6,7 +6,7 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.main.fragments.downloaded.DownloadedFragment" />
+            type="org.messic.android.smartphone.activities.main.fragments.downloaded.DownloadedFragment" />
     </data>
 
 

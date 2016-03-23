@@ -1,0 +1,47 @@
+<resources>
+    <string name="RandomListNameRandom">Random</string>
+    <string name="RandomListNameDate">Date</string>
+    <string name="RandomListNameLoved">Best</string>
+    <string name="RandomListNameLessPlayed">Less Played</string>
+    <string name="RandomListNameMostPlayed">Most Played</string>
+    <string name="RandomListNameAuthor">Author</string>
+    <string name="RandomListNameGenre">Style</string>
+    <string name="RandomListNameRecent">Recent</string>
+    <string name="QueuePlayList">Playlist</string>
+
+
+    <!-- Login Strings -->
+    <string name="login_welcome">Welcome to messic</string>
+    <string name="login_welcome_description">Please Select the server in which you want to login.</string>
+    <string name="login_remember">remember</string>
+    <string name="login_loginhint">username</string>
+    <string name="login_passwordhint">password</string>
+    <string name="login_loginaction">Sign in</string>
+    <string name="login_sonline">Online</string>
+    <string name="login_server_offline">The last messic server doesn\'t seem to be online now. Press Search button to find another messic server in your network</string>
+    <string name="login_explanation">Put here your login credentials to start playing your messic server online.</string>
+    <string name="login_offline">&#8230; or play offline music</string>
+    <string name="login_searchonline">Search an Online Messic Service</string>
+    <string name="login_empty">You must provide a username and password to log in messic</string>
+    <string name="login_title">Login</string>
+    <string name="login_error">Error while trying to login</string>
+    <string name="login_message">Please wait &#8230;</string>
+
+    <!-- Search Messic Service Strings -->
+    <string name="searchMessicService_explanation_title">Search messic Service</string>
+    <string name="searchMessicService_explanation">You must search a valid messic service at your network. Press the button to start searching messic services in your network.</string>
+    <string name="searchMessicService_searchaction">Search messic Services</string>
+    <string name="searchMessicService_countdown_searching">searching</string>
+    <string name="searchMessicService_countdown_seconds">sec</string>
+    <string name="searchMessicService_results">Messic Services Found List</string>
+    <string name="searchMessicService_manual">&#8230; or Manual Search</string>
+    <string name="searchMessicService_empty">(empty)</string>
+    <string name="searchMessicService_notavailable">This server is not available now!</string>
+    <string name="searchMessicService_remove">Remove Service</string>
+
+    <string name="header_title_authors">AUTHORS</string>
+    <string name="header_title_playlists">RANDOM</string>
+
+    <!-- Search Results -->
+    <string name="searchResults">Results</string>
+</resources>

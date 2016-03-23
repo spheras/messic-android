@@ -5,11 +5,11 @@
 
         <variable
             name="instance"
-            type="org.messic.android.activities.searchmanualmessicservice.SearchManualMessicServiceActivityBindingImpl" />
+            type="org.messic.android.smartphone.activities.searchmanualmessicservice.SearchManualMessicServiceActivityBindingImpl" />
 
         <variable
             name="events"
-            type="org.messic.android.activities.searchmanualmessicservice.SearchManualMessicServiceActivity" />
+            type="org.messic.android.smartphone.activities.searchmanualmessicservice.SearchManualMessicServiceActivity" />
     </data>
 
 

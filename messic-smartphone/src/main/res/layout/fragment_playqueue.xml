@@ -6,7 +6,7 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.main.fragments.queue.PlayQueueFragment" />
+            type="org.messic.android.smartphone.activities.main.fragments.queue.PlayQueueFragment" />
     </data>
 
     <RelativeLayout

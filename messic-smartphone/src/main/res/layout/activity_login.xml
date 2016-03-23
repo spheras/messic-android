@@ -7,11 +7,11 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.login.LoginActivity" />
+            type="org.messic.android.smartphone.activities.login.LoginActivity" />
 
         <variable
             name="user"
-            type="org.messic.android.activities.login.LoginActivityBindingImpl" />
+            type="org.messic.android.smartphone.activities.login.LoginActivityBindingImpl" />
 
     </data>
 
@@ -83,7 +83,6 @@
                     android:layout_alignParentRight="true"
                     android:background="#00FF00"
                     android:transitionName="status" />
-                />
 
                 <View
                     android:id="@+id/login_online_status"

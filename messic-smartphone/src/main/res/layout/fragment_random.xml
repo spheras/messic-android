@@ -6,7 +6,7 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.main.fragments.random.RandomFragment" />
+            type="org.messic.android.smartphone.activities.main.fragments.random.RandomFragment" />
     </data>
 
     <RelativeLayout

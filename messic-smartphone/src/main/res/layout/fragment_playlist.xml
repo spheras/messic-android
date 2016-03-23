@@ -6,7 +6,7 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.main.fragments.playlist.PlaylistFragment" />
+            type="org.messic.android.smartphone.activities.main.fragments.playlist.PlaylistFragment" />
     </data>
 
     <RelativeLayout

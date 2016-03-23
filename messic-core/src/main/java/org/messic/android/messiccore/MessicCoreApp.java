@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.messic.android.messiccore.dagger2.AndroidCoreModule;
 import org.messic.android.messiccore.dagger2.ApplicationCoreComponent;
+//important to import (it doesn't matter that it gives you error at the ide)
 import org.messic.android.messiccore.dagger2.DaggerApplicationCoreComponent;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
 

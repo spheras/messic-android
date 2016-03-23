@@ -6,7 +6,7 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.main.fragments.explore.ExploreFragment" />
+            type="org.messic.android.smartphone.activities.main.fragments.explore.ExploreFragment" />
     </data>
 
 
@@ -27,7 +27,7 @@
                 android:id="@+id/explore_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#DADADA"
+                android:background="#FAFAFF"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
@@ -37,7 +37,7 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <org.messic.android.views.fastscroller.FastScroller
+        <org.messic.android.smartphone.views.fastscroller.FastScroller
             android:id="@+id/explore_fastscroller"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

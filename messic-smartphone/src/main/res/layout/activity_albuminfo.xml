@@ -6,7 +6,7 @@
 
         <variable
             name="events"
-            type="org.messic.android.activities.albuminfo.AlbumInfoActivity" />
+            type="org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity" />
 
     </data>
 
