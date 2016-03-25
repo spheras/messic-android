@@ -3,6 +3,7 @@
     <string name="yes">si</string>
     <string name="no">no</string>
     <string name="action_settings">Configuración</string>
+    <string name="app_name">messic</string>
 
     <!-- SHARE -->
     <string name="share_album_text_start">Creo que te podría gustar este album</string>
@@ -98,6 +99,7 @@
     <string name="menu_base_clearplaylist">Limpiar la Lista de Reproducción</string>
     <string name="menu_base_removedatabase">Eliminar base de datos Local</string>
     <string name="menu_base_logout">Logout</string>
+    <string name="menu_base_playrandom">Reproducir Aleatoriamente</string>
     <string name="menu_base_showlicense">Ver Licencia</string>
     <string name="search_results_obtained">resultados obtenidos</string>
     <string name="search_searching">Buscando&#8230; por favor, espere</string>

@@ -36,7 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/fragment_playlist_item_talbum"
         android:layout_marginLeft="2dp"
-        android:layout_toLeftOf="@+id/fragment_playlist_item_ivremove"
         android:ellipsize="end"
         android:maxLines="2"
         android:scrollHorizontally="true"
