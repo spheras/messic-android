@@ -19,21 +19,21 @@
 package org.messic.android.smarttv.activities.login;
 
 
-import org.messic.android.smarttv.activities.Presenter;
 import org.messic.android.messiccore.controllers.messicdiscovering.MessicDiscovering;
 import org.messic.android.messiccore.datamodel.MDMMessicServerInstance;
+import org.messic.android.smarttv.activities.Presenter;
 
 import java.util.List;
 
 public interface LoginPresenter extends Presenter {
 
-    void fillUserPassword(LoginActivityBinding binding);
+    boolean fillUserPassword(LoginActivityBinding binding);
 
     void searchOnlineAction();
 
     void statusOnlineAction();
 
-    boolean loginAction(final boolean remember, final String username, final String password);
+    boolean loginAction(final MDMMessicServerInstance instance, final boolean remember, final String username, final String password);
 
     List<MDMMessicServerInstance> getSavedSessions();
 

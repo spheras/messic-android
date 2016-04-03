@@ -19,6 +19,7 @@
 package org.messic.android.smarttv.activities.login;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Build;
@@ -38,11 +39,15 @@ import android.widget.Toast;
 
 import org.messic.android.R;
 import org.messic.android.databinding.TvActivityLoginBinding;
+import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.controllers.messicdiscovering.MessicDiscovering;
 import org.messic.android.messiccore.datamodel.MDMMessicServerInstance;
+import org.messic.android.messiccore.datamodel.dao.DAOServerInstance;
 import org.messic.android.messiccore.util.MessicPreferences;
+import org.messic.android.messiccore.util.UtilNetwork;
 import org.messic.android.smarttv.MessicSmarttvApp;
 import org.messic.android.smarttv.activities.MessicBaseActivity;
+import org.messic.android.smarttv.activities.main.MainActivity;
 import org.messic.android.smarttv.rxevents.RxAction;
 import org.messic.android.smarttv.rxevents.RxDispatcher;
 import org.parceler.Parcels;
@@ -64,6 +69,8 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
     LoginPresenter presenter;
     @Inject
     MessicPreferences preferences;
+    @Inject
+    Configuration config;
     private SearchMessicServiceAdapter rvListAdapter;
     private ProgressDialog pdialog;
     private TvActivityLoginBinding binding;
@@ -82,20 +89,24 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
     private RecyclerView lvSearchResults;
     private Button bSearch;
     private TextView tvEmpty;
+    private View lLoginPanelContainer;
 
     @Override
     protected void onStart() {
         super.onStart();
-        // put the layout considering the situation
-        setupLayout();
-
         //we fill with saved data
         List<MDMMessicServerInstance> servers = this.presenter.getSavedSessions();
         if (servers.size() > 0) {
             tvEmpty.setVisibility(View.GONE);
+            config.setMessicService(servers.get(0));
+
             for (MDMMessicServerInstance instance : servers) {
                 this.rvListAdapter.addInstance(instance);
             }
+
+            this.rvListAdapter.select(0);
+            fillOnline(servers.get(0));
+
         }
     }
 
@@ -127,7 +138,7 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
 
         startServices();
         bindData(savedInstanceState);
-        //setupLayout(); this time we will do it at onStart
+        setupLayout();
         this.presenter.initialize();
         setupWindowAnimations();
     }
@@ -135,25 +146,21 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
     private Subscription subscribe() {
         return RxDispatcher.get().subscribe(new RxDispatcher.RxSubscriber() {
                                                 public void call(RxAction event) {
-//                if (event.isType(LoginEvents.EVENT_FINISH_ACTIVITY)) {
-//                    LoginActivity.this.finish();
-//                } else if (event.isType(LoginEvents.EVENT_SERVER_STATUS)) {
-//                    UtilNetwork.MessicServerConnectionStatus result = (UtilNetwork.MessicServerConnectionStatus) event.getSimpleData();
-//                    showServerStatus(result.reachable, result.running);
-//                } else if (event.isType(LoginEvents.EVENT_SHOW_SCREEN)) {
-//                    String screen = (String) event.getSimpleData();
-//
-//                    if (screen.equals(LoginEvents.SCREEN_SEARCH_MESSSIC_SERVICE)) {
-//                        Intent ssa = new Intent(LoginActivity.this, SearchMessicServiceActivity.class);
-//                        LoginActivity.this.startActivity(ssa);
-//                        finish();
-//
-//                    } else if (screen.equals(LoginEvents.SCREEN_MAIN)) {
-//                        Intent ssa = new Intent(LoginActivity.this, MainActivity.class);
-//                        LoginActivity.this.startActivity(ssa);
-//                    }
-//
-//                }
+                                                    if (event.isType(LoginEvents.EVENT_FINISH_ACTIVITY)) {
+                                                        LoginActivity.this.finish();
+                                                    } else if (event.isType(LoginEvents.EVENT_SERVER_STATUS)) {
+                                                        UtilNetwork.MessicServerConnectionStatus result = (UtilNetwork.MessicServerConnectionStatus) event.getSimpleData();
+                                                        showServerStatus(result.reachable, result.running);
+                                                    } else if (event.isType(LoginEvents.EVENT_SHOW_SCREEN)) {
+                                                        String screen = (String) event.getSimpleData();
+
+                                                        if (screen.equals(LoginEvents.SCREEN_MAIN)) {
+                                                            Intent ssa = new Intent(LoginActivity.this, MainActivity.class);
+                                                            LoginActivity.this.startActivity(ssa);
+                                                        }
+
+                                                    }
+
                                                 }
                                             }
 
@@ -163,6 +170,7 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
     /**
      * Binding information form the layout to objects
      */
+
     private void bindData(Bundle savedInstanceState) {
         this.binding = DataBindingUtil.setContentView(this, R.layout.tv_activity_login);
 
@@ -183,6 +191,7 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
         this.cRemember = (CheckBox) findViewById(R.id.login_online_cbremember);
         this.bLoginAction = (Button) findViewById(R.id.login_online_bloginaction);
         this.bRemoveServiceAction = (Button) findViewById(R.id.login_bremoveservice);
+        this.lLoginPanelContainer = findViewById(R.id.login_loginpanel_container);
 
 
         this.vStatusOnline = findViewById(R.id.login_online_status);
@@ -213,8 +222,6 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
             }
         });
 
-        onSearchServiceClick(null);
-
     }
 
     @Override
@@ -228,7 +235,14 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
      * Here you must put elements, remove elements, manage events, ...
      */
     private void setupLayout() {
-        this.presenter.fillUserPassword(this.binding.getUser());
+        boolean showLogin = this.presenter.fillUserPassword(this.binding.getUser());
+        lLoginPanelContainer.setVisibility((showLogin ? View.VISIBLE : View.GONE));
+        if (showLogin) {
+            bLoginAction.requestFocus();
+        } else {
+            bSearch.requestFocus();
+        }
+        onSearchServiceClick(null);
     }
 
     /**
@@ -272,24 +286,28 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
     }
 
     public void onRemoveClick(View v) {
-//        if (rvListAdapter.getSelected() >= 0) {
-//            MDMMessicServerInstance instance = adapter.getInstances().get(adapter.getSelected());
-//            if (instance.lsid != 0) {
-//                DAOServerInstance dsi = new DAOServerInstance(this);
-//                dsi.open();
-//                dsi.remove(instance);
-//                //dsi._recreate();
-//                dsi.close();
-//            }
-//        }
-//
-//        adapter.removeItem(adapter.getSelected());
-//        adapter.notifyDataSetChanged();
-//        adapter.select(0);
-//
-//        if (adapter.getInstances().size() <= 0) {
-//            findViewById(R.id.login_loginpanel).setVisibility(View.GONE);
-//        }
+        if (rvListAdapter.getSelected() >= 0) {
+            MDMMessicServerInstance instance = rvListAdapter.getInstances().get(rvListAdapter.getSelected());
+            if (instance.lsid != 0) {
+                DAOServerInstance dsi = new DAOServerInstance();
+                dsi.open();
+                dsi.remove(instance);
+                dsi.close();
+            }
+
+            rvListAdapter.removeItem(rvListAdapter.getSelected());
+            rvListAdapter.notifyDataSetChanged();
+
+            if (rvListAdapter.getInstances().size() <= 0) {
+                lLoginPanelContainer.setVisibility(View.GONE);
+                bSearch.requestFocus();
+                this.rvListAdapter.select(-1);
+            } else {
+                this.rvListAdapter.select(0);
+                fillOnline(this.rvListAdapter.getItem(0));
+            }
+        }
+
     }
 
     public void onLoginClick(View view) {
@@ -311,7 +329,7 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
         return Observable.just(binding.getUser()).map(new Func1<LoginActivityBindingImpl, Boolean>() {
             @Override
             public Boolean call(LoginActivityBindingImpl user) {
-                boolean result = presenter.loginAction(user.remember.get(), user.username.get(), user.password.get());
+                boolean result = presenter.loginAction(rvListAdapter.getItem(rvListAdapter.getSelected()), user.remember.get(), user.username.get(), user.password.get());
                 return result;
             }
         });
@@ -366,7 +384,7 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
 
     /**
      * Observer that handles the result through the 3 important actions:
-     * <p>
+     * <p/>
      * 1. onCompleted
      * 2. onError
      * 3. onNext
@@ -408,6 +426,7 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
 
     @Override
     public void onItemSelect(View caller, SearchMessicServiceItemViewHolder holder) {
+        this.rvListAdapter.select(holder.getAdapterPosition());
         fillOnline(holder.instance);
     }
 
@@ -438,6 +457,13 @@ public class LoginActivity extends MessicBaseActivity implements SearchMessicSer
             user.setUsername((suser != null ? suser : ""));
             String password = instance.lastPassword;//Configuration.getLastMessicPassword();
             user.setPassword((password != null ? password : ""));
+            bLoginAction.requestFocus();
+        } else {
+            user.setUsername("");
+            user.setPassword("");
+            tUserName.requestFocus();
         }
+
+        lLoginPanelContainer.setVisibility(View.VISIBLE);
     }
 }

@@ -27,13 +27,13 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMAuthor;
 import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.smartphone.MessicSmartphoneApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ public class PlayQueueSongAdapter extends RecyclerView.Adapter<PlayQueueSongView
 
     @Override
     public PlayQueueSongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_playqueue_item, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_playqueue_item, parent, false);
         return new PlayQueueSongViewHolder(layoutView, listener);
     }
 

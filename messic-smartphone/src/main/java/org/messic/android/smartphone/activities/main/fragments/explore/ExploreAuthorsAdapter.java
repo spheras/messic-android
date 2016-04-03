@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
@@ -20,6 +19,7 @@ import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMAuthor;
 import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.util.UtilRestJSONClient;
+import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.smartphone.views.fastscroller.BubbleTextGetter;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class ExploreAuthorsAdapter extends RecyclerView.Adapter<ExploreAuthorVie
     }
 
     public ExploreAuthorViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_explore_item, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_explore_item, parent, false);
         ExploreAuthorViewHolders rcv = new ExploreAuthorViewHolders(layoutView, this);
         return rcv;
     }

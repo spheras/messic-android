@@ -1,5 +1,4 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -8,10 +7,11 @@
             type="org.messic.android.smarttv.activities.login.LoginActivity" />
     </data>
 
+
     <RelativeLayout
         android:id="@+id/searchmessicservice_item_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:focusable="true"
         android:orientation="vertical"
         android:padding="10dp">
@@ -31,12 +31,11 @@
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="#FFFF00"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/searchmessicservice_item_hostname"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/searchmessicservice_item_icon"
@@ -50,8 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/searchmessicservice_item_icon"
-            android:layout_toStartOf="@+id/searchmessicservice_item_version"
             android:layout_toEndOf="@+id/searchmessicservice_item_icon"
+            android:layout_toStartOf="@+id/searchmessicservice_item_version"
+            android:minWidth="100dp"
             android:text="Small Text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000" />
@@ -63,6 +63,7 @@
             android:layout_alignBaseline="@+id/searchmessicservice_item_ip"
             android:layout_alignBottom="@+id/searchmessicservice_item_ip"
             android:layout_alignParentEnd="true"
+
             android:text="Small Text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000" />

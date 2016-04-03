@@ -42,9 +42,20 @@ public class SearchMessicServiceAdapter extends RecyclerView.Adapter<SearchMessi
     SearchMessicServiceItemViewHolder.IViewHolderClicks listener;
     private List<MDMMessicServerInstance> instances = new ArrayList<MDMMessicServerInstance>();
     private TvActivityLoginSearchmessicserviceItemBinding binding;
+    private int selectedItem = -1;
+
 
     public SearchMessicServiceAdapter(@NonNull SearchMessicServiceItemViewHolder.IViewHolderClicks listener) {
         this.listener = listener;
+    }
+
+    public void select(int item) {
+        selectedItem = item;
+        updateAdapter();
+    }
+
+    public int getSelected() {
+        return selectedItem;
     }
 
     public void updateAdapter() {
@@ -53,7 +64,7 @@ public class SearchMessicServiceAdapter extends RecyclerView.Adapter<SearchMessi
 
     public SearchMessicServiceItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.tv_activity_login_searchmessicservice_item, parent, false);
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.tv_activity_login_searchmessicservice_item, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.tv_activity_login_searchmessicservice_item, parent, false);
         return new SearchMessicServiceItemViewHolder(layoutView, this.listener);
     }
 
@@ -65,8 +76,14 @@ public class SearchMessicServiceAdapter extends RecyclerView.Adapter<SearchMessi
         holder.ip.setText(msi.ip);
         holder.version.setText(msi.version);
         holder.version.setTag(position);
+        holder.selected = (position == selectedItem);
         holder.instance = msi;
 
+        if (holder.selected) {
+            holder.vbackground.setBackgroundColor(SearchMessicServiceItemViewHolder.SELECTED_COLOR);
+        } else {
+            holder.vbackground.setBackgroundColor(Color.TRANSPARENT);
+        }
 
         UtilNetwork.get().checkMessicServerUpAndRunning(msi, AndroidSchedulers.mainThread(),
                 // On Next

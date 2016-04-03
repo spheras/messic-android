@@ -20,7 +20,6 @@ package org.messic.android.smarttv.activities.login;
 
 import android.os.AsyncTask;
 
-import org.messic.android.smarttv.MessicSmarttvApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.controllers.messicdiscovering.MessicDiscovering;
 import org.messic.android.messiccore.datamodel.MDMLogin;
@@ -30,6 +29,7 @@ import org.messic.android.messiccore.util.MessicPreferences;
 import org.messic.android.messiccore.util.UtilDatabase;
 import org.messic.android.messiccore.util.UtilNetwork;
 import org.messic.android.messiccore.util.UtilRestJSONClient;
+import org.messic.android.smarttv.MessicSmarttvApp;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -99,7 +99,7 @@ public class LoginPresenterImpl implements LoginPresenter {
         at.execute();
     }
 
-    public void fillUserPassword(LoginActivityBinding binding) {
+    public boolean fillUserPassword(LoginActivityBinding binding) {
 
         //filling the user password
         MDMMessicServerInstance instance = config.getCurrentMessicService();
@@ -113,9 +113,11 @@ public class LoginPresenterImpl implements LoginPresenter {
                 String password = config.getLastMessicPassword();
                 binding.setPassword((password != null ? password : ""));
             }
+            return true;
         } else {
             binding.setUsername("");
             binding.setPassword("");
+            return false;
         }
     }
 
@@ -140,8 +142,9 @@ public class LoginPresenterImpl implements LoginPresenter {
         return daoServerInstance.getAll();
     }
 
-    public boolean loginAction(final boolean remember, final String username, final String password) {
+    public boolean loginAction(final MDMMessicServerInstance instance, final boolean remember, final String username, final String password) {
         utilNetwork.nukeNetwork();
+        config.setMessicService(instance);
 
         final String baseURL = config.getBaseUrl() + "/messiclogin";
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();

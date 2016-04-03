@@ -25,12 +25,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMAuthor;
+import org.messic.android.smartphone.MessicSmartphoneApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class DownloadedAlbumAdapter extends RecyclerView.Adapter<DownloadedAlbum
 
     @Override
     public DownloadedAlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_downloaded_item, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_downloaded_item, parent, false);
         return new DownloadedAlbumViewHolder(layoutView, listener);
     }
 

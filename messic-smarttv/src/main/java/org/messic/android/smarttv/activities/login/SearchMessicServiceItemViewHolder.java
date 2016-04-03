@@ -30,15 +30,17 @@ import org.messic.android.messiccore.datamodel.MDMMessicServerInstance;
 
 public class SearchMessicServiceItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnKeyListener {
 
+    public static final int SELECTED_COLOR = 0xff00ff00;
+    private static final int FOCUSED_COLOR = 0x5588FF88;
+    private static final int FOCUSED_DOWN = 0xEE55AA55;
     public TextView hostname;
     public TextView ip;
     public TextView version;
     public View vStatus;
     public View vbackground;
     public MDMMessicServerInstance instance;
+    public boolean selected;
     private IViewHolderClicks listener;
-    private int SELECTED_COLOR = 0x5588FF88;
-    private int SELECTED_DOWN = 0xEE55AA55;
 
     public SearchMessicServiceItemViewHolder(@NonNull View itemView, @NonNull IViewHolderClicks listener) {
         super(itemView);
@@ -49,19 +51,19 @@ public class SearchMessicServiceItemViewHolder extends RecyclerView.ViewHolder i
         version = (TextView) itemView.findViewById(R.id.searchmessicservice_item_version);
         vStatus = itemView.findViewById(R.id.searchmessicservice_item_hostname_vstatus);
         vbackground = itemView.findViewById(R.id.searchmessicservice_item_background);
-        vbackground.setBackgroundColor(Color.TRANSPARENT);
-        this.instance = instance;
 
         vbackground.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    vbackground.setBackgroundColor(SELECTED_COLOR);
+                    vbackground.setBackgroundColor(FOCUSED_COLOR);
                 } else {
                     vbackground.setBackgroundColor(Color.TRANSPARENT);
                 }
             }
         });
+
+
         vbackground.setOnClickListener(this);
         vbackground.setOnKeyListener(this);
 
@@ -78,10 +80,10 @@ public class SearchMessicServiceItemViewHolder extends RecyclerView.ViewHolder i
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER || keyCode == KeyEvent.KEYCODE_BUTTON_SELECT) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                vbackground.setBackgroundColor(SELECTED_DOWN);
-                this.listener.onItemSelect(v, this);
+                vbackground.setBackgroundColor(FOCUSED_DOWN);
             } else {
-                vbackground.setBackgroundColor(SELECTED_COLOR);
+                vbackground.setBackgroundColor(FOCUSED_COLOR);
+                this.listener.onItemSelect(v, this);
             }
         }
 

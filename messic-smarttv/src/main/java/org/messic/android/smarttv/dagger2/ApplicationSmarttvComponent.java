@@ -18,13 +18,15 @@
  */
 package org.messic.android.smarttv.dagger2;
 
+import org.messic.android.messiccore.dagger2.AndroidCoreModule;
+import org.messic.android.messiccore.dagger2.ApplicationCoreComponent;
 import org.messic.android.smarttv.MessicSmarttvApp;
 import org.messic.android.smarttv.activities.MessicBaseActivity;
 import org.messic.android.smarttv.activities.login.LoginActivity;
 import org.messic.android.smarttv.activities.login.LoginEvents;
 import org.messic.android.smarttv.activities.login.LoginPresenterImpl;
-import org.messic.android.messiccore.dagger2.AndroidCoreModule;
-import org.messic.android.messiccore.dagger2.ApplicationCoreComponent;
+import org.messic.android.smarttv.activities.main.fragments.MainFragment;
+import org.messic.android.smarttv.utils.RemoteControlReceiver;
 
 import javax.inject.Singleton;
 
@@ -44,4 +46,7 @@ public interface ApplicationSmarttvComponent extends ApplicationCoreComponent {
 
     void inject(LoginPresenterImpl presenter);
 
+    void inject(RemoteControlReceiver receiver);
+
+    void inject(MainFragment fragment);
 }

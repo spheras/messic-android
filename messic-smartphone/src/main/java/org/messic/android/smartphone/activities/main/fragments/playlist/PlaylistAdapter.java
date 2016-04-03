@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMPlaylist;
 import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.smartphone.MessicSmartphoneApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class PlaylistAdapter
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView,
                              ViewGroup parent) {
         if (convertView == null) {
-            convertView = this.inflater.inflate(R.layout.fragment_playlist_item, null);
+            convertView = this.inflater.inflate(R.layout.fragment_playlist_item, parent, false);
         }
 
         final MDMSong song = this.playlists.get(groupPosition).getSongs().get(childPosition);

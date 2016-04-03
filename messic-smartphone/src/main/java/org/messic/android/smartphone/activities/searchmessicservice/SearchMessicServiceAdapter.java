@@ -53,7 +53,7 @@ public class SearchMessicServiceAdapter extends RecyclerView.Adapter<SearchMessi
 
     public SearchMessicServiceItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.activity_searchmessicservice_item, parent, false);
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_searchmessicservice_item, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_searchmessicservice_item, parent, false);
         return new SearchMessicServiceItemViewHolder(layoutView, this.listener);
     }
 
