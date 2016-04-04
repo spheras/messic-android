@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 
 import org.messic.android.R;
 import org.messic.android.smarttv.activities.MessicBaseActivity;

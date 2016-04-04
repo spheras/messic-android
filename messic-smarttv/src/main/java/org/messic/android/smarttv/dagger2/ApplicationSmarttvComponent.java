@@ -26,6 +26,9 @@ import org.messic.android.smarttv.activities.login.LoginActivity;
 import org.messic.android.smarttv.activities.login.LoginEvents;
 import org.messic.android.smarttv.activities.login.LoginPresenterImpl;
 import org.messic.android.smarttv.activities.main.fragments.MainFragment;
+import org.messic.android.smarttv.activities.main.fragments.MainFragmentPresenterImpl;
+import org.messic.android.smarttv.activities.main.fragments.PicassoImageCardViewTarget;
+import org.messic.android.smarttv.activities.main.fragments.SongCardPresenter;
 import org.messic.android.smarttv.utils.RemoteControlReceiver;
 
 import javax.inject.Singleton;
@@ -33,7 +36,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {SmarttvModule.class, LoginSmarttvModule.class, AndroidCoreModule.class})
+@Component(modules = {SmarttvModule.class, LoginSmarttvModule.class, MainFragmentSmartTVModule.class, AndroidCoreModule.class})
 public interface ApplicationSmarttvComponent extends ApplicationCoreComponent {
 
     void inject(MessicSmarttvApp application);
@@ -49,4 +52,11 @@ public interface ApplicationSmarttvComponent extends ApplicationCoreComponent {
     void inject(RemoteControlReceiver receiver);
 
     void inject(MainFragment fragment);
+
+    void inject(SongCardPresenter presenter);
+
+    void inject(PicassoImageCardViewTarget target);
+
+    void inject(MainFragmentPresenterImpl presenter);
+
 }

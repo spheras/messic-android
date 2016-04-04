@@ -26,6 +26,7 @@ import android.support.v17.leanback.widget.Presenter;
 
 import org.messic.android.smarttv.activities.main.fragments.MainFragmentPresenter;
 import org.messic.android.smarttv.activities.main.fragments.MainFragmentPresenterImpl;
+import org.messic.android.smarttv.activities.main.fragments.SongCardPresenter;
 
 import javax.inject.Singleton;
 
@@ -48,8 +49,7 @@ public class MainFragmentSmartTVModule {
     @Provides
     @Singleton
     Presenter providePresenter() {
-        //@TODO
-        return null;
+        return new SongCardPresenter();
     }
 
     @Provides
@@ -57,6 +57,5 @@ public class MainFragmentSmartTVModule {
     ArrayObjectAdapter provideAdapter() {
         return new ArrayObjectAdapter(new ListRowPresenter());
     }
-
 
 }

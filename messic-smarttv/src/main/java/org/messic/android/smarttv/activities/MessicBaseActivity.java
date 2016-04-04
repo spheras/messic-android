@@ -20,7 +20,6 @@ package org.messic.android.smarttv.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
@@ -42,8 +41,8 @@ public abstract class MessicBaseActivity extends android.app.Activity {
     UtilDownloadService uds;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         ((MessicSmarttvApp) MessicSmarttvApp.getInstance()).getSmarttvComponent().inject(this);
     }

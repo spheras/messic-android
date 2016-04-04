@@ -15,32 +15,23 @@
 package org.messic.android.smarttv.activities.main.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.messic.android.R;
-import org.messic.android.messic_tv.R;
-import org.messic.android.messic_tv.util.Utils;
+import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
+import org.messic.android.smarttv.MessicSmarttvApp;
+import org.messic.android.smarttv.utils.Utils;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import javax.inject.Inject;
 
 /*
  * A CardPresenter is used to generate Views and bind Objects to them on demand. 
@@ -48,46 +39,15 @@ import java.net.URISyntaxException;
  */
 public class SongCardPresenter extends Presenter {
     private static final String TAG = "CardPresenter";
-
     protected static Context mContext;
-
     //size in dps
-    private static int CARD_WIDTH = 176;
-    private static int CARD_HEIGHT = 176;
+    @Inject
+    Configuration config;
+    @Inject
+    UtilMusicPlayer ump;
 
-    static class ViewHolder extends Presenter.ViewHolder {
-        private MDMSong mSong;
-        private ImageCardView mCardView;
-        private Drawable mDefaultCardImage;
-        private PicassoImageCardViewTarget mImageCardViewTarget;
-
-        public ViewHolder(View view) {
-            super(view);
-            mCardView = (ImageCardView) view;
-            mImageCardViewTarget = new PicassoImageCardViewTarget(mCardView);
-            mDefaultCardImage = mContext.getResources().getDrawable(R.drawable.unknowncover, null);
-        }
-
-        public void setSong(MDMSong song) {
-            mSong = song;
-            mImageCardViewTarget.setSong(song);
-        }
-
-        public MDMSong getSong() {
-            return mSong;
-        }
-
-        public ImageCardView getCardView() {
-            return mCardView;
-        }
-
-        protected void updateCardViewImage(URI uri) {
-            Picasso.with(mContext)
-                    .load(uri.toString())
-                    .resize(Utils.convertDpToPixel(mContext, CARD_WIDTH),
-                            Utils.convertDpToPixel(mContext, CARD_HEIGHT))
-                    .error(mDefaultCardImage).into(mImageCardViewTarget);
-        }
+    public SongCardPresenter() {
+        ((MessicSmarttvApp) MessicSmarttvApp.getInstance()).getSmarttvComponent().inject(this);
     }
 
     @Override
@@ -99,64 +59,61 @@ public class SongCardPresenter extends Presenter {
         cardView.setFocusable(true);
         cardView.setFocusableInTouchMode(true);
         cardView.setBackgroundColor(mContext.getResources().getColor(R.color.fastlane_background));
-        return new ViewHolder(cardView);
+        return new SongCardViewHolder(cardView);
     }
 
-
     @Override
-    public void onBindViewHolder(Presenter.ViewHolder viewHolder, Object item) {
+    public void onBindViewHolder(ViewHolder viewHolder, Object item) {
+        SongCardViewHolder scviewHolder = ((SongCardViewHolder) viewHolder);
+
         if (item instanceof MDMSong) {
             MDMSong song = (MDMSong) item;
-            ((ViewHolder) viewHolder).setSong(song);
+            scviewHolder.setSong(song);
 
             Log.d(TAG, "onBindViewHolder");
 
             if (song instanceof MDMQueueSong && song.getAlbum() == null) {
                 //then it is the empty list action?
-                ((ViewHolder) viewHolder).mCardView.setTitleText("Clear List");
-                ((ViewHolder) viewHolder).mCardView.setContentText("Clear the Queue PlayList");
-                ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-                ((ViewHolder) viewHolder).mCardView.setMainImage(mContext.getDrawable(R.drawable.ic_delete_white_48dp));
-                ((ViewHolder) viewHolder).mCardView.setBadgeImage(mContext.getDrawable(R.drawable.ic_delete_white_48dp));
+                scviewHolder.mCardView.setTitleText("Clear List");
+                scviewHolder.mCardView.setContentText("Clear the Queue PlayList");
+                scviewHolder.mCardView.setMainImageDimensions(SongCardViewHolder.CARD_WIDTH, SongCardViewHolder.CARD_HEIGHT);
+                scviewHolder.mCardView.setMainImage(mContext.getResources().getDrawable(R.drawable.ic_delete_white_48dp));
+                scviewHolder.mCardView.setBadgeImage(mContext.getResources().getDrawable(R.drawable.ic_delete_white_48dp));
 
             } else {
                 String coverOnlineURL =
-                        Configuration.getBaseUrl(mContext) + "/services/albums/" + song.getAlbum().getSid()
-                                + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
-                                + Configuration.getLastToken(mContext);
+                        config.getBaseUrl() + "/services/albums/" + song.getAlbum().getSid()
+                                + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, SongCardViewHolder.CARD_WIDTH) +
+                                "&preferredHeight=" + Utils.convertDpToPixel(mContext, SongCardViewHolder.CARD_HEIGHT) + "&messic_token="
+                                + config.getLastToken();
 
 
-                ((ViewHolder) viewHolder).mCardView.setTitleText(song.getName());
-                ((ViewHolder) viewHolder).mCardView.setContentText(song.getAlbum().getName());
-                ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-                ((ViewHolder) viewHolder).mCardView.setBadgeImage(mContext.getDrawable(R.drawable.ic_launcher));
+                scviewHolder.mCardView.setTitleText(song.getName());
+                scviewHolder.mCardView.setContentText(song.getAlbum().getName());
+                scviewHolder.mCardView.setMainImageDimensions(SongCardViewHolder.CARD_WIDTH, SongCardViewHolder.CARD_HEIGHT);
+                scviewHolder.mCardView.setBadgeImage(mContext.getResources().getDrawable(R.mipmap.ic_launcher));
 
 
-                try {
-                    ((ViewHolder) viewHolder).updateCardViewImage(new URI(coverOnlineURL));
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
+                Picasso.with(MessicCoreApp.getInstance()).load(coverOnlineURL).into(scviewHolder.mCardView.getMainImageView());
+
+//                try {
+//                    scviewHolder.updateCardViewImage(new URI(coverOnlineURL));
+//                } catch (URISyntaxException e) {
+//                    e.printStackTrace();
+//                }
             }
         } else if (item instanceof MDMAlbum) {
             MDMAlbum album = (MDMAlbum) item;
             String coverOnlineURL =
-                    Configuration.getBaseUrl(mContext) + "/services/albums/" + album.getSid()
-                            + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, CARD_HEIGHT) + "&messic_token="
-                            + Configuration.getLastToken(mContext);
+                    config.getBaseUrl() + "/services/albums/" + album.getSid()
+                            + "/cover?preferredWidth=" + Utils.convertDpToPixel(mContext, SongCardViewHolder.CARD_WIDTH) + "&preferredHeight=" + Utils.convertDpToPixel(mContext, SongCardViewHolder.CARD_HEIGHT) + "&messic_token="
+                            + config.getLastToken();
 
 
-            ((ViewHolder) viewHolder).mCardView.setTitleText(album.getName());
-            ((ViewHolder) viewHolder).mCardView.setContentText(album.getAuthor().getName());
-            ((ViewHolder) viewHolder).mCardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-
-
-            try {
-                ((ViewHolder) viewHolder).updateCardViewImage(new URI(coverOnlineURL));
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-
+            scviewHolder.mCardView.setTitleText(album.getName());
+            scviewHolder.mCardView.setContentText(album.getAuthor().getName());
+            scviewHolder.mCardView.setMainImageDimensions(SongCardViewHolder.CARD_WIDTH, SongCardViewHolder.CARD_HEIGHT);
+            Picasso.with(MessicCoreApp.getInstance()).load(coverOnlineURL).into(scviewHolder.mCardView.getMainImageView());
         }
     }
 
@@ -170,59 +127,5 @@ public class SongCardPresenter extends Presenter {
         // TO DO
     }
 
-    public static class PicassoImageCardViewTarget implements Target {
-        private ImageCardView mImageCardView;
-        private MDMSong mSong;
 
-        public void setSong(MDMSong song) {
-            mSong = song;
-        }
-
-        public PicassoImageCardViewTarget(ImageCardView imageCardView) {
-            mImageCardView = imageCardView;
-        }
-
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-            if (mSong != null && mSong instanceof MDMQueueSong) {
-                int cursor = UtilMusicPlayer.getCursor(mContext);
-                MDMQueueSong mqs = (MDMQueueSong) mSong;
-                if (cursor == mqs.indexAtList) {
-
-
-                    Bitmap bm_ic_pause = BitmapFactory.decodeResource(mContext.getResources(), (UtilMusicPlayer.isPlaying(mContext) ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp));
-
-                    Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
-                    Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
-                    Canvas c = new Canvas(mutableBitmap);
-                    int l = bitmap.getWidth() / 2 - bitmap.getWidth() / 4;
-                    int t = bitmap.getHeight() / 2 - bitmap.getHeight() / 4;
-
-                    Rect src = new Rect(0, 0, bm_ic_pause.getWidth(), bm_ic_pause.getHeight());
-                    Rect dst = new Rect(l, t, l + bitmap.getWidth() / 2, t + bitmap.getHeight() / 2);
-                    c.drawBitmap(bm_ic_pause, src, dst, new Paint());
-
-
-                    Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), mutableBitmap);
-                    mImageCardView.setMainImage(bitmapDrawable);
-                } else {
-                    Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
-                    mImageCardView.setMainImage(bitmapDrawable);
-                }
-            } else {
-                Drawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
-                mImageCardView.setMainImage(bitmapDrawable);
-            }
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable drawable) {
-            mImageCardView.setMainImage(drawable);
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable drawable) {
-            // Do nothing, default_background manager has its own transitions
-        }
-    }
 }

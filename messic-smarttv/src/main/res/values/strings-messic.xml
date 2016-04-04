@@ -1,4 +1,7 @@
 <resources>
+    <string name="app_name">messic-smarttv</string>
+    <string name="browse_title"><![CDATA[messic]]></string>
+
     <string name="RandomListNameRandom">Random</string>
     <string name="RandomListNameDate">Date</string>
     <string name="RandomListNameLoved">Best</string>
