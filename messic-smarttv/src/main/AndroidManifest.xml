@@ -25,6 +25,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Leanback">
 
+        <receiver
+            android:name=".smarttv.activities.recommendations.BootupActivity"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".smarttv.utils.RemoteControlReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".smarttv.activities.login.LoginActivity"
             android:icon="@mipmap/ic_launcher"
@@ -42,6 +56,19 @@
             android:name=".smarttv.activities.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".smarttv.activities.search.SearchActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" />
+
+        <service
+            android:name=".smarttv.services.MessicPlayerTVService"
+            android:exported="false" />
+
+        <service
+            android:name=".smarttv.activities.recommendations.UpdateRecommendationsService"
+            android:enabled="true" />
     </application>
 
 </manifest>

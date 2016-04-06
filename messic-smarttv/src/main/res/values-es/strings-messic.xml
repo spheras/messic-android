@@ -47,4 +47,9 @@
 
     <!-- Search Results -->
     <string name="searchResults">Resultados</string>
+
+    <!--ACTIONS -->
+    <string name="action_clearQueueTitle">Limpiar Lista</string>
+    <string name="action_clearQueueDescription">Limpiar la lista de reproducción actual</string>
+
 </resources>

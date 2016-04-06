@@ -47,4 +47,8 @@
 
     <!-- Search Results -->
     <string name="searchResults">Results</string>
+
+    <!--ACTIONS -->
+    <string name="action_clearQueueTitle">Clear List</string>
+    <string name="action_clearQueueDescription">Clear the Queue PlayList</string>
 </resources>

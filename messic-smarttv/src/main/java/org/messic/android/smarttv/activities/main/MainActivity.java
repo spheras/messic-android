@@ -4,13 +4,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
 import org.messic.android.R;
 import org.messic.android.smarttv.activities.MessicBaseActivity;
 import org.messic.android.smarttv.utils.RemoteControlReceiver;
 
 public class MainActivity extends MessicBaseActivity {
+    public static final String Song = "Song";
+    public static final String NOTIFICATION_ID = "NotificationId";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

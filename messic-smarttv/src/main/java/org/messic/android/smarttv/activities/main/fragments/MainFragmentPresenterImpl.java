@@ -132,4 +132,35 @@ public class MainFragmentPresenterImpl implements MainFragmentPresenter {
             }
         });
     }
+
+    @Override
+    public Observable<MDMSong> loadAlbum(final MDMAlbum album) {
+        //we need to request the full album info and load all the songs to show the info
+        return Observable.create(new Observable.OnSubscribe<MDMSong>() {
+            @Override
+            public void call(final Subscriber<? super MDMSong> subscriber) {
+
+                final String baseURL =
+                        config.getBaseUrl()
+                                + "/services/albums/" + album.getSid() + "?songsInfo=true&messic_token="
+                                + config.getLastToken();
+
+                jsonClient.get(baseURL, MDMAlbum.class,
+                        new UtilRestJSONClient.RestListener<MDMAlbum>() {
+                            public void response(MDMAlbum response) {
+                                for (int j = 0; j < response.getSongs().size(); j++) {
+                                    MDMSong song = response.getSongs().get(j);
+                                    song.setAlbum(response);
+                                    subscriber.onNext(song);
+                                }
+                                subscriber.onCompleted();
+                            }
+
+                            public void fail(final Exception e) {
+                                subscriber.onError(e);
+                            }
+                        });
+            }
+        });
+    }
 }

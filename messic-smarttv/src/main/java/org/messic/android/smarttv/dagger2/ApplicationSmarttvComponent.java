@@ -27,8 +27,14 @@ import org.messic.android.smarttv.activities.login.LoginEvents;
 import org.messic.android.smarttv.activities.login.LoginPresenterImpl;
 import org.messic.android.smarttv.activities.main.fragments.MainFragment;
 import org.messic.android.smarttv.activities.main.fragments.MainFragmentPresenterImpl;
-import org.messic.android.smarttv.activities.main.fragments.PicassoImageCardViewTarget;
-import org.messic.android.smarttv.activities.main.fragments.SongCardPresenter;
+import org.messic.android.smarttv.activities.main.fragments.PlaylistQueueSongTarget;
+import org.messic.android.smarttv.activities.main.fragments.RowCardPresenter;
+import org.messic.android.smarttv.activities.main.fragments.cardview.ActionEmptyCardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.PlaylistQueueCardViewItem;
+import org.messic.android.smarttv.activities.recommendations.UpdateRecommendationsService;
+import org.messic.android.smarttv.activities.search.SearchFragment;
+import org.messic.android.smarttv.activities.search.SearchFragmentPresenterImpl;
+import org.messic.android.smarttv.services.MessicPlayerTVService;
 import org.messic.android.smarttv.utils.RemoteControlReceiver;
 
 import javax.inject.Singleton;
@@ -36,7 +42,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {SmarttvModule.class, LoginSmarttvModule.class, MainFragmentSmartTVModule.class, AndroidCoreModule.class})
+@Component(modules = {SmarttvModule.class, LoginSmarttvModule.class, MainFragmentSmartTVModule.class, SearchFragmentSmartTVModule.class, AndroidCoreModule.class})
 public interface ApplicationSmarttvComponent extends ApplicationCoreComponent {
 
     void inject(MessicSmarttvApp application);
@@ -53,10 +59,21 @@ public interface ApplicationSmarttvComponent extends ApplicationCoreComponent {
 
     void inject(MainFragment fragment);
 
-    void inject(SongCardPresenter presenter);
+    void inject(RowCardPresenter presenter);
 
-    void inject(PicassoImageCardViewTarget target);
+    void inject(PlaylistQueueSongTarget target);
 
     void inject(MainFragmentPresenterImpl presenter);
 
+    void inject(SearchFragmentPresenterImpl presenter);
+
+    void inject(SearchFragment fragment);
+
+    void inject(ActionEmptyCardViewItem item);
+
+    void inject(PlaylistQueueCardViewItem item);
+
+    void inject(MessicPlayerTVService service);
+
+    void inject(UpdateRecommendationsService service);
 }

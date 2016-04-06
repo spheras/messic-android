@@ -209,6 +209,7 @@
                         android:nextFocusLeft="@+id/login_lvresults"
                         android:nextFocusUp="@+id/login_online_tpassword"
                         android:text="@string/login_remember"
+                        android:setOnCheckedChangeListener="@{user.rememberSync}"
                         android:textSize="20sp"
                         app:checked="@{user.remember}" />
 

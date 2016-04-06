@@ -22,11 +22,10 @@ package org.messic.android.smarttv.dagger2;
 import android.content.Context;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.ListRowPresenter;
-import android.support.v17.leanback.widget.Presenter;
 
-import org.messic.android.smarttv.activities.main.fragments.MainFragmentPresenter;
-import org.messic.android.smarttv.activities.main.fragments.MainFragmentPresenterImpl;
-import org.messic.android.smarttv.activities.main.fragments.RowCardPresenter;
+import org.messic.android.smarttv.activities.search.SearchArrayObjectAdapter;
+import org.messic.android.smarttv.activities.search.SearchFragmentPresenter;
+import org.messic.android.smarttv.activities.search.SearchFragmentPresenterImpl;
 
 import javax.inject.Singleton;
 
@@ -38,24 +37,18 @@ import dagger.Provides;
  * {@link android.app.Application} to create.
  */
 @Module
-public class MainFragmentSmartTVModule {
+public class SearchFragmentSmartTVModule {
 
     @Provides
     @Singleton
-    MainFragmentPresenter provideMainFragmentPresenter() {
-        return new MainFragmentPresenterImpl();
+    SearchFragmentPresenter provideSearchFragmentPresenter() {
+        return new SearchFragmentPresenterImpl();
     }
 
     @Provides
     @Singleton
-    Presenter providePresenter() {
-        return new RowCardPresenter();
-    }
-
-    @Provides
-    @Singleton
-    ArrayObjectAdapter provideAdapter() {
-        return new ArrayObjectAdapter(new ListRowPresenter());
+    SearchArrayObjectAdapter provideAdapter() {
+        return new SearchArrayObjectAdapter(new ListRowPresenter());
     }
 
 }

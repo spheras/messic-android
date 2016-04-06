@@ -14,6 +14,9 @@
 
 package org.messic.android.smarttv.activities.main.fragments;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +48,16 @@ import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.player.PlayerEventListener;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
 import org.messic.android.smarttv.MessicSmarttvApp;
+import org.messic.android.smarttv.activities.main.MainActivity;
+import org.messic.android.smarttv.activities.main.fragments.cardview.ActionCardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.ActionEmptyCardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.AlbumCardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.CardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.IndexCardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.PlaylistQueueCardViewItem;
+import org.messic.android.smarttv.activities.main.fragments.cardview.SongCardViewItem;
+import org.messic.android.smarttv.activities.recommendations.UpdateRecommendationsService;
+import org.messic.android.smarttv.activities.search.SearchActivity;
 import org.messic.android.smarttv.rxevents.RxAction;
 import org.messic.android.smarttv.rxevents.RxDispatcher;
 import org.messic.android.smarttv.utils.PicassoBackgroundManagerTarget;
@@ -71,6 +84,7 @@ import rx.schedulers.Schedulers;
 public class MainFragment extends BrowseFragment implements PlayerEventListener {
     private static final String TAG = "MainFragment";
     private static final int BACKGROUND_UPDATE_DELAY = 300;
+    private static final int NO_NOTIFICATION = -1;
     private final Handler mHandler = new Handler();
     @Inject
     MainFragmentPresenter presenter;
@@ -93,7 +107,8 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
             //we add the randomlist
             ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(mCardPresenter);
             for (int j = 0; j < rl.getSongs().size(); j++) {
-                listRowAdapter.add(rl.getSongs().get(j));
+                SongCardViewItem songcard = new SongCardViewItem(rl.getSongs().get(j));
+                listRowAdapter.add(songcard);
             }
 
             HeaderItem header = new HeaderItem(mRowsAdapter.size() + 30, UtilMessic.getRandomTitle(MainFragment.this.getActivity(), rl));
@@ -125,7 +140,8 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
             for (int j = 0; j < author.getAlbums().size(); j++) {
                 MDMAlbum album = author.getAlbums().get(j);
                 album.setAuthor(author);
-                listRowAdapter.add(album);
+                AlbumCardViewItem albumcard = new AlbumCardViewItem(album);
+                listRowAdapter.add(albumcard);
             }
 
             HeaderItem header = new HeaderItem(mRowsAdapter.size() + 30, author.getName());
@@ -175,7 +191,9 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
     private void updateAuthorsList() {
         HeaderItem headerSeparator = new HeaderItem(0, "░░ " + getString(R.string.header_title_authors) + " ░░░░░░░░░░░░░░░░░░░░░░░░");
-        mRowsAdapter.add(new ListRow(headerSeparator, new ArrayObjectAdapter()));
+        ArrayObjectAdapter aoa = new ArrayObjectAdapter(mCardPresenter);
+        aoa.addAll(0, IndexCardViewItem.getIndexList(getHeadersFragment(), mRowsAdapter.size()));
+        mRowsAdapter.add(new ListRow(headerSeparator, aoa));
 
         android.app.Activity activity = getActivity();
         if (activity != null) {
@@ -194,16 +212,20 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
     private void updateQueuePlayList() {
         List<MDMSong> queue = ump.getQueue();
-        List<MDMQueueSong> newQueue = new ArrayList<MDMQueueSong>();
-        newQueue.add(new MDMQueueSong(new MDMSong())); //this is for the empty action, just a trick
+        //this is for the empty action
+        ActionCardViewItem actionEmpty = new ActionEmptyCardViewItem();
+        List<PlaylistQueueCardViewItem> newQueue = new ArrayList<PlaylistQueueCardViewItem>();
         for (int i = 0; i < queue.size(); i++) {
-            MDMQueueSong mqs = new MDMQueueSong(queue.get(i));
-            mqs.indexAtList = i;
-            newQueue.add(mqs);
+            PlaylistQueueCardViewItem queueCard = new PlaylistQueueCardViewItem(queue.get(i));
+            queueCard.setIndexAtList(i);
+            newQueue.add(queueCard);
         }
         HeaderItem header = new HeaderItem(0, getString(R.string.QueuePlayList));
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(mCardPresenter);
-        listRowAdapter.addAll(0, newQueue);
+        listRowAdapter.add(0, actionEmpty);
+        if (newQueue.size() > 0) {
+            listRowAdapter.addAll(1, newQueue);
+        }
         mRowsAdapter.add(new ListRow(header, listRowAdapter));
     }
 
@@ -253,15 +275,23 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
         setupLayout();
         this.presenter.initialize();
 
-        //@TODO
-//        MDMSong selectedSong = getActivity().getIntent()
-//                .getExtras() != null ? (MDMSong) getActivity().getIntent()
-//                .getExtras().get(MainActivity.Song) : null;
-//        if (selectedSong != null) {
-//            removeNotification(getActivity().getIntent()
-//                    .getIntExtra(MainActivity.NOTIFICATION_ID, NO_NOTIFICATION));
-//            UtilMusicPlayer.getMessicPlayerService(getActivity()).getPlayer().addAndPlay(selectedSong);
-//        }
+        //in case an incoming petition of recommendation
+        MDMSong selectedSong = getActivity().getIntent()
+                .getExtras() != null ? (MDMSong) getActivity().getIntent()
+                .getExtras().get(MainActivity.Song) : null;
+        if (selectedSong != null) {
+            removeNotification(getActivity().getIntent()
+                    .getIntExtra(MainActivity.NOTIFICATION_ID, NO_NOTIFICATION));
+            ump.getMessicPlayerService().getPlayer().addAndPlay(selectedSong);
+        }
+    }
+
+    private void removeNotification(int notificationId) {
+        if (notificationId != NO_NOTIFICATION) {
+            NotificationManager notificationManager = (NotificationManager) getActivity()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(notificationId);
+        }
     }
 
     /**
@@ -272,6 +302,7 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
         setupEventListeners();
         setAdapter(mRowsAdapter);
         ump.addListener(this);
+        updateRecommendations();
     }
 
     @Override
@@ -308,9 +339,8 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
             @Override
             public void onClick(View view) {
-                //@TODO
-//                Intent intent = new Intent(getActivity(), SearchActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -342,15 +372,35 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
         );
     }
 
+    private void updatePlayQueue() {
+        List<MDMSong> queue = ump.getQueue();
+        //this is for the empty action
+        ActionCardViewItem actionEmpty = new ActionEmptyCardViewItem();
+        List<PlaylistQueueCardViewItem> newQueue = new ArrayList<PlaylistQueueCardViewItem>();
+        for (int i = 0; i < queue.size(); i++) {
+            PlaylistQueueCardViewItem queueCard = new PlaylistQueueCardViewItem(queue.get(i));
+            queueCard.setIndexAtList(i);
+            newQueue.add(queueCard);
+        }
+        if (mRowsAdapter != null && mRowsAdapter.size() > 0) {
+            ArrayObjectAdapter listRowAdapter = (ArrayObjectAdapter) ((ListRow) mRowsAdapter.get(0)).getAdapter();
+            listRowAdapter.clear();
+            listRowAdapter.add(actionEmpty);
+            listRowAdapter.addAll(0, newQueue);
 
-    @Override
-    public void paused(MDMSong song, int index) {
+            listRowAdapter.notifyArrayItemRangeChanged(0, listRowAdapter.size());
+        }
 
     }
 
     @Override
-    public void playing(MDMSong song, boolean resumed, int index) {
+    public void paused(MDMSong song, int index) {
+        updatePlayQueue();
+    }
 
+    @Override
+    public void playing(MDMSong song, boolean resumed, int index) {
+        updatePlayQueue();
     }
 
     @Override
@@ -360,37 +410,41 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
 
     @Override
     public void added(MDMSong song) {
-
+        updatePlayQueue();
     }
 
     @Override
     public void added(MDMAlbum album) {
-
+        updatePlayQueue();
     }
 
     @Override
     public void added(MDMPlaylist playlist) {
-
+        updatePlayQueue();
     }
 
     @Override
     public void removed(MDMSong song) {
-
+        updatePlayQueue();
     }
 
     @Override
     public void empty() {
-
+        updatePlayQueue();
     }
 
     @Override
     public void connected() {
-
     }
 
     @Override
     public void disconnected() {
+        ump.removeListener(this);
+    }
 
+    private void updateRecommendations() {
+        Intent recommendationIntent = new Intent(getActivity(), UpdateRecommendationsService.class);
+        getActivity().startService(recommendationIntent);
     }
 
     private void startBackgroundTimer() {
@@ -429,12 +483,18 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
     private final class ItemViewSelectedListener implements OnItemViewSelectedListener {
 
         @Override
-        public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item,
+        public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object oitem,
                                    RowPresenter.ViewHolder rowViewHolder, Row row) {
 
-            if (item instanceof MDMSong) {
+            if (oitem == null) {
+                return;
+            }
 
-                MDMSong song = (MDMSong) item;
+            CardViewItem cardView = (CardViewItem) oitem;
+            Object iitem = cardView.getItem();
+            if (iitem instanceof MDMSong) {
+
+                MDMSong song = (MDMSong) iitem;
                 if (song.getAlbum() == null) {
                     return;
                 }
@@ -452,9 +512,9 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
                     e.printStackTrace();
                 }
                 startBackgroundTimer();
-            } else if (item instanceof MDMAlbum) {
+            } else if (iitem instanceof MDMAlbum) {
 
-                MDMAlbum album = (MDMAlbum) item;
+                MDMAlbum album = (MDMAlbum) iitem;
 
                 String coverOnlineURL =
                         config.getBaseUrl() + "/services/albums/" +
@@ -491,77 +551,15 @@ public class MainFragment extends BrowseFragment implements PlayerEventListener 
         }
     }
 
+    /**
+     * When clicking an element
+     */
     private final class ItemViewClickedListener implements OnItemViewClickedListener {
 
         @Override
-        public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item,
-                                  RowPresenter.ViewHolder rowViewHolder, Row row) {
-            if (item instanceof String) {
-                Toast.makeText(getActivity(), ((String) item), Toast.LENGTH_SHORT)
-                        .show();
-            } else if (item instanceof MDMQueueSong) {
-                if (((MDMQueueSong) item).getAlbum() != null) {
-                    if (ump.getCursor() == ((MDMQueueSong) item).indexAtList) {
-                        if (ump.isPlaying()) {
-                            ump.pauseSong();
-                        } else {
-                            ump.resumeSong();
-                        }
-                    } else {
-                        ump.setSong(((MDMQueueSong) item).indexAtList);
-                        ump.playSong();
-                    }
-                } else {
-                    //the clear action item?
-                    ump.clearQueue();
-                }
-
-            } else if (item instanceof MDMSong) {
-                ump.addSong((MDMSong) item);
-            } else if (item instanceof MDMAlbum) {
-                MDMAlbum album = (MDMAlbum) item;
-
-                for (int i = 0; i < mRowsAdapter.size(); i++) {
-                    ListRow lr = (ListRow) mRowsAdapter.get(i);
-                    final ArrayObjectAdapter aoa = (ArrayObjectAdapter) lr.getAdapter();
-                    for (int j = 0; j < aoa.size(); j++) {
-                        Object obj = aoa.get(j);
-                        if (obj instanceof MDMAlbum) {
-                            MDMAlbum jalbum = (MDMAlbum) obj;
-                            if (jalbum.getSid() == album.getSid()) {
-
-                                Observable<MDMAlbum> observable = presenter.loadAuthorAlbums(jalbum.getAuthor());
-                                observable.subscribeOn(Schedulers.io()).onBackpressureBuffer()
-                                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<MDMAlbum>() {
-                                    @Override
-                                    public void call(MDMAlbum album) {
-                                        for (int j = 0; j < album.getSongs().size(); j++) {
-                                            MDMSong song = album.getSongs().get(j);
-                                            song.setAlbum(album);
-                                            aoa.add(song);
-                                        }
-                                        aoa.notifyArrayItemRangeChanged(0, aoa.size());
-                                    }
-                                }, new Action1<Throwable>() {
-                                    @Override
-                                    public void call(Throwable throwable) {
-                                        throwable.printStackTrace();
-                                        //mProgressBar.setVisibility(View.GONE);
-                                        //swipeRefreshLayout.setRefreshing(false);
-                                        Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_SHORT).show();
-                                    }
-                                }, new Action0() {
-                                    @Override
-                                    public void call() {
-                                        //nothing to do
-                                    }
-                                });
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+        public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object oitem, RowPresenter.ViewHolder rowViewHolder, Row row) {
+            CardViewItem cardView = (CardViewItem) oitem;
+            cardView.onItemClicked(itemViewHolder, oitem, rowViewHolder, row, ump, config, presenter, MainFragment.this.getActivity());
         }
     }
 }
