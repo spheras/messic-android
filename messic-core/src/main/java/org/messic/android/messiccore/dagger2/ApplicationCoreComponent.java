@@ -1,5 +1,6 @@
 package org.messic.android.messiccore.dagger2;
 
+import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.datamodel.dao.DAO;
@@ -22,6 +23,8 @@ import dagger.Component;
 @Singleton
 @Component(modules = AndroidCoreModule.class)
 public interface ApplicationCoreComponent {
+
+    void inject(MessicCoreApp coreApp);
 
     void inject(MessicPreferences preferences);
 

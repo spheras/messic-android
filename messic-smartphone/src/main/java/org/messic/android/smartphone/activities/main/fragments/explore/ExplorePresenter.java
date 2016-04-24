@@ -31,4 +31,6 @@ public interface ExplorePresenter extends Presenter {
 
     void longPlayAction(MDMAlbum album);
 
+    void downloadAlbum(MDMAlbum album);
+
 }

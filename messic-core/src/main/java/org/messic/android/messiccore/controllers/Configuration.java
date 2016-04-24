@@ -21,6 +21,7 @@ package org.messic.android.messiccore.controllers;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.datamodel.MDMMessicServerInstance;
 import org.messic.android.messiccore.datamodel.dao.DAOAlbum;
+import org.messic.android.messiccore.datamodel.dao.DAOServerInstance;
 import org.messic.android.messiccore.util.MessicPreferences;
 
 import javax.inject.Inject;
@@ -31,17 +32,22 @@ public class Configuration {
 
     @Inject
     MessicPreferences prefs;
+
     /**
      * flag to know if the static fields has been removed and need to be reloaded
      */
     private MDMMessicServerInstance serverInstance = null;
     private String lastToken = null;
     private boolean firstTime = false;
-    private Class loginActivityClass;
     private boolean offline;
+    private LogoutListener logoutListener;
+
+    //WARNING! this cannot be injected (or passed at construction) due to cyclic dependency, we inject it manually
+    private DAOServerInstance daoServerInstance;
 
     private Configuration() {
         MessicCoreApp.getInstance().getComponent().inject(this);
+        init();
     }
 
     public static Configuration get() {
@@ -51,19 +57,22 @@ public class Configuration {
         return instance;
     }
 
-    public void init() {
+    /**
+     * WARNING! this cannot be injected (or passed at construction) due to cyclic dependency, we inject it manually
+     */
+    public void injectManuallyDaoServerInstance(DAOServerInstance dao) {
+        this.daoServerInstance = dao;
+        init();
+    }
+
+    private void init() {
         lastToken = prefs.getCurrentToken();
         offline = prefs.getCurrentOffline();
-        serverInstance = prefs.getLastMessicServerUsed();
+        serverInstance = getLastMessicServerUsed();
     }
 
-
-    public Class getLoginActivityClass() {
-        return loginActivityClass;
-    }
-
-    public void setLoginActivityClass(Class loginActivityClass) {
-        loginActivityClass = loginActivityClass;
+    public void setLogoutListener(LogoutListener listener) {
+        this.logoutListener = listener;
     }
 
     public String getLastToken() {
@@ -72,22 +81,10 @@ public class Configuration {
 
     public void logout() {
         setToken(null);
-
-        /*
-        @TODO OUT OF HERE!
-        if (getLoginActivityClass() != null) {
-            Intent intent = new Intent(context, getLoginActivityClass());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+        if (this.logoutListener != null) {
+            this.logoutListener.logout();
         }
-
-
-        if (context instanceof Activity) {
-            ((Activity) context).finish(); // call this to finish the current activity
-        }
-        */
     }
-
 
     public void setToken(String token) {
         lastToken = token;
@@ -114,9 +111,12 @@ public class Configuration {
     }
 
     public MDMMessicServerInstance getLastMessicServerUsed() {
-        MDMMessicServerInstance prefferedServer = prefs.getLastMessicServerUsed();
-        serverInstance = prefferedServer;
-        return serverInstance;
+        int serverSid = prefs.getLastMessicServerUsed();
+        if (daoServerInstance != null) {
+            return this.daoServerInstance.get(serverSid);
+        } else {
+            return null;
+        }
     }
 
     public String getLastMessicUser() {
@@ -173,6 +173,10 @@ public class Configuration {
      */
     public void setFirstTime(boolean firstTime) {
         this.firstTime = firstTime;
+    }
+
+    public interface LogoutListener {
+        void logout();
     }
 
 }

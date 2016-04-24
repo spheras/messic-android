@@ -44,12 +44,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
-import org.messic.android.smartphone.activities.MessicBaseActivity;
-import org.messic.android.smartphone.activities.searchmessicservice.SearchMessicServiceActivity;
-import org.messic.android.smartphone.rxevents.RxAction;
-import org.messic.android.smartphone.rxevents.RxDispatcher;
 import org.messic.android.databinding.ActivityAlbuminfoBinding;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
@@ -57,6 +52,11 @@ import org.messic.android.messiccore.datamodel.MDMPlaylist;
 import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.player.PlayerEventListener;
 import org.messic.android.messiccore.util.UtilDownloadService;
+import org.messic.android.smartphone.MessicSmartphoneApp;
+import org.messic.android.smartphone.activities.MessicBaseActivity;
+import org.messic.android.smartphone.activities.searchmessicservice.SearchMessicServiceActivity;
+import org.messic.android.smartphone.rxevents.RxAction;
+import org.messic.android.smartphone.rxevents.RxDispatcher;
 
 import java.util.Locale;
 
@@ -407,6 +407,13 @@ public class AlbumInfoActivity extends MessicBaseActivity implements AlbumInfoSo
                 Toast.LENGTH_SHORT).show();
 
         return false;
+    }
+
+    public void onBackButton(View v) {
+        finish();
+//        Intent intent = new Intent(this, MainActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+//        this.startActivity(intent);
     }
 
     public void onShareAlbumButton(View v) {

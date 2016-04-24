@@ -138,11 +138,7 @@ public class UtilDownloadService {
 
 
         if (config.isOffline()) {
-            //@TODO review this
-            if (config.getLoginActivityClass() != null) {
-                Intent ssa = new Intent(MessicCoreApp.getInstance(), config.getLoginActivityClass());
-                MessicCoreApp.getInstance().startActivity(ssa);
-            }
+            config.logout();
         }
     }
 

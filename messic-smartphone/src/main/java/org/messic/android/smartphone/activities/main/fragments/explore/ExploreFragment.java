@@ -38,15 +38,15 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
-import org.messic.android.smartphone.rxevents.RxDispatcher;
-import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.databinding.FragmentExploreBinding;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMAuthor;
+import org.messic.android.smartphone.MessicSmartphoneApp;
+import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.smartphone.rxevents.RxAction;
+import org.messic.android.smartphone.rxevents.RxDispatcher;
 import org.messic.android.smartphone.views.fastscroller.FastScroller;
 
 import javax.inject.Inject;
@@ -269,6 +269,9 @@ public class ExploreFragment extends Fragment implements ExploreAuthorsAdapter.E
                         break;
                     case R.id.menu_album_item_playnow:
                         presenter.longPlayAction(album);
+                        break;
+                    case R.id.menu_album_item_download:
+                        presenter.downloadAlbum(album);
                         break;
                 }
                 return true;

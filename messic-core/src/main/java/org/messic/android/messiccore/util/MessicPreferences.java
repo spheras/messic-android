@@ -83,14 +83,9 @@ public class MessicPreferences implements Serializable {
         editor.commit();
     }
 
-    public MDMMessicServerInstance getLastMessicServerUsed() {
+    public int getLastMessicServerUsed() {
         int sid = this.sp.getInt(PREFERENCE_LAST_MESSIC_SERVER, 0);
-        if (sid > 0) {
-            DAOServerInstance dao = new DAOServerInstance();
-            return dao.get(sid);
-        } else {
-            return null;
-        }
+        return sid;
     }
 
     public void setLastMessicServerUsed(MDMMessicServerInstance msi) {

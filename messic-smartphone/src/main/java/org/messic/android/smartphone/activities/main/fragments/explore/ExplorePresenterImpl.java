@@ -18,15 +18,17 @@
  */
 package org.messic.android.smartphone.activities.main.fragments.explore;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMAuthor;
 import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.messiccore.download.DownloadListener;
 import org.messic.android.messiccore.util.UtilDownloadService;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
 import org.messic.android.messiccore.util.UtilRestJSONClient;
+import org.messic.android.smartphone.MessicSmartphoneApp;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -125,6 +127,30 @@ public class ExplorePresenterImpl implements ExplorePresenter {
             song.setAlbum(album);
         }
         ump.addSongsAndPlay(album.getSongs());
+    }
+
+    @Override
+    public void downloadAlbum(MDMAlbum album) {
+        uds.addDownload(album, new DownloadListener() {
+            public void downloadUpdated(MDMSong song, float percent) {
+            }
+
+            public void downloadStarted(MDMSong song) {
+
+            }
+
+            public void downloadFinished(MDMSong song, File fdownloaded) {
+            }
+
+            public void downloadAdded(MDMSong song) {
+            }
+
+            public void disconnected() {
+            }
+
+            public void connected() {
+            }
+        });
     }
 
 

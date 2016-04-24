@@ -36,16 +36,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
+import org.messic.android.databinding.ActivityLoginBinding;
+import org.messic.android.messiccore.util.UtilNetwork;
+import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.smartphone.activities.MessicBaseActivity;
 import org.messic.android.smartphone.activities.main.MainActivity;
 import org.messic.android.smartphone.activities.searchmessicservice.SearchMessicServiceActivity;
 import org.messic.android.smartphone.activities.welcome.WelcomeActivity;
 import org.messic.android.smartphone.rxevents.RxAction;
 import org.messic.android.smartphone.rxevents.RxDispatcher;
-import org.messic.android.databinding.ActivityLoginBinding;
-import org.messic.android.messiccore.util.UtilNetwork;
 import org.parceler.Parcels;
 
 import javax.inject.Inject;
@@ -213,6 +213,7 @@ public class LoginActivity extends MessicBaseActivity {
         if (result != null) {
             if (result.showWelcomeActivity) {
                 Intent ssa = new Intent(this, WelcomeActivity.class);
+                ssa.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 this.startActivity(ssa);
             } else if (result.showSearchActivity) {
                 RxDispatcher.get().unsubscribe(subscription);
@@ -337,7 +338,7 @@ public class LoginActivity extends MessicBaseActivity {
 
     /**
      * Observer that handles the result through the 3 important actions:
-     * <p/>
+     * <p>
      * 1. onCompleted
      * 2. onError
      * 3. onNext

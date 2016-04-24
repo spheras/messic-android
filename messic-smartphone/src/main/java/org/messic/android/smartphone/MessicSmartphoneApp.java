@@ -18,28 +18,34 @@
  */
 package org.messic.android.smartphone;
 
+import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
-import org.messic.android.smartphone.dagger2.ApplicationSmartphoneComponent;
-//important to import (it doesn't matter that it gives you error at the ide)
-import org.messic.android.smartphone.dagger2.DaggerApplicationSmartphoneComponent;
-import org.messic.android.smartphone.dagger2.SmartphoneModule;
 import org.messic.android.messiccore.MessicCoreApp;
+import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.dagger2.ApplicationCoreComponent;
 import org.messic.android.messiccore.util.UtilDownloadService;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
+import org.messic.android.smartphone.activities.login.LoginActivity;
+import org.messic.android.smartphone.dagger2.ApplicationSmartphoneComponent;
+import org.messic.android.smartphone.dagger2.DaggerApplicationSmartphoneComponent;
+import org.messic.android.smartphone.dagger2.SmartphoneModule;
 import org.messic.android.smartphone.notifications.DownloadNotification;
 import org.messic.android.smartphone.notifications.MessicPlayerNotification;
 
 import javax.inject.Inject;
 
-public class MessicSmartphoneApp extends MessicCoreApp {
+//important to import (it doesn't matter that it gives you error at the ide)
+
+public class MessicSmartphoneApp extends MessicCoreApp implements Configuration.LogoutListener {
 
     @Inject
     UtilMusicPlayer ump;
     @Inject
     UtilDownloadService uds;
+    @Inject
+    Configuration config;
 
     PhoneStateListener phoneStateListener = new PhoneStateListener() {
         private boolean flagPlaying = false;
@@ -79,7 +85,7 @@ public class MessicSmartphoneApp extends MessicCoreApp {
         super.onCreate();
         // Perform injection so that when this call returns all dependencies will be available for use.
         this.getSmartphoneComponent().inject(this);
-
+        this.config.setLogoutListener(this);
         startServices();
     }
 
@@ -113,4 +119,10 @@ public class MessicSmartphoneApp extends MessicCoreApp {
 
     }
 
+    @Override
+    public void logout() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+    }
 }

@@ -112,7 +112,7 @@
                 android:background="#00FF00" />
 
 
-            <w
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/searchmessicservice_lvresults"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
