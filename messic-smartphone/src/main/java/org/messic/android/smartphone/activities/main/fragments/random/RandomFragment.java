@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,15 +34,16 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
-import org.messic.android.smartphone.rxevents.RxDispatcher;
-import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.databinding.FragmentRandomBinding;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.datamodel.MDMAlbum;
 import org.messic.android.messiccore.datamodel.MDMSong;
+import org.messic.android.smartphone.MessicSmartphoneApp;
+import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.smartphone.rxevents.RxAction;
+import org.messic.android.smartphone.rxevents.RxDispatcher;
+import org.messic.android.smartphone.utils.WrapContentLinearLayoutManager;
 
 import javax.inject.Inject;
 
@@ -177,7 +177,7 @@ public class RandomFragment extends Fragment implements RandomSongViewHolder.IVi
         this.mAdapter.setListener(this);
 
         mRecycler = (RecyclerView) view.findViewById(R.id.random_recyclerview);
-        mRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        mRecycler.setLayoutManager(new WrapContentLinearLayoutManager(this.getActivity()));
         mRecycler.setAdapter(this.mAdapter);
 
 

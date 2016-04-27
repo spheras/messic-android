@@ -33,7 +33,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,10 +41,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.R;
-import org.messic.android.smartphone.rxevents.RxDispatcher;
-import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.databinding.FragmentPlayqueueBinding;
 import org.messic.android.messiccore.MessicCoreApp;
 import org.messic.android.messiccore.controllers.Configuration;
@@ -55,7 +51,11 @@ import org.messic.android.messiccore.datamodel.MDMSong;
 import org.messic.android.messiccore.player.PlayerEventListener;
 import org.messic.android.messiccore.util.UtilFile;
 import org.messic.android.messiccore.util.UtilMusicPlayer;
+import org.messic.android.smartphone.MessicSmartphoneApp;
+import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.smartphone.rxevents.RxAction;
+import org.messic.android.smartphone.rxevents.RxDispatcher;
+import org.messic.android.smartphone.utils.WrapContentLinearLayoutManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -199,7 +199,7 @@ public class PlayQueueFragment extends Fragment implements PlayQueueSongViewHold
         this.mAdapter.setCurrentSong(ump.getCursor());
 
         mRecycler = (RecyclerView) view.findViewById(R.id.random_recyclerview);
-        mRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        mRecycler.setLayoutManager(new WrapContentLinearLayoutManager(this.getActivity()));
         mRecycler.setAdapter(this.mAdapter);
 
 

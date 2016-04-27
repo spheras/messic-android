@@ -43,6 +43,7 @@ import org.messic.android.messiccore.controllers.Configuration;
 import org.messic.android.messiccore.controllers.messicdiscovering.MessicDiscovering;
 import org.messic.android.messiccore.datamodel.MDMMessicServerInstance;
 import org.messic.android.smartphone.rxevents.RxAction;
+import org.messic.android.smartphone.utils.WrapContentLinearLayoutManager;
 
 import java.util.List;
 
@@ -125,7 +126,7 @@ public class SearchMessicServiceActivity
         this.buttonSearch = ((Button) findViewById(R.id.searchmessicservice_bsearch));
 
         this.rvListAdapter = new SearchMessicServiceAdapter(this);
-        this.rvList.setLayoutManager(new LinearLayoutManager(this));
+        this.rvList.setLayoutManager(new WrapContentLinearLayoutManager(this));
         this.rvList.setAdapter(this.rvListAdapter);
         this.lempty = (View) findViewById(R.id.searchmessicservice_lempty);
 

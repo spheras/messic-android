@@ -47,6 +47,7 @@ import org.messic.android.smartphone.MessicSmartphoneApp;
 import org.messic.android.smartphone.activities.albuminfo.AlbumInfoActivity;
 import org.messic.android.smartphone.rxevents.RxAction;
 import org.messic.android.smartphone.rxevents.RxDispatcher;
+import org.messic.android.smartphone.utils.WrapContentStaggeredGridLayoutManager;
 import org.messic.android.smartphone.views.fastscroller.FastScroller;
 
 import javax.inject.Inject;
@@ -189,7 +190,7 @@ public class ExploreFragment extends Fragment implements ExploreAuthorsAdapter.E
 
         mRecycler = (RecyclerView) view.findViewById(R.id.explore_recyclerview);
         mRecycler.setHasFixedSize(true);
-        gaggeredGridLayoutManager = new StaggeredGridLayoutManager(3, 1);
+        gaggeredGridLayoutManager = new WrapContentStaggeredGridLayoutManager(3, 1);
         mRecycler.setLayoutManager(gaggeredGridLayoutManager);
         mRecycler.setAdapter(this.mAdapter);
 
