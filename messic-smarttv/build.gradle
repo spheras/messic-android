@@ -4,14 +4,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         applicationId "org.messic.android.messic_tv"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 5
-        versionName '2.0.0'
+        versionCode 6
+        versionName '2.0.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
